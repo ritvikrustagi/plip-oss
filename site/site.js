@@ -1,12 +1,12 @@
-/* Jade site — three small behaviours, no dependencies. */
+/* Jade site — four small behaviours, no dependencies. */
 (function () {
   "use strict";
 
-  // Header gets a hairline + tightens once you scroll past the top.
+  // Header picks up a background once you leave the hero.
   var header = document.querySelector(".site-header");
   if (header) {
     var onScroll = function () {
-      header.dataset.stuck = window.scrollY > 24 ? "true" : "false";
+      header.dataset.stuck = window.scrollY > 32 ? "true" : "false";
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -18,15 +18,10 @@
   if (toggle && actions) {
     var small = window.matchMedia("(max-width: 860px)");
     var sync = function () {
-      if (small.matches) {
-        actions.hidden = toggle.getAttribute("aria-expanded") !== "true";
-      } else {
-        actions.hidden = false;
-      }
+      actions.hidden = small.matches && toggle.getAttribute("aria-expanded") !== "true";
     };
     toggle.addEventListener("click", function () {
-      var open = toggle.getAttribute("aria-expanded") === "true";
-      toggle.setAttribute("aria-expanded", String(!open));
+      toggle.setAttribute("aria-expanded", String(toggle.getAttribute("aria-expanded") !== "true"));
       sync();
     });
     actions.addEventListener("click", function (e) {
@@ -37,6 +32,21 @@
     });
     small.addEventListener("change", sync);
     sync();
+  }
+
+  // Wall of love — arrows scroll one card at a time.
+  var wall = document.getElementById("wall");
+  if (wall) {
+    document.querySelectorAll("[data-wall]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var card = wall.querySelector(".note");
+        var step = card ? card.offsetWidth + 22 : wall.clientWidth * 0.8;
+        wall.scrollBy({
+          left: btn.dataset.wall === "next" ? step : -step,
+          behavior: "smooth"
+        });
+      });
+    });
   }
 
   // Sections fade up as they arrive.
@@ -52,6 +62,6 @@
       entry.target.classList.add("in");
       io.unobserve(entry.target);
     });
-  }, { rootMargin: "0px 0px -12% 0px", threshold: 0.08 });
+  }, { rootMargin: "0px 0px -10% 0px", threshold: 0.05 });
   items.forEach(function (el) { io.observe(el); });
 })();

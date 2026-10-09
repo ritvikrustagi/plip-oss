@@ -3,59 +3,165 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jade — the moment it clicks</title>
-<meta name="description" content="Jade is a study companion for Chrome. It points and explains, right on a student's schoolwork, and shows teachers where the class got stuck.">
-<meta name="theme-color" content="#FAFBF7">
+<title>Jade — the study companion that won’t give the answer</title>
+<meta name="description" content="Jade sits beside a student’s schoolwork, asks the question that unlocks the next step, and shows teachers exactly where the class got stuck.">
+<meta name="theme-color" content="#FDFDFB">
 <link rel="canonical" href="https://jadestudy.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Jade">
-<meta property="og:title" content="Jade — the moment it clicks">
+<meta property="og:title" content="Jade — the study companion that won’t give the answer">
 <meta property="og:description" content="A little help for students. A clearer picture for teachers.">
 <meta property="og:url" content="https://jadestudy.com/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300..900;1,300..900&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 
-<header class="site-header shell">
-  <a href="index.html" class="wordmark" aria-label="Jade home">jade</a>
-  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
-  <nav class="header-actions" id="site-nav" aria-label="Main navigation">
+<header class="site-header">
+  <div class="shell header-inner">
+    <a href="index.html" class="wordmark" aria-label="Jade home">jade</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav class="header-actions" id="site-nav" aria-label="Main navigation">
     <a class="header-link" href="case-studies.html">Case studies</a>
     <a class="header-link" href="about.html">About</a>
     <a class="header-link" href="mailto:ishan@jadestudy.com?subject=Hello%20from%20the%20Jade%20site">Contact</a>
-    <a class="request-demo" href="mailto:ishan@jadestudy.com?subject=Jade%20demo%20request&amp;body=Hi%20Ishan%2C%0A%0AI'd%20like%20to%20see%20a%20demo%20of%20Jade.%0A%0AName%3A%20%0ASchool%20or%20fund%20(optional)%3A%20%0A">
-      Request a demo
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-  </nav>
+    <a class="btn sm" href="mailto:ishan@jadestudy.com?subject=Jade%20demo%20request&amp;body=Hi%20Ishan%2C%0A%0AI'd%20like%20to%20see%20a%20demo%20of%20Jade.%0A%0AName%3A%20%0ASchool%20or%20fund%20(optional)%3A%20%0A">Request a demo</a>
+    </nav>
+  </div>
 </header>
 
 <main id="main">
 
-  <!-- ============================================================ hero -->
-  <section class="hero shell" aria-labelledby="hero-title">
-    <div class="hero-copy">
-      <h1 id="hero-title">We build the<br>moment <span>it clicks.<svg viewBox="0 0 420 25" fill="none" aria-hidden="true"><path d="M7 16C105 4 248 3 410 11M70 22C170 10 283 13 354 18"/></svg></span></h1>
-      <div class="hero-intro">
-        <span class="eyebrow">A study companion for Chrome</span>
-        <p>Jade sits beside a student&rsquo;s schoolwork, asks the one question that unlocks the next step, and shows the teacher exactly where the class got stuck.</p>
-        <p class="hero-afterword">In classroom pilots now &middot; built for teachers first</p>
+  <!-- ============================================================= hero -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-art"><svg class="scene" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="jsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c2d8e8"/>
+      <stop offset="36%" stop-color="#dae7e6"/>
+      <stop offset="64%" stop-color="#eef1e2"/>
+      <stop offset="100%" stop-color="#f9f3de"/>
+    </linearGradient>
+    <radialGradient id="jsun" cx="75%" cy="50%" r="54%">
+      <stop offset="0%" stop-color="#fff8dc" stop-opacity=".98"/>
+      <stop offset="36%" stop-color="#fdf1cc" stop-opacity=".48"/>
+      <stop offset="100%" stop-color="#fdf1cc" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="jl" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="52%" stop-color="#fff9e0" stop-opacity=".6"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="jb1" x="-25%" y="-70%" width="150%" height="240%"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="jb2" x="-40%" y="-100%" width="180%" height="300%"><feGaussianBlur stdDeviation="24"/></filter>
+  </defs>
+
+  <rect width="1440" height="900" fill="url(#jsky)"/>
+  <rect width="1440" height="900" fill="url(#jsun)"/>
+
+  <g fill="#ffffff" filter="url(#jb1)">
+    <g opacity=".95">
+      <ellipse cx="232" cy="200" rx="108" ry="22"/>
+      <ellipse cx="188" cy="180" rx="54" ry="27"/>
+      <ellipse cx="248" cy="172" rx="46" ry="26"/>
+      <ellipse cx="306" cy="190" rx="44" ry="19"/>
+    </g>
+    <g opacity=".8">
+      <ellipse cx="1122" cy="172" rx="94" ry="19"/>
+      <ellipse cx="1086" cy="156" rx="46" ry="23"/>
+      <ellipse cx="1148" cy="154" rx="36" ry="19"/>
+    </g>
+    <g opacity=".55">
+      <ellipse cx="700" cy="116" rx="82" ry="15"/>
+      <ellipse cx="672" cy="104" rx="40" ry="16"/>
+    </g>
+    <g opacity=".4">
+      <ellipse cx="500" cy="276" rx="72" ry="11"/>
+      <ellipse cx="986" cy="300" rx="58" ry="10"/>
+    </g>
+  </g>
+
+  <path d="M0 560 C 180 532 320 556 470 548 C 640 539 760 562 920 552 C 1080 542 1270 564 1440 540 L1440 900 L0 900 Z" fill="#b4c9bc"/>
+  <path d="M0 618 C 160 584 300 616 452 608 C 622 599 742 626 908 612 C 1072 598 1252 626 1440 598 L1440 900 L0 900 Z" fill="#a0bda1"/>
+  <path d="M0 686 C 196 640 338 684 492 676 C 660 667 794 700 960 680 C 1118 661 1282 690 1440 662 L1440 900 L0 900 Z" fill="#89ad88"/>
+  <path d="M0 758 C 214 702 384 748 548 742 C 736 735 876 766 1044 748 C 1196 732 1320 756 1440 738 L1440 900 L0 900 Z" fill="#729973"/>
+  <path d="M0 836 C 240 780 430 816 612 812 C 804 808 950 836 1122 820 C 1262 807 1356 822 1440 812 L1440 900 L0 900 Z" fill="#5f8663"/>
+
+  <!-- low sun raking across the hills -->
+  <g filter="url(#jb2)">
+    <ellipse cx="1070" cy="628" rx="340" ry="42" fill="url(#jl)"/>
+    <ellipse cx="770" cy="710" rx="300" ry="38" fill="url(#jl)"/>
+    <ellipse cx="1190" cy="788" rx="290" ry="36" fill="url(#jl)"/>
+  </g>
+
+  <!-- a few trees on the near ridges, framing the edges -->
+  <g fill="#3f6546">
+    <g opacity=".5">
+      <path d="M92 686 c0-16 9-30 14-30s14 14 14 30z"/><rect x="104" y="684" width="3" height="8"/>
+      <path d="M122 690 c0-12 7-23 11-23s11 11 11 23z"/><rect x="131" y="688" width="3" height="7"/>
+      <path d="M1328 672 c0-17 10-32 15-32s15 15 15 32z"/><rect x="1341" y="670" width="3" height="9"/>
+    </g>
+    <g opacity=".66">
+      <path d="M52 772 c0-23 13-43 20-43s20 20 20 43z"/><rect x="70" y="769" width="4" height="12"/>
+      <path d="M96 780 c0-17 10-32 15-32s15 15 15 32z"/><rect x="109" y="777" width="4" height="10"/>
+      <path d="M1368 760 c0-24 14-45 21-45s21 21 21 45z"/><rect x="1387" y="757" width="4" height="12"/>
+      <path d="M1332 772 c0-16 9-30 14-30s14 14 14 30z"/><rect x="1344" y="769" width="4" height="10"/>
+    </g>
+  </g>
+</svg></div>
+    <div class="hero-inner shell">
+      <h1 id="hero-title">The study companion that won&rsquo;t give the answer.</h1>
+      <p class="hero-sub">Jade sits beside a student&rsquo;s schoolwork and asks the one question that unlocks the next step. Teachers see exactly where the class got stuck.</p>
+      <a class="btn" href="mailto:ishan@jadestudy.com?subject=Jade%20demo%20request&amp;body=Hi%20Ishan%2C%0A%0AI'd%20like%20to%20see%20a%20demo%20of%20Jade.%0A%0AName%3A%20%0ASchool%20or%20fund%20(optional)%3A%20%0A">
+        Request a demo
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <!-- PLACEHOLDER NUMBERS -->
+      <div class="hero-stats">
+        <div><p class="figure">4,800</p><p class="label">hints given</p></div>
+        <div><p class="figure">71%</p><p class="label">marked &ldquo;this helped&rdquo;</p></div>
+        <div><p class="figure">120+</p><p class="label">students in pilot</p></div>
       </div>
     </div>
+  </section>
 
-    <div class="panel reveal" aria-label="How Jade appears on a student's page">
-      <div class="panel-bar">
-        <span class="dots"><i></i><i></i><i></i></span>
-        <span>Algebra&nbsp;&middot;&nbsp;Practice</span>
-        <span style="margin-left:auto">Jade, right beside you</span>
+  <!-- ============================================================ beats -->
+  <section class="hero-beat band torn grid-paper" aria-label="Why Jade exists">
+    <div class="shell">
+      <p class="beat-line reveal">Answers have never been easier to find.</p>
+      <p class="beat-line reveal">Understanding never got <em>any easier.</em></p>
+    </div>
+  </section>
+
+  <!-- ========================================================= partners -->
+  <section class="partners shell">
+    <!-- PLACEHOLDER: swap for real pilot schools and partners -->
+    <p>In classroom pilots with</p>
+    <div class="partner-row">
+      <span class="partner">Public high school &middot; Algebra</span>
+      <span class="partner">Independent school &middot; Chemistry</span>
+      <span class="partner">District pilot &middot; 2026</span>
+    </div>
+  </section>
+
+  <!-- ====================================================== not a chatbot -->
+  <section class="band sage torn">
+    <div class="shell split reveal">
+      <div class="split-copy">
+        <span class="eyebrow">A companion that watches the page</span>
+        <h2>Jade isn&rsquo;t <em>a chatbot.</em></h2>
+        <p class="lede">There is nothing to copy and paste. Jade reads the problem a student is actually looking at &mdash; the equation, the diagram, the half-finished working &mdash; and talks about that.</p>
+        <a class="textlink" href="https://jadestudy.com">See it on a real page
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
       </div>
-      <div class="two-up" style="gap:0">
+      <div class="sticker">
+        <div class="sticker-bar"><span class="dots"><i></i><i></i><i></i></span><span>Algebra &middot; Practice</span></div>
         <div class="problem-card">
           <p class="task-label">Find the value of x</p>
           <p class="equation">3x <mark>+ 5</mark> = 20</p>
@@ -64,97 +170,66 @@
         <div class="jade-bubble">
           <p class="who">jade</p>
           <p>Stuck here? Let&rsquo;s take a look.</p>
-          <p>What operation would undo the <em>+ 5</em>? Try that step yourself, and I&rsquo;ll check it.</p>
+          <p>What operation would undo the <em>+ 5</em>? Try that step yourself and I&rsquo;ll check it.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ==================================================== what we do -->
-  <section class="shell reveal" aria-labelledby="what-title">
-    <div class="rule-label"><span class="section-index">01 &mdash; What we do</span></div>
-    <div class="section-head">
-      <h2 id="what-title">Homework help got good<br>at answers. <em>Nobody got<br>better at learning.</em></h2>
-      <p class="lede">A chatbot finishes the problem. The student still can&rsquo;t do the next one, and the teacher finds out a week later, from a grade.</p>
-    </div>
-
-    <div class="two-up">
-      <div>
-        <h3>For the student</h3>
-        <p class="body-copy" style="margin-top:12px">Jade reads the page they&rsquo;re actually on &mdash; the problem, the diagram, the half-finished work &mdash; and gives a hint, not a solution. A guiding question. A different example. The thinking stays theirs.</p>
+  <!-- ===================================================== not a cheatbot -->
+  <section class="band torn">
+    <div class="shell split flip reveal">
+      <div class="split-copy">
+        <span class="eyebrow">Questions before answers</span>
+        <h2>Jade isn&rsquo;t <em>a cheatbot.</em></h2>
+        <p class="lede">A general chatbot finishes the problem in four seconds. The student still can&rsquo;t do the next one. Jade gives a question, a step or a different example &mdash; and then waits.</p>
+        <p class="body-copy" style="margin-top:18px;max-width:44ch">Students aren&rsquo;t cheating because they&rsquo;re lazy. They&rsquo;re stuck at 10pm with nobody to ask. Blocking the tab doesn&rsquo;t work; being better than it does.</p>
       </div>
-      <div>
-        <h3>For the teacher</h3>
-        <p class="body-copy" style="margin-top:12px">Every hint Jade gives is grounded in the teacher&rsquo;s own syllabus and lesson notes, and every moment of confusion lands on a dashboard. The task, the hint, whether it helped.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====================================================== how it works -->
-  <section class="shell reveal" aria-labelledby="how-title">
-    <div class="rule-label"><span class="section-index">02 &mdash; Behind a helpful hint</span></div>
-    <div class="section-head">
-      <h2 id="how-title">The right help<br><em>has context.</em></h2>
-      <p class="lede">Three inputs no general-purpose chatbot has, combined on every single hint.</p>
-    </div>
-
-    <div class="steps">
-      <div class="step">
-        <span class="num">01</span>
-        <h3>The work</h3>
-        <p class="body-copy">The problem in front of the student, exactly where they&rsquo;re stuck &mdash; read off the page, nothing to copy and paste.</p>
-      </div>
-      <div class="step">
-        <span class="num">02</span>
-        <h3>The learning context</h3>
-        <p class="body-copy">The teacher&rsquo;s course materials and the student&rsquo;s own learning notes shape how the explanation is told.</p>
-      </div>
-      <div class="step">
-        <span class="num">03</span>
-        <h3>The next step</h3>
-        <p class="body-copy">A question or a different angle &mdash; never the finished answer. Then Jade waits for the student to try.</p>
+      <div class="sticker tilt-r">
+        <div class="sticker-bar"><span class="dots"><i></i><i></i><i></i></span><span>What a hint looks like</span></div>
+        <div class="jade-bubble" style="margin:18px">
+          <p class="who">jade</p>
+          <p>What would you do to both sides to get <em>3x</em> on its own?</p>
+        </div>
+        <div class="problem-card" style="padding-top:0">
+          <p class="task-label">Student</p>
+          <p class="equation" style="font-size:26px">take away 5?</p>
+        </div>
+        <div class="jade-bubble">
+          <p class="who">jade</p>
+          <p>That&rsquo;s it. Do it on both sides and tell me what you get.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ========================================================= teachers -->
-  <section class="shell reveal" aria-labelledby="teachers-title">
-    <div class="rule-label"><span class="section-index">03 &mdash; The teacher side</span></div>
-    <div class="split">
-      <div>
-        <h2 id="teachers-title">Know where<br><em>to step in.</em></h2>
-        <p class="lede" style="margin-top:28px">The task. The hint. Whether it helped. See the moments a finished assignment can&rsquo;t show &mdash; before the test, not after it.</p>
-        <a class="more-link" href="case-studies.html">
-          See what teachers found in pilot
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <!-- ========================================================== teachers -->
+  <section class="band cream torn" id="teachers">
+    <div class="shell split reveal">
+      <div class="split-copy">
+        <span class="eyebrow">Built around your teaching</span>
+        <h2>Know where <em>to step in.</em></h2>
+        <p class="lede">Upload a syllabus and lesson notes and every hint stays connected to what you actually taught. Every moment of confusion lands on your dashboard: the task, the hint, whether it helped.</p>
+        <a class="textlink" href="case-studies.html">What teachers found in pilot
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
-
-      <div class="panel" aria-label="Teacher dashboard, sample class">
-        <div class="panel-bar">
-          <span class="dots"><i></i><i></i><i></i></span>
-          <span>Teacher dashboard</span>
-          <span style="margin-left:auto">Math &middot; Period 2</span>
+      <div class="sticker">
+        <div class="sticker-bar"><span class="dots"><i></i><i></i><i></i></span><span>Teacher dashboard</span><span style="margin-left:auto">Math &middot; Period 2</span></div>
+        <div class="dash-row">
+          <span class="avatar">S</span>
+          <span><span class="who">Sam</span><br><span class="topic">Solving equations</span></span>
+          <span class="grow"></span><span class="tag stuck">Still stuck</span>
         </div>
-        <div class="dash-rows">
-          <div class="dash-row">
-            <span class="avatar">S</span>
-            <span><span class="who">Sam</span><br><span class="topic">Solving equations</span></span>
-            <span class="grow"></span>
-            <span class="tag stuck">Still stuck</span>
-          </div>
-          <div class="dash-row">
-            <span class="avatar">A</span>
-            <span><span class="who">Alex</span><br><span class="topic">Comparing fractions</span></span>
-            <span class="grow"></span>
-            <span class="tag good">Found it helpful</span>
-          </div>
-          <div class="dash-row">
-            <span class="avatar">R</span>
-            <span><span class="who">Riya</span><br><span class="topic">Inverse operations</span></span>
-            <span class="grow"></span>
-            <span class="tag good">Found it helpful</span>
-          </div>
+        <div class="dash-row">
+          <span class="avatar">A</span>
+          <span><span class="who">Alex</span><br><span class="topic">Comparing fractions</span></span>
+          <span class="grow"></span><span class="tag good">Found it helpful</span>
+        </div>
+        <div class="dash-row">
+          <span class="avatar">R</span>
+          <span><span class="who">Riya</span><br><span class="topic">Inverse operations</span></span>
+          <span class="grow"></span><span class="tag good">Found it helpful</span>
         </div>
         <div class="jade-bubble">
           <p class="who">Sam&rsquo;s latest help</p>
@@ -165,107 +240,312 @@
     </div>
   </section>
 
-  <!-- ========================================================= traction -->
-  <!-- PLACEHOLDER NUMBERS: replace the four .figure values and the facts list below. -->
-  <section class="shell reveal" aria-labelledby="traction-title">
-    <div class="rule-label"><span class="section-index">04 &mdash; Where we are</span></div>
-    <div class="section-head">
-      <h2 id="traction-title">Small, real,<br><em>and in classrooms.</em></h2>
-      <p class="lede">We would rather be used properly by a few teachers than installed by a lot of nobody. Pilot numbers, honestly stated.</p>
-    </div>
+  <!-- ========================================================== features -->
+  <section class="band torn">
+    <div class="shell">
+      <div class="center narrow" style="margin-bottom:clamp(40px,5vw,64px)">
+        <span class="eyebrow">Features</span>
+        <h2>Everything a good teacher <em>already does.</em></h2>
+        <p class="lede center" style="margin-top:20px">Jade just does it at 10pm, for thirty students at once, and writes down what happened.</p>
+      </div>
 
-    <div class="stats">
-      <div class="stat">
-        <p class="figure">3</p>
-        <p class="caption">classroom pilots running</p>
-      </div>
-      <div class="stat">
-        <p class="figure">120+</p>
-        <p class="caption">students with Jade on their schoolwork</p>
-      </div>
-      <div class="stat">
-        <p class="figure">4,800</p>
-        <p class="caption">hints given, every one logged for the teacher</p>
-      </div>
-      <div class="stat">
-        <p class="figure">71%</p>
-        <p class="caption">of hints marked &ldquo;this helped&rdquo; by the student</p>
+      <div class="card-grid reveal">
+        <div class="fcard sky">
+          <div class="art">
+            <div class="sticker straight" style="width:100%">
+              <div class="problem-card" style="padding:22px">
+                <p class="task-label">On the page</p>
+                <p class="equation" style="font-size:32px">3x <mark>+ 5</mark> = 20</p>
+              </div>
+            </div>
+          </div>
+          <div><h3>Reads the actual page</h3><p>No copying, no screenshots. Jade sees the problem, the diagram and the working so far.</p></div>
+        </div>
+
+        <div class="fcard lavender">
+          <div class="art">
+            <div class="sticker straight" style="width:100%">
+              <div class="jade-bubble" style="margin:16px">
+                <p class="who">jade</p>
+                <p>What would undo the <em>+ 5</em>?</p>
+              </div>
+            </div>
+          </div>
+          <div><h3>Hints, never answers</h3><p>A guiding question or a different example. The thinking stays with the student.</p></div>
+        </div>
+
+        <div class="fcard sun">
+          <div class="art">
+            <div class="sticker straight" style="width:100%">
+              <div class="sticker-bar"><span>Algebra I &middot; your materials</span></div>
+              <div class="problem-card" style="padding:20px 22px 24px">
+                <p class="task-label">Solving equations</p>
+                <p class="body-copy" style="font-size:14.5px;margin-top:8px">Use inverse operations. Explain why each step keeps both sides equal.</p>
+              </div>
+            </div>
+          </div>
+          <div><h3>Grounded in your syllabus</h3><p>Upload the course materials once. Guidance follows how you teach it, not how the internet does.</p></div>
+        </div>
+
+        <div class="fcard apricot">
+          <div class="art">
+            <div class="sticker straight" style="width:100%">
+              <div class="skill-row"><div class="top"><span>Inverse operations</span><span>45%</span></div><div class="bar"><i style="width:45%"></i></div></div>
+              <div class="skill-row"><div class="top"><span>Like terms</span><span>85%</span></div><div class="bar"><i style="width:85%"></i></div></div>
+              <div class="skill-row"><div class="top"><span>Substitution</span><span>60%</span></div><div class="bar"><i style="width:60%"></i></div></div>
+            </div>
+          </div>
+          <div><h3>Skill-level tracking</h3><p>Topics break down into granular skills, so &ldquo;bad at algebra&rdquo; becomes something you can teach to.</p></div>
+        </div>
+
+        <div class="fcard sage">
+          <div class="art">
+            <div class="sticker straight" style="width:100%">
+              <div class="dash-row"><span class="avatar">S</span><span><span class="who">Sam</span><br><span class="topic">Solving equations</span></span><span class="grow"></span><span class="tag stuck">Still stuck</span></div>
+              <div class="dash-row"><span class="avatar">A</span><span><span class="who">Alex</span><br><span class="topic">Fractions</span></span><span class="grow"></span><span class="tag good">Helped</span></div>
+            </div>
+          </div>
+          <div><h3>A dashboard, same minute</h3><p>Not a weekly digest. The teacher sees a student stuck while the lesson can still change.</p></div>
+        </div>
+
+        <div class="fcard leaf">
+          <div class="art">
+            <div class="sticker straight" style="width:100%">
+              <div class="jade-bubble" style="margin:16px">
+                <p class="who">What Jade remembers</p>
+                <p>Riya does better with a diagram than a definition. Struggled with signs last week.</p>
+              </div>
+            </div>
+          </div>
+          <div><h3>Remembers each student</h3><p>What they&rsquo;ve covered, where they got stuck, how they like things explained. It picks up where it left off.</p></div>
+        </div>
       </div>
     </div>
-
-    <ul class="facts" style="margin-top:56px">
-      <li><span class="key">Product</span><span class="val">Chrome extension for students, web dashboard for teachers. Live and in daily use.</span></li>
-      <li><span class="key">Go to market</span><span class="val">Teacher first, one classroom at a time, then the department. The teacher brings the class; the class brings the school.</span></li>
-      <li><span class="key">Moat</span><span class="val">The syllabus and lesson notes a teacher uploads, plus a per-student record of what has and hasn&rsquo;t landed. A general chatbot starts from zero on every question.</span></li>
-      <li><span class="key">Business model</span><span class="val">Per-seat annual licence sold to the school or district, free for the teacher&rsquo;s first class.</span></li>
-      <li><span class="key">Status</span><span class="val">Classroom pilot. Raising to put Jade in front of more teachers.</span></li>
-    </ul>
   </section>
 
-  <!-- ========================================================== why now -->
-  <section class="shell reveal" aria-labelledby="why-title">
-    <div class="rule-label"><span class="section-index">05 &mdash; Why now</span></div>
-    <div class="split">
-      <div>
-        <h2 id="why-title">Every student<br>already has an AI.<br><em>No teacher has one.</em></h2>
+  <!-- ========================================================= audiences -->
+  <section class="band cream torn">
+    <div class="shell">
+      <div class="center narrow" style="margin-bottom:clamp(40px,5vw,64px)">
+        <span class="eyebrow">Who it&rsquo;s for</span>
+        <h2>One product, <em>three people.</em></h2>
       </div>
-      <div>
-        <p class="lede" style="max-width:52ch">The homework habit changed in about eighteen months, and schools got the worst of the deal: answers arrive instantly, and the signal a teacher used to read off a worksheet is gone.</p>
-        <p class="body-copy" style="margin-top:20px;max-width:52ch">Blocking it doesn&rsquo;t work. Jade takes the thing students are already doing and makes it legible &mdash; help that holds back the answer, and a record of where the class actually struggled. That record is the part no one else is building, and it&rsquo;s the part a school will pay for.</p>
+
+      <div class="audiences reveal">
+        <div class="audience">
+          <div>
+            <span class="eyebrow">For students</span>
+            <h3>Help at 10pm that doesn&rsquo;t feel like cheating.</h3>
+            <ul>
+              <li>Works on the homework site you already use</li>
+              <li>Asks before it tells, so the work stays yours</li>
+              <li>Explains it again, differently, as many times as you need</li>
+            </ul>
+          </div>
+          <div class="sticker tilt-r">
+            <div class="jade-bubble" style="margin:18px"><p class="who">jade</p><p>Want me to show this one as a picture instead?</p></div>
+          </div>
+        </div>
+
+        <div class="audience sky">
+          <div>
+            <span class="eyebrow">For teachers</span>
+            <h3>The signal a worksheet used to give you.</h3>
+            <ul>
+              <li>Upload your syllabus and lesson notes in a few minutes</li>
+              <li>See who is stuck, on what, before the test</li>
+              <li>Free for your first class, always</li>
+            </ul>
+            <a class="btn" href="mailto:ishan@jadestudy.com?subject=Jade%20pilot%20enquiry">Start a pilot</a>
+          </div>
+          <div class="sticker">
+            <div class="dash-row"><span class="avatar">S</span><span><span class="who">Sam</span><br><span class="topic">Solving equations</span></span><span class="grow"></span><span class="tag stuck">Still stuck</span></div>
+            <div class="dash-row"><span class="avatar">R</span><span><span class="who">Riya</span><br><span class="topic">Inverse operations</span></span><span class="grow"></span><span class="tag good">Helped</span></div>
+          </div>
+        </div>
+
+        <div class="audience sun">
+          <div>
+            <span class="eyebrow">For schools</span>
+            <h3>Proof the department can read.</h3>
+            <ul>
+              <li>Every hint a student gets is visible to their teacher</li>
+              <li>Topic-level gaps across a whole year group</li>
+              <li>Per-seat annual licence, priced below one hour of tutoring</li>
+            </ul>
+            <a class="btn" href="mailto:ishan@jadestudy.com?subject=Jade%20for%20our%20school">Get in touch</a>
+          </div>
+          <div class="sticker tilt-r">
+            <div class="skill-row"><div class="top"><span>Year 9 &middot; unit conversion</span><span>42%</span></div><div class="bar"><i style="width:42%"></i></div></div>
+            <div class="skill-row"><div class="top"><span>Year 9 &middot; linear equations</span><span>78%</span></div><div class="bar"><i style="width:78%"></i></div></div>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <figure class="quote" style="margin:clamp(48px,6vw,88px) 0 0">
-      <blockquote>&ldquo;I could see, on Tuesday morning, that six of them didn&rsquo;t understand inverse operations. I&rsquo;d have found that out on Friday.&rdquo;</blockquote>
-      <figcaption>Pilot teacher, Algebra I &middot; <em>name on request</em></figcaption>
-    </figure>
+  <!-- ====================================================== wall of love -->
+  <section class="band sage torn">
+    <div class="shell">
+      <div class="center narrow" style="margin-bottom:clamp(36px,4vw,52px)">
+        <span class="eyebrow">Wall of love</span>
+        <h2>What they said <em>in the room.</em></h2>
+      </div>
+      <!-- PLACEHOLDER: real quotes, used with permission -->
+      <div class="wall" id="wall" tabindex="0" aria-label="Quotes from pilot teachers and students">
+        <figure class="note" style="--rot:-1deg">
+          <blockquote>I could see, on Tuesday morning, that six of them didn&rsquo;t understand inverse operations. I&rsquo;d have found that out on Friday.</blockquote>
+          <figcaption><b>Algebra I teacher</b>Public high school &middot; period 2</figcaption>
+        </figure>
+        <figure class="note" style="--rot:.8deg">
+          <blockquote>The test would have told me they failed. Jade told me <em>why</em>, while I could still do something about it.</blockquote>
+          <figcaption><b>Chemistry teacher</b>Independent school</figcaption>
+        </figure>
+        <figure class="note" style="--rot:-.6deg">
+          <blockquote>It&rsquo;s annoying for about a week. Then you realise you actually know how to do them.</blockquote>
+          <figcaption><b>Student, 15</b>Algebra I</figcaption>
+        </figure>
+        <figure class="note" style="--rot:1.1deg">
+          <blockquote>I stopped re-teaching to the whole room. I walk in with six names now.</blockquote>
+          <figcaption><b>Algebra I teacher</b>Nine weeks into the pilot</figcaption>
+        </figure>
+        <figure class="note" style="--rot:-.9deg">
+          <blockquote>My son asked it to explain it a third way. He would never have asked me three times.</blockquote>
+          <figcaption><b>Parent</b>Pilot family</figcaption>
+        </figure>
+      </div>
+      <div class="wall-controls">
+        <button type="button" data-wall="prev" aria-label="Previous quote"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M15 6 9 12l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" data-wall="next" aria-label="Next quote"><svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================= traction -->
+  <section class="band torn" id="traction">
+    <div class="shell">
+      <div class="center narrow" style="margin-bottom:clamp(40px,5vw,60px)">
+        <span class="eyebrow">Where we are</span>
+        <h2>Small, real, <em>and in classrooms.</em></h2>
+        <p class="lede center" style="margin-top:20px">We&rsquo;d rather be used properly by a few teachers than installed by a lot of nobody. Pilot numbers, honestly stated.</p>
+      </div>
+
+      <!-- PLACEHOLDER NUMBERS -->
+      <div class="stats reveal">
+        <div class="stat"><p class="figure">3</p><p class="caption">classroom pilots running</p></div>
+        <div class="stat"><p class="figure">120+</p><p class="caption">students with Jade on their schoolwork</p></div>
+        <div class="stat"><p class="figure">4,800</p><p class="caption">hints given, every one logged for the teacher</p></div>
+        <div class="stat"><p class="figure">71%</p><p class="caption">of hints marked &ldquo;this helped&rdquo; by the student</p></div>
+      </div>
+
+      <ul class="facts" style="margin-top:clamp(44px,5vw,64px)">
+        <li><span class="key">Product</span><span class="val">Chrome extension for students, web dashboard for teachers. Live and in daily use.</span></li>
+        <li><span class="key">Go to market</span><span class="val">Teacher first, one classroom at a time, then the department. The teacher brings the class; the class brings the school.</span></li>
+        <li><span class="key">Moat</span><span class="val">The syllabus and lesson notes a teacher uploads, plus a per-student record of what has and hasn&rsquo;t landed. A general chatbot starts from zero on every question.</span></li>
+        <li><span class="key">Business model</span><span class="val">Per-seat annual licence sold to the school or district, free for the teacher&rsquo;s first class.</span></li>
+        <li><span class="key">Status</span><span class="val">Classroom pilot. Raising to put Jade in front of more teachers.</span></li>
+      </ul>
+    </div>
   </section>
 
   <!-- ===================================================== case studies -->
-  <section class="shell reveal" aria-labelledby="cases-title">
-    <div class="rule-label"><span class="section-index">06 &mdash; Case studies</span></div>
-    <div class="section-head">
-      <h2 id="cases-title">What happened<br><em>in the room.</em></h2>
-      <p class="lede">One class at a time, written up properly: what the teacher wanted, what Jade did, what changed.</p>
-    </div>
+  <section class="band cream torn">
+    <div class="shell">
+      <div class="center narrow" style="margin-bottom:clamp(36px,4vw,52px)">
+        <span class="eyebrow">Case studies</span>
+        <h2>What happened <em>in the room.</em></h2>
+        <p class="lede center" style="margin-top:20px">One class at a time, written up properly &mdash; including the parts that didn&rsquo;t work.</p>
+      </div>
 
-    <div class="case-list">
-      <a class="case-card" href="case-studies.html#algebra-i">
-        <p class="meta"><span>Algebra I</span><i></i><span>Public high school</span><i></i><span>9 weeks</span></p>
-        <h3>The class that stopped copying answers</h3>
-        <p class="summary">A period-2 algebra teacher was losing the first fifteen minutes of every lesson to work she couldn&rsquo;t trust. Nine weeks with Jade, and she walked in already knowing which six students to sit with.</p>
-        <div class="case-metrics">
-          <div><p class="figure">31</p><p class="label">students</p></div>
-          <div><p class="figure">1,900</p><p class="label">hints logged</p></div>
-          <div><p class="figure">15 min</p><p class="label">of class time back, daily</p></div>
-        </div>
-      </a>
-      <a class="case-card" href="case-studies.html#chemistry">
-        <p class="meta"><span>Chemistry</span><i></i><span>Independent school</span><i></i><span>6 weeks</span></p>
-        <h3>Finding the gap a test would have missed</h3>
-        <p class="summary">Stoichiometry looked fine on paper. The dashboard showed half the class was asking the same question about unit conversion &mdash; a prerequisite nobody had thought to reteach.</p>
-        <div class="case-metrics">
-          <div><p class="figure">24</p><p class="label">students</p></div>
-          <div><p class="figure">1</p><p class="label">reteach that moved the unit</p></div>
-        </div>
-      </a>
+      <div class="card-grid reveal">
+        <a class="fcard" href="case-studies.html#algebra-i" style="min-height:0;text-decoration:none">
+          <div>
+            <span class="eyebrow">Algebra I &middot; 9 weeks</span>
+            <h3>The class that stopped copying answers</h3>
+            <p style="margin-top:12px">A period-2 teacher was losing fifteen minutes of every lesson to work she couldn&rsquo;t trust. Nine weeks later she walked in with six names.</p>
+          </div>
+          <span class="textlink">Read it
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+        <a class="fcard sky" href="case-studies.html#chemistry" style="min-height:0;text-decoration:none">
+          <div>
+            <span class="eyebrow">Chemistry &middot; 6 weeks</span>
+            <h3>Finding the gap a test would have missed</h3>
+            <p style="margin-top:12px">Stoichiometry looked fine on paper. Eleven of twenty-four students were stuck on a prerequisite nobody had thought to reteach.</p>
+          </div>
+          <span class="textlink">Read it
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+      </div>
     </div>
+  </section>
 
-    <a class="more-link" href="case-studies.html">
-      Read all case studies
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+  <!-- ============================================================== faq -->
+  <section class="band torn" id="faq">
+    <div class="shell narrow">
+      <div class="center" style="margin-bottom:clamp(32px,4vw,48px)">
+        <span class="eyebrow">Questions</span>
+        <h2>The things people <em>ask us first.</em></h2>
+      </div>
+
+      <div class="faq">
+        <details>
+          <summary>How is this different from ChatGPT?</summary>
+          <div class="answer">Two things. Jade can see the page the student is on, so there is nothing to paste and no room to describe the problem wrongly. And it is built not to finish the work &mdash; it gives a question, a step or a different example, then waits. A general chatbot does the opposite on both counts.</div>
+        </details>
+        <details>
+          <summary>What does the teacher actually see?</summary>
+          <div class="answer">Every hint a student received, the topic it was about, and whether the student marked it helpful. Grouped by skill so you can spot eleven people stuck on the same prerequisite. It arrives the same minute, not in a weekly digest.</div>
+        </details>
+        <details>
+          <summary>Is there a private channel between Jade and a student?</summary>
+          <div class="answer">No. Everything a student is told is visible to their teacher. That rule is why schools let us in, and we don&rsquo;t make exceptions to it.</div>
+        </details>
+        <details>
+          <summary>What subjects does it cover?</summary>
+          <div class="answer">Anything the teacher uploads materials for. Pilots so far have run in algebra and chemistry; the guidance quality tracks how good the course materials are, which is why we start with one teacher rather than a whole school.</div>
+        </details>
+        <details>
+          <summary>What does it cost?</summary>
+          <div class="answer">A per-seat annual licence to the school or district, priced below an hour of human tutoring per student per year. A teacher&rsquo;s first class is free, with no end date on it.</div>
+        </details>
+        <details>
+          <summary>Can we see the pilot data?</summary>
+          <div class="answer">Yes. We&rsquo;ll walk you through a live dashboard rather than a slide, and we&rsquo;ll show you the sessions that went badly as well as the ones that went well.</div>
+        </details>
+      </div>
+
+      <div class="faq-foot">
+        <div>
+          <p style="font-weight:700;margin-bottom:4px">Still have a question?</p>
+          <p class="body-copy" style="font-size:15px">We&rsquo;ll answer it properly, and we won&rsquo;t put you in a sequence.</p>
+        </div>
+        <a class="btn ghost" href="mailto:ishan@jadestudy.com?subject=A%20question%20about%20Jade">Email us</a>
+      </div>
+    </div>
   </section>
 
   <!-- ============================================================== cta -->
-  <section class="cta shell">
-    <div class="cta-inner">
-      <h2>A little help for students.<br><em>A clearer picture<br>for teachers.</em></h2>
-      <div>
-        <p class="body-copy" style="max-width:34ch;margin-bottom:26px">Teaching a class, running a school, or sizing up the category &mdash; we&rsquo;ll show you the real thing, in a real classroom.</p>
-        <a class="request-demo" href="mailto:ishan@jadestudy.com?subject=Jade%20demo%20request&amp;body=Hi%20Ishan%2C%0A%0AI'd%20like%20to%20see%20a%20demo%20of%20Jade.%0A%0AName%3A%20%0ASchool%20or%20fund%20(optional)%3A%20%0A">
+  <section class="band deep torn">
+    <div class="shell split reveal">
+      <div class="sticker tilt-r">
+        <div class="sticker-bar"><span class="dots"><i></i><i></i><i></i></span><span>Monday, period 2</span></div>
+        <div class="problem-card">
+          <p class="task-label">Find the value of x</p>
+          <p class="equation">3x <mark>+ 5</mark> = 20</p>
+          <p class="answer-line">x =<span></span></p>
+        </div>
+        <div class="jade-bubble"><p class="who">jade</p><p>Nice. Now try the next one on your own.</p></div>
+      </div>
+      <div class="split-copy">
+        <span class="eyebrow">This could be your class</span>
+        <h2>A little help for students. A clearer picture for teachers.</h2>
+        <p class="lede">Teaching a class, running a school, or sizing up the category &mdash; we&rsquo;ll show you the real thing, in a real classroom.</p>
+        <a class="btn light" href="mailto:ishan@jadestudy.com?subject=Jade%20demo%20request&amp;body=Hi%20Ishan%2C%0A%0AI'd%20like%20to%20see%20a%20demo%20of%20Jade.%0A%0AName%3A%20%0ASchool%20or%20fund%20(optional)%3A%20%0A">
           Request a demo
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
     </div>
@@ -273,17 +553,120 @@
 
 </main>
 
-<footer class="site-footer shell">
-  <div class="footer-inner">
-    <div>
-      <p class="wordmark" style="margin:0">jade</p>
-      <p class="footer-note" style="margin-top:8px">jadestudy.com &middot; Classroom pilot</p>
+<footer class="site-footer band torn">
+  <div class="shell footer-cols">
+    <div class="footer-brand">
+      <span class="wordmark">jade</span>
+      <p>A study companion that holds back the answer — and tells the teacher what it saw.</p>
     </div>
-    <nav class="footer-nav" aria-label="Footer">
-      <a href="case-studies.html">Case studies</a>
-      <a href="about.html">About</a>
-      <a href="mailto:ishan@jadestudy.com?subject=Hello%20from%20the%20Jade%20site">Contact</a>
-    </nav>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="case-studies.html">Case studies</a></li>
+        <li><a href="index.html#traction">Where we are</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Product</h4>
+      <ul>
+        <li><a href="https://jadestudy.com">Jade for students</a></li>
+        <li><a href="index.html#teachers">For teachers</a></li>
+        <li><a href="index.html#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Talk to us</h4>
+      <ul>
+        <li><a href="mailto:ishan@jadestudy.com?subject=Jade%20demo%20request">Request a demo</a></li>
+        <li><a href="mailto:ishan@jadestudy.com?subject=Jade%20pilot%20enquiry">Start a pilot</a></li>
+        <li><a href="mailto:ishan@jadestudy.com">ishan@jadestudy.com</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-art" aria-hidden="true">
+    <svg class="scene" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="jsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c2d8e8"/>
+      <stop offset="36%" stop-color="#dae7e6"/>
+      <stop offset="64%" stop-color="#eef1e2"/>
+      <stop offset="100%" stop-color="#f9f3de"/>
+    </linearGradient>
+    <radialGradient id="jsun" cx="75%" cy="50%" r="54%">
+      <stop offset="0%" stop-color="#fff8dc" stop-opacity=".98"/>
+      <stop offset="36%" stop-color="#fdf1cc" stop-opacity=".48"/>
+      <stop offset="100%" stop-color="#fdf1cc" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="jl" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="52%" stop-color="#fff9e0" stop-opacity=".6"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="jb1" x="-25%" y="-70%" width="150%" height="240%"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="jb2" x="-40%" y="-100%" width="180%" height="300%"><feGaussianBlur stdDeviation="24"/></filter>
+  </defs>
+
+  <rect width="1440" height="900" fill="url(#jsky)"/>
+  <rect width="1440" height="900" fill="url(#jsun)"/>
+
+  <g fill="#ffffff" filter="url(#jb1)">
+    <g opacity=".95">
+      <ellipse cx="232" cy="200" rx="108" ry="22"/>
+      <ellipse cx="188" cy="180" rx="54" ry="27"/>
+      <ellipse cx="248" cy="172" rx="46" ry="26"/>
+      <ellipse cx="306" cy="190" rx="44" ry="19"/>
+    </g>
+    <g opacity=".8">
+      <ellipse cx="1122" cy="172" rx="94" ry="19"/>
+      <ellipse cx="1086" cy="156" rx="46" ry="23"/>
+      <ellipse cx="1148" cy="154" rx="36" ry="19"/>
+    </g>
+    <g opacity=".55">
+      <ellipse cx="700" cy="116" rx="82" ry="15"/>
+      <ellipse cx="672" cy="104" rx="40" ry="16"/>
+    </g>
+    <g opacity=".4">
+      <ellipse cx="500" cy="276" rx="72" ry="11"/>
+      <ellipse cx="986" cy="300" rx="58" ry="10"/>
+    </g>
+  </g>
+
+  <path d="M0 560 C 180 532 320 556 470 548 C 640 539 760 562 920 552 C 1080 542 1270 564 1440 540 L1440 900 L0 900 Z" fill="#b4c9bc"/>
+  <path d="M0 618 C 160 584 300 616 452 608 C 622 599 742 626 908 612 C 1072 598 1252 626 1440 598 L1440 900 L0 900 Z" fill="#a0bda1"/>
+  <path d="M0 686 C 196 640 338 684 492 676 C 660 667 794 700 960 680 C 1118 661 1282 690 1440 662 L1440 900 L0 900 Z" fill="#89ad88"/>
+  <path d="M0 758 C 214 702 384 748 548 742 C 736 735 876 766 1044 748 C 1196 732 1320 756 1440 738 L1440 900 L0 900 Z" fill="#729973"/>
+  <path d="M0 836 C 240 780 430 816 612 812 C 804 808 950 836 1122 820 C 1262 807 1356 822 1440 812 L1440 900 L0 900 Z" fill="#5f8663"/>
+
+  <!-- low sun raking across the hills -->
+  <g filter="url(#jb2)">
+    <ellipse cx="1070" cy="628" rx="340" ry="42" fill="url(#jl)"/>
+    <ellipse cx="770" cy="710" rx="300" ry="38" fill="url(#jl)"/>
+    <ellipse cx="1190" cy="788" rx="290" ry="36" fill="url(#jl)"/>
+  </g>
+
+  <!-- a few trees on the near ridges, framing the edges -->
+  <g fill="#3f6546">
+    <g opacity=".5">
+      <path d="M92 686 c0-16 9-30 14-30s14 14 14 30z"/><rect x="104" y="684" width="3" height="8"/>
+      <path d="M122 690 c0-12 7-23 11-23s11 11 11 23z"/><rect x="131" y="688" width="3" height="7"/>
+      <path d="M1328 672 c0-17 10-32 15-32s15 15 15 32z"/><rect x="1341" y="670" width="3" height="9"/>
+    </g>
+    <g opacity=".66">
+      <path d="M52 772 c0-23 13-43 20-43s20 20 20 43z"/><rect x="70" y="769" width="4" height="12"/>
+      <path d="M96 780 c0-17 10-32 15-32s15 15 15 32z"/><rect x="109" y="777" width="4" height="10"/>
+      <path d="M1368 760 c0-24 14-45 21-45s21 21 21 45z"/><rect x="1387" y="757" width="4" height="12"/>
+      <path d="M1332 772 c0-16 9-30 14-30s14 14 14 30z"/><rect x="1344" y="769" width="4" height="10"/>
+    </g>
+  </g>
+</svg>
+    <p class="giant">jade</p>
+  </div>
+
+  <div class="shell footer-legal">
+    <span>&copy; 2026 Jade &middot; Classroom pilot</span>
+    <span>jadestudy.com</span>
   </div>
 </footer>
 

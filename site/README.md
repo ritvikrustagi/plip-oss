@@ -1,17 +1,17 @@
 # Jade — company site
 
-A standalone static site: the company story for anyone who lands on it (including
-investors), plus a case studies page we add to one class at a time.
+A standalone static site: the company story for anyone who lands on it (investors
+included), plus a case studies page we add to one class at a time.
 
 Three pages, no build step, no dependencies.
 
 ```
 site/
   index.html         the landing page
-  case-studies.html  one <article class="case-study"> per write-up
+  case-studies.html  one <section class="band case-study"> per write-up
   about.html         what we believe, how we work, the team
   styles.css         all of it — design tokens live at the top
-  site.js            sticky header, mobile menu, fade-in on scroll
+  site.js            sticky header, mobile menu, quote scroller, fade-in
   icon.svg           favicon
 ```
 
@@ -24,53 +24,66 @@ python3 -m http.server 8000     # then open http://localhost:8000
 ## Deploy it
 
 Point any static host at this folder — Vercel, Netlify, Cloudflare Pages or
-GitHub Pages. Nothing to compile. To host it under `jadestudy.com/about` and
-`/case-studies` rather than `.html` URLs, most hosts strip the extension for you;
-if yours doesn't, rename the files into folders (`about/index.html`).
+GitHub Pages. Nothing to compile. Most hosts strip the `.html` for you; if yours
+doesn't, rename the files into folders (`about/index.html`).
 
 The folder is self-contained, so it can move into its own repo whenever that's
 tidier than living here.
 
 ## Before it goes live
 
-Search for these and replace with the real thing:
+Search for these and replace with the real thing. Each one is marked with a
+`PLACEHOLDER` comment in the source.
 
 | Where | What to replace |
 |---|---|
-| `index.html` — "Where we are" | The four `.figure` values (3, 120+, 4,800, 71%) and the five rows under them. Marked with a `PLACEHOLDER NUMBERS` comment. |
-| `index.html` — case study cards | The two teaser cards; keep them in step with `case-studies.html`. |
+| `index.html` — hero stats | 4,800 / 71% / 120+ |
+| `index.html` — "In classroom pilots with" | Real schools and partners (Aristotle puts Stanford here; we should name pilot schools once they say yes) |
+| `index.html` — "Where we are" | The four stat tiles and the five rows under them |
+| `index.html` — "Wall of love" | Real quotes, with permission and attribution |
+| `index.html` — FAQ | Check the pricing and subject answers still match reality |
 | `case-studies.html` | Both write-ups. Every figure in there is illustrative. |
-| `about.html` — "Who we are" | Real names, roles and links. Marked with a `PLACEHOLDER` comment. |
-| `about.html` — "The short version" | Founding year, stage, location. |
-| all pages | `ishan@jadestudy.com` if demo requests should go somewhere else. |
-| all pages | `og:url` / `canonical` if this lands on a domain other than jadestudy.com. |
+| `about.html` | Real names, roles, founding year, stage |
+| all pages | `ishan@jadestudy.com` if enquiries should go elsewhere |
+| all pages | `og:url` / `canonical` if this lands on another domain |
 
-Add a `share.png` (1200×630) next to `index.html` and the `og:image` tags will
-have something to point at.
+Add a `share.png` (1200×630) next to `index.html` and the `og:image` tags have
+something to point at.
 
 ## Adding a case study
 
-Copy one `<article class="case-study">` block in `case-studies.html`, change the
-`id`, the `Case 0N` label, the heading, the `.stats` tiles, the `.facts` rows and
-the closing quote. Nothing else needs to change — nav, spacing and the reveal
-animation are shared.
+Copy one `<section class="band case-study">` block in `case-studies.html`, change
+the `id`, the `Case 0N` label, the heading, the four `.stat` tiles, the `.facts`
+rows and the closing quote. Alternate `class="band sage torn"` and
+`class="band torn"` so the stripes keep going. Nothing else needs to change.
 
-Keep a **What didn't work** row in every one. It's the row investors and teachers
+Keep a **What didn't work** row in every one. It's the row teachers and investors
 both read first, and it's why the rest is believable.
 
 ## Design notes
 
-Tokens are at the top of `styles.css` and match jadestudy.com, so the product site
-and this one read as one brand:
+The structure and texture follow heyaristotle.com — full-bleed illustrated hero,
+torn-paper bands, pastel feature cards, a dark closing band, a big wordmark in the
+footer — with Jade's own green instead of Aristotle's umber.
 
 | | |
 |---|---|
-| paper | `#FAFBF7` |
-| ink | `#193D30` |
-| jade | `#32644E` |
-| sage | `#E8EEDF` |
-| lime | `#D5EB9C` |
+| paper | `#FDFDFB` |
+| ink | `#1F241F` |
+| jade (accent, buttons) | `#1B3A2D` / `#2F6450` |
+| lime (highlighter) | `#D5EB9C` |
+| card tints | sage `#E7EEDD`, sky `#DDECEE`, sun `#FFF2C7`, lavender `#ECE7EF`, apricot `#FFE4D4`, leaf `#EAEEB6` |
 | display | Newsreader — headings, figures, the wordmark |
-| sans | DM Sans — everything else |
+| body | Mulish — the same body face Aristotle uses |
 
 Italics carry the emphasis in headings; there is no bold display type anywhere.
+
+**Torn edges.** A band gets `class="band torn"` and draws its torn edge on its
+*top* only, overhanging the band above. Because it comes later in the document it
+always paints on top, so a band's bottom edge is really the next band's top edge.
+Every band that opens a new colour needs `torn` — including the footer.
+
+**The artwork is CSS and SVG, not illustration.** The hero landscape, the trees and
+the product mockups are all drawn in the page. That keeps it sharp at any size and
+costs nothing to load, but it is the obvious place to spend money later: Aristotle's
+painted hero and collage stickers are most of why their site feels expensive.
