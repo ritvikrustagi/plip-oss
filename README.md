@@ -187,6 +187,28 @@ npm run e2e                                # clicks through the island and dashb
 
 More in [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Plip for school (Chromebook)
+
+A separate, browser-only build lives in [`apps/education/`](apps/education): a student study
+companion that installs as a PWA on a managed Chromebook, and a teacher dashboard that summarises
+what a student did from events the student chose to share. No macOS APIs, no native messaging, no
+developer mode.
+
+Two modes. `demo` is a fixture sign-in with invented students, and says so on every screen.
+`production` is OpenID Connect sign-in with your school's identity provider, SQLite, an imported
+roster, cookie sessions with CSRF, rate limiting and an audit trail — and it refuses to start if
+anything needed to protect real data is missing.
+
+```bash
+cd apps/education && npm install && npm run dev    # demo API + app on http://localhost:5273
+npm run check                                      # typecheck, tests, build, browser flows
+
+cp .env.example .env && npm start                  # the production path
+```
+
+Setup, managed-school constraints, the shared learning-event contract, and what a school still has
+to provide for itself: [docs/CHROMEBOOK.md](docs/CHROMEBOOK.md).
+
 ## License
 
 MIT
