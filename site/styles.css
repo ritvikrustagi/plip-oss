@@ -884,6 +884,10 @@ section { position: relative; }
 
 .card-grid.three { grid-template-columns: repeat(3, 1fr); }
 
+/* small print under a call to action */
+.fine { font-size: 13.5px; color: var(--ink-muted); }
+.fine a { color: inherit; }
+
 .note.standalone {
   flex: none;
   max-width: 760px;
