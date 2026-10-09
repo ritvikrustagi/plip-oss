@@ -78,11 +78,19 @@ test('the factory never attaches a class to work that is not being shared', () =
   assert.equal('classId' in event, false)
 })
 
-test('task events must name their task', () => {
-  const { taskId: _dropped, ...noTask } = good()
-  assert.equal(validateLearningEvent(noTask).ok, false)
-  assert.throws(() => makeLearningEvent({ type: 'hint_requested', sessionId: 'ses_abcdef12',
-    studentId: 'stu_a1b2', conceptIds: [], shareWithTeacher: false }), /taskId is required/)
+test('starting and finishing must name a task; a hint or an attempt need not', () => {
+  for (const type of /** @type {const} */ (['task_started', 'task_completed']))
+    assert.throws(() => makeLearningEvent({ type, sessionId: 'ses_abcdef12', studentId: 'stu_a1b2',
+      conceptIds: [], shareWithTeacher: false }), /taskId is required/, type)
+
+  // A student asking for help before they have picked anything is a real
+  // thing, and a hint we refuse to record is a hint nobody can see.
+  for (const type of /** @type {const} */ (['hint_requested', 'attempt_submitted'])) {
+    const event = makeLearningEvent({ type, sessionId: 'ses_abcdef12', studentId: 'stu_a1b2',
+      conceptIds: [], shareWithTeacher: false, evidence: { hintCount: 1 } })
+    assert.equal(validateLearningEvent(event).ok, true, type)
+    assert.equal('taskId' in event, false)
+  }
 })
 
 test('bad enums, bad timestamps and bad counts are refused', () => {

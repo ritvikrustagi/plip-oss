@@ -75,9 +75,9 @@
         "attempts": { "description": "Answers submitted for this task so far.", "type": "integer", "minimum": 0, "maximum": 1000 },
         "hintCount": { "description": "Hints the student asked for on this task so far.", "type": "integer", "minimum": 0, "maximum": 1000 },
         "outcome": {
-          "description": "How the task or attempt ended, as scored against the task's own answer key. Not a grade.",
+          "description": "How the task or attempt ended, as scored against the task's own answer key. Not a grade. Omit it when nothing was reported: there is no value meaning \"unknown\", because an absent outcome already says that and a recorded one would be a claim about nothing.",
           "type": "string",
-          "enum": ["correct", "incorrect", "partial", "skipped", "completed", "incomplete"]
+          "enum": ["correct", "incorrect", "partial", "skipped", "completed", "incomplete", "abandoned"]
         },
         "durationMs": {
           "description": "Time the session was running and not paused. Time is not attention: see docs/CHROMEBOOK.md.",
@@ -103,8 +103,8 @@
       "then": { "required": ["classId"] }
     },
     {
-      "$comment": "Task events say which task.",
-      "if": { "properties": { "type": { "enum": ["task_started", "hint_requested", "attempt_submitted", "task_completed"] } }, "required": ["type"] },
+      "$comment": "Starting and finishing are definitionally about a task, so they must name one. A hint or an attempt may come before a task has been picked - a student asking for help with no task open is a real thing, and refusing to record it would lose a hint rather than gain a guarantee.",
+      "if": { "properties": { "type": { "enum": ["task_started", "task_completed"] } }, "required": ["type"] },
       "then": { "required": ["taskId"] }
     }
   ]

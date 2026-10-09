@@ -191,3 +191,26 @@ test('retention drops anything past the window, on every read and write', () => 
   assert.equal(DEFAULT_RETENTION_DAYS, 7)
   assert.equal(pruneEvents([old, fresh], { retentionDays: 30, now }).dropped, 0)
 })
+
+test('a hint asked before a task was picked still counts', () => {
+  // The contract lets hint_requested and attempt_submitted arrive with no
+  // taskId (the extension's side panel can be asked for help before anything
+  // is open). They must not vanish from the totals a teacher reads.
+  const events = [
+    at({ type: 'hint_requested', conceptIds: ['fractions.simplify'], shareWithTeacher: true, evidence: { hintCount: 1 } }),
+    at({ type: 'attempt_submitted', conceptIds: ['fractions.simplify'], shareWithTeacher: true, evidence: { attempts: 1, outcome: 'incorrect' } }),
+    at({ type: 'attempt_submitted', conceptIds: ['fractions.simplify'], shareWithTeacher: true, evidence: { attempts: 2, outcome: 'correct' } }),
+  ]
+  for (const event of events) assert.equal('taskId' in event, false)
+  const measured = summaryOf(events).measured
+  assert.equal(measured.help.hintsRequested, 1)
+  assert.equal(measured.attempts.submitted, 2)
+  assert.equal(measured.attempts.matchingAnswerKey, 1)
+  assert.equal(measured.attempts.notMatchingAnswerKey, 1)
+  // No task rows, because there was no task.
+  assert.deepEqual(measured.tasksCompleted, [])
+  assert.deepEqual(measured.help.byTask, [])
+  // The concept still gathers its evidence.
+  const concept = measured.concepts.find((row) => row.conceptId === 'fractions.simplify')
+  assert.deepEqual([concept?.hints, concept?.attempts, concept?.incorrect], [1, 2, 1])
+})

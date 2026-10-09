@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "icons": "node scripts/icons.mjs",
-    "test": "node --test tests/*.test.mjs && PLIP_TEST_STORE=sqlite node --test tests/api.test.mjs",
+    "test": "node --test tests/*.test.mjs tests/interop/*.test.mjs && PLIP_TEST_STORE=sqlite node --test tests/api.test.mjs",
     "e2e": "node tests/e2e.mjs && node tests/e2e-production.mjs",
     "check": "npm run typecheck && npm test && npm run build && npm run e2e",
     "shots": "node scripts/shots.mjs",

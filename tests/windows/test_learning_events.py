@@ -6,7 +6,7 @@ import json
 import pytest
 
 from mcp_vision.learning.events import (
-    EVENT_TYPES, EVIDENCE_FIELDS, FIELDS, PLATFORMS, SCHEMA_VERSION, ContractError, build,
+    EVENT_TYPES, EVIDENCE_FIELDS, FIELDS, OUTCOMES, PLATFORMS, SCHEMA_VERSION, ContractError, build,
     check_payload, clean_evidence, contract_summary, parse,
 )
 
@@ -99,8 +99,11 @@ def test_counts_are_coerced_and_never_negative():
     assert kept == {"attempts": 3, "hintCount": 0, "durationMs": 0}
 
 
-def test_an_unknown_outcome_becomes_unknown():
-    assert clean_evidence({"outcome": "brilliant"})["outcome"] == "unknown"
+def test_an_outcome_we_do_not_recognise_is_dropped_not_renamed():
+    # It used to become "unknown", which the shared schema has no value for - so the
+    # event was refused by the dashboard - and which turned "we were not told" into a
+    # recorded claim. An absent outcome already says that.
+    assert clean_evidence({"outcome": "brilliant"}) is None
     assert clean_evidence({"outcome": "partial"})["outcome"] == "partial"
 
 
@@ -180,3 +183,33 @@ def test_contract_summary_names_what_this_build_believes():
     assert summary["schemaVersion"] == 1
     assert "screenshot" in summary["forbidden"] and "transcript" in summary["forbidden"]
     assert summary["platforms"] == list(PLATFORMS)
+
+
+def test_the_outcome_enum_matches_the_contract_file():
+    """The canonical schema is contracts/learning-event.schema.json, not this module.
+
+    Three producers write contract-v1 events - this one, the web app and the browser
+    extension - and they only interoperate if they agree on the vocabulary. They did
+    not: this module recorded "abandoned" and "unknown", the schema had neither, and
+    every such event would have been refused by the dashboard with nobody watching.
+    """
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2]
+    schema = json.loads((root / "contracts" / "learning-event.schema.json").read_text())
+    properties = schema["properties"]
+
+    assert list(EVENT_TYPES) == properties["type"]["enum"]
+    assert list(PLATFORMS) == properties["platform"]["enum"]
+    assert list(OUTCOMES) == properties["evidence"]["properties"]["outcome"]["enum"]
+    assert sorted(EVIDENCE_FIELDS) == sorted(properties["evidence"]["properties"])
+    assert sorted(FIELDS) == sorted(properties)
+    assert SCHEMA_VERSION == properties["schemaVersion"]["const"]
+    assert "unknown" not in OUTCOMES, "an absent outcome says 'not reported' already"
+
+
+def test_every_outcome_the_schema_allows_survives_cleaning():
+    cleaned = clean_evidence({"attempts": 1, "outcome": "brilliant"})
+    assert cleaned == {"attempts": 1}, "a word we do not know is not evidence of anything"
+    for outcome in OUTCOMES:
+        assert clean_evidence({"outcome": outcome}) == {"outcome": outcome}

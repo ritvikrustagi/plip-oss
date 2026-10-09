@@ -229,20 +229,31 @@ export function buildStudentSummary(eligible, context) {
   let hintsRequested = 0
   let attemptsSubmitted = 0
   let correct = 0
+  let notMatching = 0
   /** @type {{ at: string, type: string, taskId: string | null, title: string | null, outcome: string | null, hintCount: number | null, studentConfirmed: boolean | null }[]} */
   const timeline = []
 
   for (const event of events) {
     sessions.add(event.sessionId)
     if (event.type === 'session_ended') sessionActiveMs += event.evidence?.durationMs ?? 0
+
+    // Totals count every event, task or no task. A hint asked before a task
+    // was picked is still a hint asked, and counting it only when it happens
+    // to carry a taskId would quietly drop it from the one number a teacher
+    // actually reads.
+    if (event.type === 'hint_requested') hintsRequested += 1
+    if (event.type === 'attempt_submitted') {
+      attemptsSubmitted += 1
+      if (event.evidence?.outcome === 'correct') correct += 1
+      if (event.evidence?.outcome === 'incorrect') notMatching += 1
+    }
+
     if (event.taskId) {
       const row = task(event.taskId)
       if (event.type === 'task_started' && !row.startedAt) row.startedAt = event.timestamp
-      if (event.type === 'hint_requested') { row.hintCount += 1; hintsRequested += 1 }
+      if (event.type === 'hint_requested') row.hintCount += 1
       if (event.type === 'attempt_submitted') {
         row.attempts += 1
-        attemptsSubmitted += 1
-        if (event.evidence?.outcome === 'correct') correct += 1
         if (event.evidence?.outcome === 'incorrect') row.incorrect += 1
       }
       if (event.type === 'task_completed') {
@@ -283,8 +294,7 @@ export function buildStudentSummary(eligible, context) {
         attempts: row.attempts, hintCount: row.hintCount })),
       help: { hintsRequested, tasksWithHints: taskRows.filter((row) => row.hintCount > 0).length,
         byTask: taskRows.filter((row) => row.hintCount > 0).map((row) => ({ taskId: row.taskId, title: row.title, hintCount: row.hintCount })) },
-      attempts: { submitted: attemptsSubmitted, matchingAnswerKey: correct,
-        notMatchingAnswerKey: taskRows.reduce((total, row) => total + row.incorrect, 0) },
+      attempts: { submitted: attemptsSubmitted, matchingAnswerKey: correct, notMatchingAnswerKey: notMatching },
       concepts: evidence,
       recentWork: timeline.slice(-20).reverse(),
     },

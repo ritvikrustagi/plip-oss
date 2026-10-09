@@ -226,6 +226,24 @@ One file, shared by every Plip learning surface:
 [`contracts/learning-event.schema.json`](../contracts/learning-event.schema.json)
 (JSON Schema 2020-12, owned by `apps/education`).
 
+Three producers write contract-v1 events, in two languages:
+
+| | |
+| --- | --- |
+| `apps/education/shared/events.mjs` | the web app, and the canonical validator |
+| `apps/extension/src/lib/learning-events.js` | the Chrome side panel |
+| `src/mcp_vision/learning/events.py` | the Windows desktop build |
+
+They interoperate only if they agree, and they did not: two of them recorded an
+outcome called `unknown` that the schema had no value for, one of them silently
+rewrote any outcome it did not recognise into it, and every such event would
+have been refused by the dashboard with nobody watching. Each producer is now
+held to this file by a test — `tests/interop/contract-interop.test.mjs` builds
+events with the extension's own module and validates them here, and
+`tests/windows/test_learning_events.py` compares the Python module's
+vocabulary against this JSON directly. The next disagreement fails a build
+instead of a request.
+
 ```json
 {
   "eventId": "evt_8581678ebeb3b4ae912dfc8e",
@@ -253,9 +271,9 @@ One file, shared by every Plip learning surface:
 | `timestamp` | ISO-8601, second precision, `Z` or an offset |
 | `platform` | `windows` \| `chromebook` \| `extension` |
 | `type` | `session_started` \| `task_started` \| `hint_requested` \| `attempt_submitted` \| `task_completed` \| `session_ended` |
-| `taskId` | required for the four task events |
+| `taskId` | required for `task_started` and `task_completed`, which are definitionally about a task. Optional on `hint_requested` and `attempt_submitted`: a student can ask for help before they have picked anything, and refusing to record that would lose a hint rather than gain a guarantee |
 | `conceptIds` | identifiers from the class plan. Not free text about the student |
-| `evidence` | `attempts`, `hintCount`, `outcome`, `durationMs`, `studentConfirmed` — all optional, all measured |
+| `evidence` | `attempts`, `hintCount`, `outcome`, `durationMs`, `studentConfirmed` — all optional, all measured. `outcome` is one of `correct`, `incorrect`, `partial`, `skipped`, `completed`, `incomplete`, `abandoned`. There is deliberately **no** value meaning "unknown": an outcome nobody reported is an *absent* outcome, and recording one would be a claim about nothing |
 | `shareWithTeacher` | the student's decision, taken before the event was recorded |
 
 The contract sets `additionalProperties: false` at the top level and inside
@@ -270,6 +288,14 @@ so a nested blob cannot smuggle one through.
 
 The extension owns `apps/extension`. It does not need to copy any of this code,
 and it should not re-implement the summary logic.
+
+`apps/extension` already does this, and
+[`apps/extension/src/lib/learning-events.js`](../apps/extension/src/lib/learning-events.js)
+is a worked example of a second producer against the same contract. It is held
+to it by tests in `apps/education/tests/contract.test.mjs` that build events
+with the *extension's* module and validate them against the canonical schema —
+without those, the two drifted apart silently and every event the extension
+sent would have been refused by a 422 nobody was watching for.
 
 **The contract.** Validate against `contracts/learning-event.schema.json`. If
 you are in a JS runtime, importing the two files below gets you the factory and
@@ -320,6 +346,14 @@ extension wants its own sessions it calls `POST /api/sessions` with
 extension is observing alongside, the extension should attach to the web app's
 `sessionId` rather than open a second one — two sessions would double-count
 session time.
+
+**Concept ids** are identifiers from the class plan, not free text about a
+student: `^[a-z0-9][a-z0-9._-]{0,63}$`. A label that came from a person or a
+model goes through `normaliseConceptId` first, so "Adding Fractions" becomes
+`adding-fractions` rather than being refused at the far end — but anything
+URL-shaped is handed straight to the validator and refused by name, because
+slugifying a smuggled URL into a well-formed concept id is the opposite of the
+point.
 
 **What not to send.** The contract will stop you, but to be explicit: no URLs,
 no page titles, no page text, no selections, no DOM, no screenshots, no
@@ -757,8 +791,8 @@ One more constraint worth stating: new Chrome Web Store submissions must be
 
 ## Not duplicating the extension
 
-`apps/extension` is a separate chat's work and a separate product surface. The
-line between them:
+`apps/extension` is a separate product surface, now in the tree. The line
+between them:
 
 | | this app (`apps/education`) | the extension (`apps/extension`) |
 | --- | --- | --- |
@@ -767,7 +801,10 @@ line between them:
 | Does not own | anything under `apps/extension` | the contract, the API, the dashboard, the summary |
 | Shared | `contracts/learning-event.schema.json`, and `apps/education/shared/*.mjs` if useful | — |
 
-The extension should emit events with `platform: "extension"` and leave the
-summarising to `shared/summary.mjs`. If the two surfaces ever disagree about
-what a hint or an attempt is, the contract is the place to settle it — not two
-dashboards that count differently.
+The extension emits events with `platform: "extension"` and leaves the
+summarising to `shared/summary.mjs`. When the two surfaces disagreed about what
+an outcome is — the extension recorded `unknown` and `abandoned`, neither of
+which the schema had — it was settled in the contract and in both producers, not
+by two dashboards that count differently. `abandoned` is now in the enum, and
+`unknown` became *omitting* the field. The interop tests exist so the next
+disagreement fails the build instead of a request.
