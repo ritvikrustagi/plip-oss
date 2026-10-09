@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -11,8 +12,16 @@ from mcp_vision.paths import state_dir
 
 
 
+def _default_config_dir() -> Path:
+    """``~/.config/mcp-vision`` on macOS and Linux; ``%APPDATA%\\Plip`` on Windows."""
+    if sys.platform == "win32":
+        roaming = os.environ.get("APPDATA")
+        return (Path(roaming) if roaming else Path.home() / "AppData" / "Roaming") / "Plip"
+    return Path.home() / ".config" / "mcp-vision"
+
+
 def config_dir() -> Path:
-    return Path(os.environ.get("MCP_VISION_CONFIG_DIR", Path.home() / ".config" / "mcp-vision"))
+    return Path(os.environ.get("MCP_VISION_CONFIG_DIR", _default_config_dir()))
 
 
 @dataclass

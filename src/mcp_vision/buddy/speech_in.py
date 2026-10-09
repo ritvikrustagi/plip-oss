@@ -382,11 +382,22 @@ class AssemblyAIListener:
 
 
 class AppleListener:
-    """On-device Apple Speech via the existing AVAudioEngine/SFSpeech session."""
+    """On-device Apple Speech via the existing AVAudioEngine/SFSpeech session.
+
+    It is the last fallback in ``make_listener``, so off a Mac it is also where
+    "there is no speech engine here" has to be said. Refusing in the constructor
+    rather than in ``make_listener`` keeps the requirement next to the thing that
+    has it, and leaves the Parakeet and AssemblyAI paths reachable everywhere.
+    """
 
     name = "apple"
 
     def __init__(self, callbacks: ListenerCallbacks):
+        from mcp_vision.platforms import MACOS, current_platform
+
+        if current_platform() != MACOS:
+            raise RuntimeError("No speech engine on this platform yet. Set ASSEMBLYAI_API_KEY to talk, "
+                               "or type your question in the box.")
         from mcp_vision.speech import AppleSpeechSession
 
         self.callbacks = callbacks

@@ -33,7 +33,15 @@ happens until you say yes.
 
 ## Download
 
-**[⬇ Download Plip for Mac (.dmg)](https://github.com/hussainn7/plip-oss/releases/latest)**: free and open source. macOS 13+, Apple Silicon.
+Free and open source, on both platforms. Everything is on the
+**[Releases page](https://github.com/hussainn7/plip-oss/releases/latest)**.
+
+| | |
+|---|---|
+| **[⬇ Plip for Mac (.dmg)](https://github.com/hussainn7/plip-oss/releases/latest)** | macOS 13+, Apple Silicon. Signed and notarised. Lives in the notch. |
+| **[⬇ Plip for Windows (.zip)](https://github.com/hussainn7/plip-oss/releases/latest)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
+
+### Mac
 
 1. Open the `.dmg` and drag **Plip** into **Applications**.
 2. Open Plip from Applications. If macOS says it can't check it for malicious software,
@@ -44,14 +52,53 @@ happens until you say yes.
 5. After your first task, Plip offers **Continue with Google** once. Say Later if you like: it asks at most
    three times, and the Account tab has it whenever you want ([what it holds](#your-account)).
 
-Something broken? Click **Report a bug** in Plip's menu bar (or **Settings → General**), or
+### Windows
+
+The Windows port is new and **has not been run on a real Windows machine yet** — it was built and
+tested on a Mac against the Win32 API. Expect rough edges and please
+[report them](https://github.com/hussainn7/plip-oss/issues). [docs/WINDOWS.md](docs/WINDOWS.md)
+says exactly what works, what doesn't, and why.
+
+One line in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+```
+
+Or from the zip: install **Python 3.12** from [python.org](https://www.python.org/downloads/) — keep the
+**tcl/tk** option ticked, the window needs it — then unzip and
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\activate
+pip install .\mcp_vision_runtime-*.whl
+plip capabilities     # what this machine can and can't do, and what Plip uses instead
+plip                  # the strip appears at the top of your screen
+```
+
+Hold **Ctrl+Alt** and talk, or just type in the box — **typing needs no setup**, and speech
+recognition needs an AssemblyAI key on Windows. Screenshots and the window map stay off until you
+switch them on under **Session…**, and nothing is recorded until you start a learning session.
+
+What is *not* on Windows: AppleScript system controls, Apple Shortcuts, Notes and Reminders,
+Spotlight content search, the pointing mascot, and the React dashboard. Plip greys each one out
+with the reason rather than failing at you.
+
+Something broken? Click **Report a bug** in Plip's menu bar (Mac) or **Settings → General**, or
 [open a GitHub issue](https://github.com/hussainn7/plip-oss/issues).
 
 ## Quick start (from source)
 
 ```bash
+# macOS
 curl -fsSL https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.sh | bash
 plip                 # Plip moves into your notch; the dashboard opens on first run
+```
+
+```powershell
+# Windows
+irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+plip                 # the strip appears at the top of your screen
 ```
 
 Run from a terminal, macOS checks *the terminal's* permissions, not Plip's: turn on Terminal (or iTerm,
@@ -172,6 +219,13 @@ Everything above the windows is platform-neutral and tested, including the CLI
 engines (through real subprocesses) and a full `plip` CLI run against a fake Claude
 Code. The macOS layer is three WKWebViews (island, mascot, dashboard) rendering one
 React bundle, plus an event tap and audio glue. See [docs/BUDDY.md](docs/BUDDY.md).
+
+**On Windows** Plip runs as a strip at the top of your screen instead of the notch,
+with the AppleScript, Spotlight, Apple Speech and pointing features switched off and
+labelled rather than faked — `plip capabilities` prints exactly what this machine can
+do. It also adds opt-in learning sessions and teacher-facing summaries
+(`plip learn`). Not yet verified on a real Windows machine; see
+[docs/WINDOWS.md](docs/WINDOWS.md).
 
 ## Development
 

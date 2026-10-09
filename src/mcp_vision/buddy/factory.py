@@ -11,6 +11,7 @@ from mcp_vision.buddy.settings import BuddySettings
 from mcp_vision.buddy.store import Prefs
 
 DEPTH_EFFORT = {"fast": "low", "balanced": "medium", "deep": "high"}
+_DEFAULT = object()      # "not given", so an explicit ``context=None`` can mean "no screen map"
 
 
 class SetupError(RuntimeError):
@@ -74,11 +75,20 @@ def make_snapper(settings: BuddySettings, jev=None) -> Snapper | None:
 
 
 def make_context(settings: BuddySettings):
-    if sys.platform != "darwin":
-        return None
-    from mcp_vision.buddy.ax_context import MacAXContext
+    """The screen map for this OS, or ``None`` where Plip has no reader."""
+    from mcp_vision.platforms import MACOS, WINDOWS, current_platform
 
-    return MacAXContext()
+    platform = current_platform()
+    if platform == MACOS:
+        from mcp_vision.buddy.ax_context import MacAXContext
+
+        return MacAXContext()
+    if platform == WINDOWS:
+        # Window titles and Win32 child controls; blind on browsers and Electron.
+        from mcp_vision.buddy.ui_context_windows import make_windows_context
+
+        return make_windows_context()
+    return None
 
 
 def make_actions(settings: BuddySettings, prefs: Prefs | None = None, *, memory=None,
@@ -86,9 +96,13 @@ def make_actions(settings: BuddySettings, prefs: Prefs | None = None, *, memory=
     from mcp_vision.buddy.actions import ActionContext, ActionEngine, ActionLog
     from mcp_vision.buddy.actions.host import default_host
     from mcp_vision.paths import state_dir
+    from mcp_vision.platforms import action_guard
 
     ctx = ActionContext(host=host or default_host(), memory=memory)
-    return ActionEngine(ctx, log=ActionLog(), undo_path=state_dir() / "undo.json", source=source)
+    # On Windows the AppleScript-only actions are refused by name, with the reason, and are
+    # left out of the catalogue the model sees. On macOS the guard is a no-op.
+    return ActionEngine(ctx, log=ActionLog(), undo_path=state_dir() / "undo.json", source=source,
+                        unsupported=action_guard())
 
 
 def make_speaker(settings: BuddySettings) -> Speaker | None:
@@ -104,7 +118,8 @@ def make_companion(settings: BuddySettings, *, pointer: Pointer | None = None,
                    speaker: Speaker | None = None, capturer: ScreenCapturer | None = None,
                    brain: Any = None, observer: Observer | None = None, prefs: Prefs | None = None,
                    engines: list | None = None, watch: bool = False, actions=None,
-                   notes=None, memory=None, usage=None, usage_kind: str = "voice") -> Companion:
+                   notes=None, memory=None, usage=None, usage_kind: str = "voice",
+                   context=_DEFAULT) -> Companion:
     settings = apply_prefs(settings, prefs)
     jev = make_jev(settings)
     capturer = capturer or ScreenCapturer(max_edge=settings.max_image_edge, quality=settings.jpeg_quality)
@@ -121,7 +136,7 @@ def make_companion(settings: BuddySettings, *, pointer: Pointer | None = None,
         router=make_router(settings, jev),
         snapper=make_snapper(settings, jev),
         conversation=Conversation(max_turns=settings.history_turns),
-        context=make_context(settings),
+        context=make_context(settings) if context is _DEFAULT else context,
         observer=observer,
         watcher=watcher,
         walkthroughs=prefs.walkthroughs if prefs is not None else True,

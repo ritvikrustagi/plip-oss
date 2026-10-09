@@ -19,7 +19,10 @@ _POINTER_LOCK = threading.Lock()
 
 def cursor_position() -> tuple[float, float] | None:
     """Pointer location in global top-left points, or ``None`` when unknown."""
-    if sys.platform == "darwin":
+    from mcp_vision.platforms import MACOS, WINDOWS, current_platform
+
+    platform = current_platform()
+    if platform == MACOS:
         try:
             import Quartz
 
@@ -27,6 +30,17 @@ def cursor_position() -> tuple[float, float] | None:
             return float(point.x), float(point.y)
         except Exception:
             return None
+    if platform == WINDOWS:
+        # Straight to user32: no pyautogui, so a headless or service-run Plip can't trip over
+        # its tkinter/pyscreeze imports.
+        try:
+            from mcp_vision.buddy.win32 import Win32Input
+
+            point = Win32Input().cursor()
+            if point is not None:
+                return point
+        except Exception:
+            pass
     try:
         import pyautogui
 

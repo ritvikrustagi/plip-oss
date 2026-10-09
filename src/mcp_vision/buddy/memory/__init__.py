@@ -138,7 +138,9 @@ class Memory:
         tmp = self.path.with_suffix(".tmp")
         tmp.write_text(json.dumps({"facts": [asdict(fact) for fact in self.facts], "imports": self.imports,
                                    "contacts": self.contacts, "handles": self.handles}, indent=1))
-        os.chmod(tmp, 0o600)
+        from mcp_vision.paths import make_private
+
+        make_private(tmp)         # what Plip knows about you is this user's alone
         tmp.replace(self.path)
 
     # -- editing ------------------------------------------------------------------------------
