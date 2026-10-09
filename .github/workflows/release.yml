@@ -84,3 +84,74 @@ jobs:
           name: plip-dmg
           path: dist/Plip-*.dmg
           if-no-files-found: error
+
+  # Windows has no signed installer yet (docs/WINDOWS.md), so a release carries a zip:
+  # the wheel, the PowerShell installer and a short readme. Same release as the DMG, so
+  # the Download section can point Mac and Windows people at one page.
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Build the wheel
+        run: |
+          python -m pip install build
+          python -m build --wheel
+      - name: It installs and runs on a clean Windows box
+        shell: pwsh
+        run: |
+          python -m venv "$env:RUNNER_TEMP/check"
+          $venv = "$env:RUNNER_TEMP/check/Scripts"
+          & "$venv/pip" install (Get-ChildItem dist/*.whl).FullName
+          & "$venv/plip" --help
+          & "$venv/plip" capabilities
+          & "$venv/plip" windows --once --no-probe
+      - name: Zip it up
+        shell: pwsh
+        run: |
+          # An array, not a here-string: PowerShell wants the closing "@ at column 0,
+          # which a YAML block scalar can't give it.
+          $version = (Select-String -Path pyproject.toml -Pattern '^version = "(.*)"' |
+                      Select-Object -First 1).Matches[0].Groups[1].Value
+          $stage = Join-Path $env:RUNNER_TEMP "Plip-$version-windows"
+          New-Item -ItemType Directory -Path $stage -Force | Out-Null
+          Copy-Item dist/*.whl $stage
+          Copy-Item scripts/install.ps1 $stage
+          Copy-Item docs/WINDOWS.md $stage
+          $readme = @(
+            "Plip for Windows $version - an early build. Not signed, no installer yet.",
+            "",
+            "1. Install Python 3.12 from python.org.",
+            "   Keep the tcl/tk option ticked: the window needs it.",
+            "2. Open PowerShell in this folder and run:",
+            "       py -3.12 -m venv .venv",
+            "       .venv\Scripts\activate",
+            "       pip install .\mcp_vision_runtime-$version-py3-none-any.whl",
+            "3. plip capabilities    what this machine can and cannot do, and why",
+            "   plip doctor          checks the brain, the voice and the window",
+            "   plip                 the strip appears at the top of your screen",
+            "",
+            "Hold Ctrl+Alt and talk, or type in the box. Speech recognition needs an",
+            "AssemblyAI key on Windows; typing works with no setup at all.",
+            "",
+            "Screenshots and the window map stay off until you switch them on under",
+            "Session... Nothing is recorded until you start a learning session.",
+            "",
+            "WINDOWS.md lists what is and isn't ported, and what still needs testing."
+          )
+          Set-Content -Path (Join-Path $stage "README.txt") -Value $readme -Encoding utf8
+          Compress-Archive -Path "$stage/*" -DestinationPath "dist/Plip-$version-windows.zip"
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/Plip-*-windows.zip
+          fail_on_unmatched_files: true
+      - uses: actions/upload-artifact@v7
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        with:
+          name: plip-windows
+          path: dist/Plip-*-windows.zip
+          if-no-files-found: error

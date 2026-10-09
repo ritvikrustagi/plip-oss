@@ -19,6 +19,32 @@ names, and a teacher summary that keeps measured evidence apart from guesswork.
 
 ---
 
+## Getting a build to test
+
+Three ways in, easiest first.
+
+1. **A tagged release.** The Releases page carries `Plip-<version>-windows.zip` next to the Mac
+   `.dmg` — the wheel, `install.ps1`, this document and a short README. Built and smoke-tested
+   on a real `windows-latest` runner by the `windows` job in `.github/workflows/release.yml`.
+2. **Any CI run, no tag needed.** Every push builds the wheel on Windows and uploads it as the
+   `plip-windows-wheel` artifact. Open the run on the Actions tab, download it, then
+   `pip install` the `.whl`. This is the quickest way to put a build in a tester's hands
+   straight after a merge.
+3. **One line in PowerShell**, straight from the repo:
+   `irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex`
+
+There is no signed installer and no MSI. Windows SmartScreen will warn about anything
+unsigned; the pip route avoids that entirely, which is why it's the one the README leads with.
+
+### What to ask a tester to report
+
+`plip capabilities` and `plip doctor` first — their output says what this port believed about
+the machine, which is the most useful thing to compare against what actually happened. Then the
+list under [What still needs a Windows machine](#what-still-needs-a-windows-machine): the
+window's look and placement, whether `Ctrl+Alt` is heard, whether typing and clicking land in
+another application, whether the strip appears in its own screenshots, and whether `pytest`
+passes.
+
 ## Running it
 
 ```powershell
@@ -365,7 +391,29 @@ Three things this port needs from them:
    `fractions-add-unlike`, `sentence-openers`, `paragraph-structure`. Whoever
    owns the curriculum should own the list.
 
-Root files this port touched, and why: `pyproject.toml` (Windows dependency
-markers, description), `uv.lock` (regenerated), `.github/workflows/ci.yml`
-(a `windows-latest` matrix entry plus a shell smoke step), `README.md` (one
-pointer line). Nothing under `apps/` was touched.
+### The landing page
+
+There is a marketing site on the `jade-landing-and-case-studies` branch
+(`site/index.html`). It has no download section at all today, and it isn't this
+branch's to edit. Whoever owns it can drop this in, matching the existing `.btn`
+class:
+
+```html
+<div class="downloads">
+  <a class="btn" href="https://github.com/hussainn7/plip-oss/releases/latest">Download for Mac</a>
+  <a class="btn ghost" href="https://github.com/hussainn7/plip-oss/releases/latest">Download for Windows</a>
+  <p class="note">Mac: signed .dmg, macOS 13+. Windows: early unsigned build, Windows 10/11 —
+    see <a href="https://github.com/hussainn7/plip-oss/blob/main/docs/WINDOWS.md">what works</a>.</p>
+</div>
+```
+
+Please keep the "early unsigned build" wording until a Windows machine has actually
+run it.
+
+### Root files this port touched
+
+`pyproject.toml` (Windows dependency markers, description), `uv.lock` (regenerated),
+`.github/workflows/ci.yml` (a `windows-latest` matrix entry, a shell smoke step and a
+wheel artifact), `.github/workflows/release.yml` (a `windows` job attaching the zip to
+the same release as the DMG), `scripts/install.ps1` (new), `README.md` (a two-platform
+Download section). Nothing under `apps/` or `site/` was touched.

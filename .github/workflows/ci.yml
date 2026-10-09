@@ -68,6 +68,14 @@ jobs:
           & "$venv/plip" windows --once --no-probe
           Pop-Location
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      # So a Windows tester can grab a build from any run, without waiting for a tagged
+      # release. Download it from the run's page, then: pip install <the .whl>
+      - uses: actions/upload-artifact@v7
+        if: runner.os == 'Windows'
+        with:
+          name: plip-windows-wheel
+          path: dist/*.whl
+          if-no-files-found: error
 
   ui:
     runs-on: ubuntu-latest
