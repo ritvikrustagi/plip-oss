@@ -412,7 +412,9 @@ def write_env(path, values: dict[str, str]) -> None:
             merged.append(line)
     merged.extend(f"{name}={value}" for name, value in remaining.items())
     path.write_text("\n".join(merged) + "\n")
-    os.chmod(path, 0o600)
+    from mcp_vision.paths import make_private
+
+    make_private(path)      # chmod on POSIX, icacls on Windows: keys are not for other users
 
 
 @buddy.command()

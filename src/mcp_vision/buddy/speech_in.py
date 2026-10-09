@@ -17,7 +17,6 @@ from __future__ import annotations
 import array
 import json
 import math
-import sys
 import threading
 import time
 import urllib.parse
@@ -383,11 +382,22 @@ class AssemblyAIListener:
 
 
 class AppleListener:
-    """On-device Apple Speech via the existing AVAudioEngine/SFSpeech session."""
+    """On-device Apple Speech via the existing AVAudioEngine/SFSpeech session.
+
+    It is the last fallback in ``make_listener``, so off a Mac it is also where
+    "there is no speech engine here" has to be said. Refusing in the constructor
+    rather than in ``make_listener`` keeps the requirement next to the thing that
+    has it, and leaves the Parakeet and AssemblyAI paths reachable everywhere.
+    """
 
     name = "apple"
 
     def __init__(self, callbacks: ListenerCallbacks):
+        from mcp_vision.platforms import MACOS, current_platform
+
+        if current_platform() != MACOS:
+            raise RuntimeError("No speech engine on this platform yet. Set ASSEMBLYAI_API_KEY to talk, "
+                               "or type your question in the box.")
         from mcp_vision.speech import AppleSpeechSession
 
         self.callbacks = callbacks
@@ -428,24 +438,7 @@ class AppleListener:
 
 
 def make_listener(settings: Any, callbacks: ListenerCallbacks) -> Listener:
-    from mcp_vision.platforms import MACOS, current_platform
-
     choice = (getattr(settings, "stt", "auto") or "auto").lower()
-    if current_platform() != MACOS:
-        # Apple Speech and Parakeet are both macOS-only here, so off a Mac the only streaming
-        # engine is AssemblyAI. Raising (rather than handing back a listener that can never
-        # work) is what makes the shell grey push-to-talk out and point at the typed box.
-        key = getattr(settings, "assemblyai_api_key", None)
-        if choice in {"auto", "assemblyai"} and key:
-            try:
-                import sounddevice  # noqa: F401
-                import websockets  # noqa: F401
-                return AssemblyAIListener(key, callbacks)
-            except ImportError as exc:
-                raise RuntimeError("Voice input needs the sounddevice and websockets packages: "
-                                   "reinstall Plip, or type your question instead.") from exc
-        raise RuntimeError("No speech engine on this platform yet. Set ASSEMBLYAI_API_KEY to talk, "
-                           "or type your question in the box.")
     if choice == "parakeet":
         from mcp_vision.buddy import parakeet
 

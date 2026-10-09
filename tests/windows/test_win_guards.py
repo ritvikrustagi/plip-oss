@@ -270,12 +270,49 @@ def test_speech_in_on_windows_raises_instead_of_pretending(on_windows):
     assert "type your question" in str(caught.value)
 
 
-def test_speech_in_names_the_missing_package_when_a_key_is_set(on_windows):
+def test_asking_for_assemblyai_without_its_packages_names_them(on_windows):
     from mcp_vision.buddy.settings import BuddySettings
     from mcp_vision.buddy.speech_in import ListenerCallbacks, make_listener
 
-    with pytest.raises(RuntimeError, match="sounddevice"):
-        make_listener(BuddySettings(assemblyai_api_key="k"), ListenerCallbacks())
+    # sounddevice is blocked by the fixture, as it would be absent on a bare machine.
+    with pytest.raises(RuntimeError, match="websockets"):
+        make_listener(BuddySettings(stt="assemblyai", assemblyai_api_key="k"), ListenerCallbacks())
+
+
+def test_parakeet_is_still_reachable_off_a_mac(on_windows, monkeypatch):
+    """The platform guard must not sit in front of the engine choice.
+
+    An earlier version gated the whole of make_listener on macOS, which broke
+    `--stt parakeet` on Linux. Parakeet answers for itself through
+    `parakeet.unavailable()`; nothing above it should pre-empt that.
+    """
+    import types
+
+    from mcp_vision.buddy import parakeet, speech_in
+    from mcp_vision.buddy.settings import BuddySettings
+
+    monkeypatch.setattr(parakeet, "unavailable", lambda *args, **kw: "")
+    monkeypatch.setattr(parakeet, "ParakeetListener", lambda callbacks: types.SimpleNamespace(name="parakeet"))
+    listener = speech_in.make_listener(BuddySettings(stt="parakeet"), speech_in.ListenerCallbacks())
+    assert listener.name == "parakeet"
+
+
+def test_a_stubbed_apple_listener_is_still_honoured_off_a_mac(on_windows, monkeypatch):
+    """The refusal lives in AppleListener, so replacing it replaces the refusal too."""
+    import types
+
+    from mcp_vision.buddy import speech_in
+    from mcp_vision.buddy.settings import BuddySettings
+
+    monkeypatch.setattr(speech_in, "AppleListener", lambda callbacks: types.SimpleNamespace(name="apple"))
+    assert speech_in.make_listener(BuddySettings(), speech_in.ListenerCallbacks()).name == "apple"
+
+
+def test_the_real_apple_listener_refuses_off_a_mac(on_windows):
+    from mcp_vision.buddy.speech_in import AppleListener, ListenerCallbacks
+
+    with pytest.raises(RuntimeError, match="No speech engine"):
+        AppleListener(ListenerCallbacks())
 
 
 def test_the_voice_on_windows_is_windows_own(on_windows, monkeypatch):
@@ -365,3 +402,61 @@ def test_the_environment_override_still_wins_everywhere(monkeypatch, tmp_path):
 
     monkeypatch.setattr(paths.sys, "platform", "win32")
     assert paths.state_dir() == tmp_path
+
+
+# -- private files ------------------------------------------------------------------
+def test_make_private_locks_a_file_down_on_posix(tmp_path):
+    import stat
+
+    from mcp_vision.paths import make_private
+
+    target = tmp_path / "secret.env"
+    target.write_text("ANTHROPIC_API_KEY=sk-ant-test")
+    assert make_private(target) is True
+    assert stat.S_IMODE(target.stat().st_mode) == 0o600
+
+
+def test_make_private_asks_icacls_on_windows(on_windows, monkeypatch, tmp_path):
+    """chmod is a no-op on NTFS, so Windows gets an icacls call instead."""
+    import subprocess
+
+    calls = []
+
+    def fake_run(argv, **options):
+        calls.append(argv)
+        return subprocess.CompletedProcess(argv, 0, "", "")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    monkeypatch.setenv("USERNAME", "student")
+    from mcp_vision.paths import make_private
+
+    target = tmp_path / "secret.env"
+    target.write_text("x")
+    assert make_private(target) is True
+    assert calls[0][0] == "icacls"
+    assert "/inheritance:r" in calls[0] and "student:(F)" in calls[0]
+
+
+def test_make_private_admits_when_it_could_not(on_windows, monkeypatch, tmp_path):
+    import subprocess
+
+    monkeypatch.setenv("USERNAME", "student")
+    monkeypatch.setattr(subprocess, "run",
+                        lambda *args, **options: (_ for _ in ()).throw(OSError("icacls missing")))
+    from mcp_vision.paths import make_private
+
+    target = tmp_path / "secret.env"
+    target.write_text("x")
+    assert make_private(target) is False, "the caller has to be able to tell"
+
+
+def test_the_key_file_goes_through_it(tmp_path, monkeypatch):
+    seen = []
+    import mcp_vision.paths as paths
+
+    monkeypatch.setattr(paths, "make_private", lambda path: seen.append(str(path)) or True)
+    from mcp_vision.buddy.cli import write_env
+
+    target = tmp_path / ".env"
+    write_env(target, {"ANTHROPIC_API_KEY": "sk-ant-test"})
+    assert seen == [str(target)]

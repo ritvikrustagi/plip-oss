@@ -52,7 +52,9 @@ def pseudonym(path: Path | None = None) -> str:
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(secret)
-            os.chmod(path, 0o600)
+            from mcp_vision.paths import make_private
+
+            make_private(path)    # the pseudonym is the one thing linking a log to a machine
         except OSError:
             pass
     return "stu_" + hashlib.sha256(b"plip-learning-v1" + secret).hexdigest()[:16]

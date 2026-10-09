@@ -328,7 +328,11 @@ explicit `context=`. The macOS path through all of them is byte-identical.
 
 Honest list of what this Mac could not answer.
 
-**Cannot be verified here at all:**
+**Verified by CI on a real `windows-latest` runner:** the package imports with no
+pyobjc, the wheel installs, `plip --help`, `plip capabilities`, `plip learn` and
+`plip windows --once` all run, and the port's own 334 tests pass.
+
+**Cannot be verified by CI - these need a person at a Windows desktop:**
 
 1. `SendInput` actually moving the mouse and typing into a real application —
    the structures and flags are asserted, the syscall is not.
@@ -349,9 +353,38 @@ Honest list of what this Mac could not answer.
    to show reliably, which an unpackaged `pip install` doesn't have.
 8. AssemblyAI streaming: whether `sounddevice`'s PortAudio wheel picks the
    right default microphone.
-9. The full test suite on Windows. It has never run there. Path-separator and
-   permission assumptions in the *existing* tests are the likely first
-   failures, which is why the Windows CI job is `continue-on-error` for now.
+9. Anything involving a child process: the engine CLIs are spawned for real, and
+   only a Windows runner shows whether that works (see below - today it does not,
+   in the tests).
+
+### What the first Windows CI run actually found
+
+The suite has now run on `windows-latest`. **All 334 tests in `tests/windows`
+passed.** 35 tests elsewhere failed, every one of them predating this port, with
+four causes:
+
+| Cause | Tests | What it is |
+|---|---|---|
+| `WinError 193: %1 is not a valid Win32 application` | ~17 | The engine tests write fake CLIs as `#!/bin/sh` scripts and execute them. Windows can't run a shebang. They need a `.cmd` or `.py` stand-in. |
+| `assert '0o666' == '0o600'` | 5 | NTFS has no POSIX mode bits, so `os.chmod` is a no-op and Python reads 0o666 back. **This was a real bug, not just a test artifact** - see below. |
+| `os.killpg` missing | 1 | POSIX process groups. Windows needs a job object or `taskkill /T`. |
+| AppleScript-only actions, timing | ~12 | Reminders, Notes and Spotlight behaviour, plus two timing-sensitive Parakeet tests. |
+
+So CI runs Windows in two halves: `tests/windows` is a gate that must pass, and
+the rest is reported into the run summary but not enforced. Making the four
+causes above portable is its own piece of work, and the table is the to-do list.
+
+### The one real bug it caught
+
+`os.chmod(path, 0o600)` is how Plip keeps the API-key dotenv, the sign-in token,
+the memory file and the learning pseudonym to one user. On Windows that line does
+nothing at all, so on a shared machine - a school machine, exactly the case this
+port is for - another student could read them.
+
+`paths.make_private()` now does the right thing per platform: `chmod` on POSIX,
+and on Windows `icacls <file> /inheritance:r /grant:r <user>:(F)`. It returns
+`False` when neither worked, so a caller can tell rather than assume. Nothing on
+macOS changes.
 
 **Known gaps, not bugs:**
 
