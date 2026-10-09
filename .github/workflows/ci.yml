@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -25,6 +25,7 @@ jobs:
       - name: Lint
         run: ruff check .
       - name: Tests (no model, no network, no display)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           set +e
@@ -33,9 +34,47 @@ jobs:
           # Logs need a GitHub login; annotations don't, so every failure shows on the run's page.
           grep -E "^(FAILED|ERROR) " "$RUNNER_TEMP/pytest.log" | head -20 | sed 's/^/::error title=pytest::/'
           exit $status
+
+      # Windows runs in two halves. The port's own tests have to pass - that is the gate.
+      # The rest of the suite is reported but not enforced: ~35 of its tests assume POSIX
+      # (shell-script fake CLIs, chmod bits, os.killpg) and predate this port, so making
+      # them portable is its own job. docs/WINDOWS.md lists them by cause.
+      - name: Tests - the Windows port (must pass)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          set +e
+          python -m pytest tests/windows -rfE 2>&1 | tee "$RUNNER_TEMP/pytest-windows.log"
+          status=${PIPESTATUS[0]}
+          grep -E "^(FAILED|ERROR) " "$RUNNER_TEMP/pytest-windows.log" | head -20 \
+            | sed 's/^/::error title=windows port::/'
+          exit $status
+      - name: Tests - the rest of the suite on Windows (reported, not enforced)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python -m pytest --ignore=tests/windows -rfE 2>&1 | tee "$RUNNER_TEMP/pytest-rest.log"
+          {
+            echo "### The rest of the suite on Windows"
+            echo
+            echo "Not enforced: these predate the Windows port. See docs/WINDOWS.md."
+            echo
+            echo '```'
+            tail -1 "$RUNNER_TEMP/pytest-rest.log"
+            echo '```'
+            echo "<details><summary>Failures</summary>"
+            echo
+            echo '```'
+            grep -E "^FAILED " "$RUNNER_TEMP/pytest-rest.log" | head -60
+            echo '```'
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Build the wheel
         run: python -m build --wheel
       - name: Installed wheel, from outside the checkout
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           python -m venv "$RUNNER_TEMP/wheel-env"
@@ -45,6 +84,32 @@ jobs:
           "$RUNNER_TEMP/wheel-env/bin/python" -c "from importlib.resources import files; \
             import mcp_vision.buddy.companion, mcp_vision.analytics; \
             assert (files('mcp_vision.buddy') / 'web' / 'index.html').is_file()"
+      # Windows: the same wheel check, plus the one thing only a Windows runner can answer -
+      # that the package imports and the shell builds on a machine with no pyobjc at all.
+      - name: Installed wheel and Windows shell smoke
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          python -m venv "$env:RUNNER_TEMP/wheel-env"
+          $venv = "$env:RUNNER_TEMP/wheel-env/Scripts"
+          & "$venv/pip" install (Get-ChildItem dist/*.whl).FullName
+          Push-Location $env:RUNNER_TEMP
+          & "$venv/plip" --help
+          & "$venv/python" -c "from importlib.resources import files; import mcp_vision.buddy.companion, mcp_vision.analytics; assert (files('mcp_vision.buddy') / 'web' / 'index.html').is_file()"
+          & "$venv/plip" capabilities
+          & "$venv/plip" learn contract
+          & "$venv/plip" learn status
+          & "$venv/plip" windows --once --no-probe
+          Pop-Location
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      # So a Windows tester can grab a build from any run, without waiting for a tagged
+      # release. Download it from the run's page, then: pip install <the .whl>
+      - uses: actions/upload-artifact@v7
+        if: runner.os == 'Windows'
+        with:
+          name: plip-windows-wheel
+          path: dist/*.whl
+          if-no-files-found: error
 
   ui:
     runs-on: ubuntu-latest

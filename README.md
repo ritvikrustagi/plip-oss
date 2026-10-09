@@ -33,7 +33,15 @@ happens until you say yes.
 
 ## Download
 
-**[⬇ Download Plip for Mac (.dmg)](https://github.com/hussainn7/plip-oss/releases/latest)**: free and open source. macOS 13+, Apple Silicon.
+Free and open source, on both platforms. Everything is on the
+**[Releases page](https://github.com/hussainn7/plip-oss/releases/latest)**.
+
+| | |
+|---|---|
+| **[⬇ Plip for Mac (.dmg)](https://github.com/hussainn7/plip-oss/releases/latest)** | macOS 13+, Apple Silicon. Signed and notarised. Lives in the notch. |
+| **[⬇ Plip for Windows (.zip)](https://github.com/hussainn7/plip-oss/releases/latest)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
+
+### Mac
 
 1. Open the `.dmg` and drag **Plip** into **Applications**.
 2. Open Plip from Applications. If macOS says it can't check it for malicious software,
@@ -44,14 +52,53 @@ happens until you say yes.
 5. After your first task, Plip offers **Continue with Google** once. Say Later if you like: it asks at most
    three times, and the Account tab has it whenever you want ([what it holds](#your-account)).
 
-Something broken? Click **Report a bug** in Plip's menu bar (or **Settings → General**), or
+### Windows
+
+The Windows port is new and **has not been run on a real Windows machine yet** — it was built and
+tested on a Mac against the Win32 API. Expect rough edges and please
+[report them](https://github.com/hussainn7/plip-oss/issues). [docs/WINDOWS.md](docs/WINDOWS.md)
+says exactly what works, what doesn't, and why.
+
+One line in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+```
+
+Or from the zip: install **Python 3.12** from [python.org](https://www.python.org/downloads/) — keep the
+**tcl/tk** option ticked, the window needs it — then unzip and
+
+```powershell
+py -3.12 -m venv .venv
+.venv\Scripts\activate
+pip install .\mcp_vision_runtime-*.whl
+plip capabilities     # what this machine can and can't do, and what Plip uses instead
+plip                  # the strip appears at the top of your screen
+```
+
+Hold **Ctrl+Alt** and talk, or just type in the box — **typing needs no setup**, and speech
+recognition needs an AssemblyAI key on Windows. Screenshots and the window map stay off until you
+switch them on under **Session…**, and nothing is recorded until you start a learning session.
+
+What is *not* on Windows: AppleScript system controls, Apple Shortcuts, Notes and Reminders,
+Spotlight content search, the pointing mascot, and the React dashboard. Plip greys each one out
+with the reason rather than failing at you.
+
+Something broken? Click **Report a bug** in Plip's menu bar (Mac) or **Settings → General**, or
 [open a GitHub issue](https://github.com/hussainn7/plip-oss/issues).
 
 ## Quick start (from source)
 
 ```bash
+# macOS
 curl -fsSL https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.sh | bash
 plip                 # Plip moves into your notch; the dashboard opens on first run
+```
+
+```powershell
+# Windows
+irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+plip                 # the strip appears at the top of your screen
 ```
 
 Run from a terminal, macOS checks *the terminal's* permissions, not Plip's: turn on Terminal (or iTerm,
@@ -173,6 +220,13 @@ engines (through real subprocesses) and a full `plip` CLI run against a fake Cla
 Code. The macOS layer is three WKWebViews (island, mascot, dashboard) rendering one
 React bundle, plus an event tap and audio glue. See [docs/BUDDY.md](docs/BUDDY.md).
 
+**On Windows** Plip runs as a strip at the top of your screen instead of the notch,
+with the AppleScript, Spotlight, Apple Speech and pointing features switched off and
+labelled rather than faked — `plip capabilities` prints exactly what this machine can
+do. It also adds opt-in learning sessions and teacher-facing summaries
+(`plip learn`). Not yet verified on a real Windows machine; see
+[docs/WINDOWS.md](docs/WINDOWS.md).
+
 ## Development
 
 ```bash
@@ -187,17 +241,19 @@ npm run e2e                                # clicks through the island and dashb
 
 More in [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Plip for school (Chromebook)
+## Plip for school
 
-A separate, browser-only build lives in [`apps/education/`](apps/education): a student study
-companion that installs as a PWA on a managed Chromebook, and a teacher dashboard that summarises
-what a student did from events the student chose to share. No macOS APIs, no native messaging, no
-developer mode.
+Two browser surfaces for classrooms, sharing one learning-event contract
+([`contracts/learning-event.schema.json`](contracts/learning-event.schema.json)): opt-in,
+pseudonymous, and carrying counts rather than screens, transcripts or browsing.
 
-Two modes. `demo` is a fixture sign-in with invented students, and says so on every screen.
-`production` is OpenID Connect sign-in with your school's identity provider, SQLite, an imported
-roster, cookie sessions with CSRF, rate limiting and an audit trail — and it refuses to start if
-anything needed to protect real data is missing.
+**[`apps/education/`](apps/education) — the student app and the teacher dashboard.** A study
+companion that installs as a PWA, plus the dashboard that summarises what a student did from the
+events they chose to share. This is the one that needs no admin: a student opens a URL. `demo` is
+a fixture sign-in with invented students and says so on every screen; `production` is OpenID
+Connect with your school's identity provider, SQLite, an imported roster, cookie sessions with
+CSRF, rate limiting and an audit trail, and it refuses to start if anything needed to protect
+real data is missing.
 
 ```bash
 cd apps/education && npm install && npm run dev    # demo API + app on http://localhost:5273
@@ -206,8 +262,26 @@ npm run check                                      # typecheck, tests, build, br
 cp .env.example .env && npm start                  # the production path
 ```
 
-Setup, managed-school constraints, the shared learning-event contract, and what a school still has
-to provide for itself: [docs/CHROMEBOOK.md](docs/CHROMEBOOK.md).
+**[`apps/extension/`](apps/extension) — a Manifest V3 Chrome side panel.** It sits beside work
+happening on a page, helps a student reason through it, and deliberately cannot type into a page
+or submit anything. No build step, no dependencies:
+
+```bash
+# chrome://extensions -> Developer mode -> Load unpacked -> apps/extension
+node --test "tests/extension/*.test.mjs"      # 111 unit tests (+12 proxy tests in pytest)
+node tests/extension/browser-demo.mjs         # 39 steps in a real browser
+cd apps/extension && npm run pack             # -> dist/*.zip (does not publish)
+```
+
+Loading unpacked is for development. On a *managed* Chromebook an extension has to be
+force-installed by an administrator (and `ExtensionDeveloperModeSettings` may forbid loading
+unpacked at all), which is why the web app is the surface a school can try without a change
+request. Both are previews: neither is on the Chrome Web Store and neither has been verified on
+Chromebook hardware.
+
+Setup, managed-school constraints and what a school still has to provide for itself:
+[docs/CHROMEBOOK.md](docs/CHROMEBOOK.md) (web app, install routes, the contract) and
+[docs/EXTENSION.md](docs/EXTENSION.md) (the extension's permission model and capability matrix).
 
 ## License
 

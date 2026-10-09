@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plip Study Buddy</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="who">
+      <span class="dot" id="state-dot" data-state="off"></span>
+      <strong>Plip</strong>
+      <span class="muted" id="state-text">session off</span>
+    </div>
+    <div class="bar-actions">
+      <button id="session-toggle" class="primary">Start session</button>
+      <button id="session-end" class="ghost" hidden>End</button>
+      <button id="open-options" class="ghost" title="Settings, data and export">⚙</button>
+    </div>
+  </header>
+
+  <section class="page-strip" id="page-strip">
+    <div class="page-line">
+      <span class="muted">Page:</span>
+      <span id="page-host">checking…</span>
+    </div>
+    <div class="page-actions">
+      <button id="grant" class="small" hidden>Let Plip see this page</button>
+      <button id="revoke" class="small ghost" hidden>Stop seeing it</button>
+    </div>
+    <p class="note" id="page-note"></p>
+  </section>
+
+  <section class="task" id="task-strip" hidden>
+    <label class="muted" for="task-label">Working on</label>
+    <div class="row">
+      <input id="task-label" type="text" placeholder="e.g. Question 4, fractions worksheet" maxlength="80">
+      <button id="task-start" class="small">Set</button>
+      <button id="task-done" class="small" hidden>Finished</button>
+    </div>
+  </section>
+
+  <section class="plan" id="plan" hidden>
+    <h2>Checklist</h2>
+    <ol id="plan-list"></ol>
+  </section>
+
+  <main id="log" class="log" aria-live="polite"></main>
+
+  <section class="confirm" id="attempt" hidden>
+    <h3>How did that attempt go?</h3>
+    <p class="note">Your own report. Plip does not mark it and cannot tell.</p>
+    <div class="row">
+      <button class="small" data-outcome="correct">Got it</button>
+      <button class="small" data-outcome="partial">Partly</button>
+      <button class="small" data-outcome="incorrect">Not yet</button>
+      <button class="small ghost" data-outcome="">Cancel</button>
+    </div>
+  </section>
+
+  <section class="confirm" id="confirm" hidden>
+    <h3 id="confirm-title"></h3>
+    <ul id="confirm-lines"></ul>
+    <p class="inference" id="confirm-inference" hidden>This is Plip’s guess, not something it measured.</p>
+    <div class="row">
+      <button id="confirm-yes" class="primary small"></button>
+      <button id="confirm-no" class="ghost small">No</button>
+    </div>
+  </section>
+
+  <footer class="composer">
+    <div class="quick">
+      <button class="chip" data-send="I'm stuck.">I'm stuck</button>
+      <button class="chip" data-send="Why does this work?">Why?</button>
+      <button class="chip" data-ask-hint="1">Ask for a hint</button>
+      <button class="chip" data-attempt="1">I tried something</button>
+    </div>
+    <div class="row">
+      <textarea id="input" rows="2" placeholder="Tell Plip where you are with it…"></textarea>
+      <button id="mic" class="ghost" title="Speak instead of typing">&#127908;</button>
+      <button id="send" class="primary">Send</button>
+    </div>
+    <p class="note" id="composer-note"></p>
+  </footer>
+
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

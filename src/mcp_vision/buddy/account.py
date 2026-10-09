@@ -222,7 +222,9 @@ class Account:
         fd = os.open(temp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
         with os.fdopen(fd, "w") as handle:
             json.dump(session, handle)
-        os.chmod(temp, 0o600)
+        from mcp_vision.paths import make_private
+
+        make_private(temp)        # the sign-in token is this user's alone
         os.replace(temp, self.path)
 
     def _keep(self, body: dict[str, Any]) -> bool:

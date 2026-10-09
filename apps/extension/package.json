@@ -1,0 +1,15 @@
+{
+  "name": "plip-study-buddy-extension",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Chrome MV3 side-panel study buddy. No dependencies, no build step.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test \"../../tests/extension/*.test.mjs\"",
+    "test:browser": "node ../../tests/extension/browser-demo.mjs",
+    "icons": "python3 tools/icons.py",
+    "pack": "node tools/pack.mjs",
+    "proxy": "python3 tools/dev_proxy.py"
+  }
+}

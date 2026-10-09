@@ -179,12 +179,17 @@ class ActionEngine:
 
     def __init__(self, ctx: ActionContext, specs: Iterable[ActionSpec] | None = None, *,
                  enabled: Callable[[str], bool] = lambda skill: True, log: ActionLog | None = None,
-                 timeout: float = 45.0, undo_path: Path | None = None, source: str = "voice"):
+                 timeout: float = 45.0, undo_path: Path | None = None, source: str = "voice",
+                 unsupported: Callable[[str], str] = lambda name: ""):
         from mcp_vision.buddy.actions import all_specs
 
         self.ctx = ctx
         self.specs = {spec.name: spec for spec in (specs if specs is not None else all_specs())}
         self.enabled = enabled
+        # ``unsupported(name)`` -> why this action can't work on this OS ("" = it can). Set from
+        # ``platforms.action_guard``, so an AppleScript-only action on Windows is refused with a
+        # sentence instead of a traceback, and never offered to the model in the first place.
+        self.unsupported = unsupported
         self.log = log
         self.timeout = timeout
         self.source = source
@@ -198,8 +203,9 @@ class ActionEngine:
 
     # -- prompt help -------------------------------------------------------------------
     def catalog(self) -> list[dict[str, Any]]:
+        """What the model may ask for here: anything this OS can't do is left out."""
         return [{"name": spec.name, "skill": spec.skill, "args": spec.args, "asks_first": spec.asks_first}
-                for spec in self.specs.values()]
+                for spec in self.specs.values() if not self.unsupported(spec.name)]
 
     # -- running -----------------------------------------------------------------------------
     async def handle(self, name: str, args: dict | None = None, consent: Consent | None = None) -> Outcome:
@@ -210,6 +216,9 @@ class ActionEngine:
             return Outcome("unknown", args=args, message=f"I don't know how to {name.replace('_', ' ')} yet.")
         if not self.enabled(spec.skill):
             return Outcome("disabled", spec, args, message=f"My {spec.skill} skill is switched off in settings.")
+        reason = self.unsupported(name)
+        if reason:
+            return Outcome("disabled", spec, args, message=reason, hint=f"{name} does not exist on this platform")
         if spec.preview is not None:
             try:
                 preview = await asyncio.wait_for(asyncio.to_thread(_call_sync, spec.preview, self.ctx, args),
