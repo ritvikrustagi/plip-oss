@@ -30,8 +30,8 @@ class Voice(Protocol):
     def play(self, prepared: Any, stop: threading.Event) -> None: ...   # blocks until done/stopped
 
 
-def _run_until_stopped(command: list[str], stop: threading.Event) -> None:
-    process = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+def _run_until_stopped(command: list[str], stop: threading.Event, env: dict[str, str] | None = None) -> None:
+    process = subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env)
     try:
         while process.poll() is None:
             if stop.wait(0.03):
@@ -120,6 +120,37 @@ def _pump(seconds: float) -> None:
     left = seconds - (time.monotonic() - started)
     if left > 0:
         time.sleep(left)
+
+
+class SapiVoice:
+    """Windows' own voice, through ``System.Speech`` in PowerShell.
+
+    This is the honest replacement for macOS ``say``: no extra package, the
+    voices the person already has installed, and the text goes in through an
+    environment variable so nothing in it can be read as PowerShell.
+    """
+
+    name = "windows"
+
+    def __init__(self, rate: int = 200, powershell: str | None = None, runner=_run_until_stopped):
+        self.rate = rate
+        self.powershell = powershell or shutil.which("powershell") or shutil.which("pwsh") or ""
+        self.runner = runner
+
+    SCRIPT = ("Add-Type -AssemblyName System.Speech; "
+              "$voice = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
+              "$voice.Rate = $env:PLIP_SAY_RATE; $voice.Speak($env:PLIP_SAY_TEXT)")
+
+    def prepare(self, text: str) -> str:
+        return text
+
+    def play(self, prepared: str, stop: threading.Event) -> None:
+        if not prepared or not self.powershell or stop.is_set():
+            return
+        # System.Speech rates run -10..10; map Plip's words-per-minute onto that.
+        rate = max(-10, min(10, round((self.rate - 200) / 20)))
+        env = {**os.environ, "PLIP_SAY_TEXT": prepared, "PLIP_SAY_RATE": str(rate)}
+        self.runner([self.powershell, "-NoProfile", "-NonInteractive", "-Command", self.SCRIPT], stop, env=env)
 
 
 class EspeakVoice(SayVoice):
@@ -303,11 +334,16 @@ class QueueSpeaker:
 
 def default_voice(settings: Any = None) -> tuple[Voice, Voice | None]:
     """Pick the best available voice and a local fallback for it."""
+    from mcp_vision.platforms import MACOS, WINDOWS, current_platform
+
+    platform = current_platform()
     local: Voice
-    if sys.platform == "darwin" and shutil.which("say"):
+    if platform == MACOS and shutil.which("say"):
         chosen = getattr(settings, "say_voice", None) or None
         # named voice: say -v; system voice: in-process
         local = SayVoice(voice=chosen) if chosen else SystemVoice()
+    elif platform == WINDOWS and (shutil.which("powershell") or shutil.which("pwsh")):
+        local = SapiVoice()
     elif shutil.which("espeak"):
         local = EspeakVoice()
     else:

@@ -12,10 +12,14 @@ jobs:
   python:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
+    # Windows is advisory until a run is green: the port is new, the suite has never been
+    # executed on Windows, and a pre-existing non-portable test there must not block macOS.
+    # Drop the continue-on-error line once the Windows job passes (see docs/WINDOWS.md).
+    continue-on-error: ${{ matrix.os == 'windows-latest' }}
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -36,6 +40,7 @@ jobs:
       - name: Build the wheel
         run: python -m build --wheel
       - name: Installed wheel, from outside the checkout
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           python -m venv "$RUNNER_TEMP/wheel-env"
@@ -45,6 +50,24 @@ jobs:
           "$RUNNER_TEMP/wheel-env/bin/python" -c "from importlib.resources import files; \
             import mcp_vision.buddy.companion, mcp_vision.analytics; \
             assert (files('mcp_vision.buddy') / 'web' / 'index.html').is_file()"
+      # Windows: the same wheel check, plus the one thing only a Windows runner can answer -
+      # that the package imports and the shell builds on a machine with no pyobjc at all.
+      - name: Installed wheel and Windows shell smoke
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          python -m venv "$env:RUNNER_TEMP/wheel-env"
+          $venv = "$env:RUNNER_TEMP/wheel-env/Scripts"
+          & "$venv/pip" install (Get-ChildItem dist/*.whl).FullName
+          Push-Location $env:RUNNER_TEMP
+          & "$venv/plip" --help
+          & "$venv/python" -c "from importlib.resources import files; import mcp_vision.buddy.companion, mcp_vision.analytics; assert (files('mcp_vision.buddy') / 'web' / 'index.html').is_file()"
+          & "$venv/plip" capabilities
+          & "$venv/plip" learn contract
+          & "$venv/plip" learn status
+          & "$venv/plip" windows --once --no-probe
+          Pop-Location
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   ui:
     runs-on: ubuntu-latest

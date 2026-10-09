@@ -19,21 +19,68 @@ def buddy(ctx: click.Context) -> None:
 
 @buddy.command()
 def run() -> None:
-    """Start Plip on macOS (notch island + Plip by your cursor + push-to-talk)."""
+    """Start Plip: the notch island on macOS, the top-of-screen strip on Windows."""
     from mcp_vision.buddy.factory import SetupError
+    from mcp_vision.platforms import MACOS, WINDOWS, current_platform
 
-    if sys.platform != "darwin":
-        raise click.ClickException("The buddy overlay needs macOS. Try: plip ask --image shot.png \"...\"")
+    platform = current_platform()
+    if platform not in {MACOS, WINDOWS}:
+        raise click.ClickException("Plip's desktop shell needs macOS or Windows. "
+                                   "Try: plip ask --image shot.png \"...\"")
     from mcp_vision.analytics import ping
 
     # Only the app pings: it runs for hours, so the request always finishes. A quick command
     # (`plip memory show`) could exit mid-request, and Python can crash tearing that thread down.
     ping("app")
     try:
+        if platform == WINDOWS:
+            from mcp_vision.buddy.app_windows import run_windows_app
+
+            run_windows_app()
+            return
         from mcp_vision.buddy.app_macos import run_buddy_app
         run_buddy_app()
     except SetupError as exc:
         raise click.ClickException(str(exc)) from exc
+    except RuntimeError as exc:                 # no Tkinter, no user32: say what to do about it
+        raise click.ClickException(str(exc)) from exc
+
+
+@buddy.command()
+@click.option("--headless", is_flag=True, help="Run with no window; prints the strip as text.")
+@click.option("--once", is_flag=True, help="With --headless: print the strip, then exit (a smoke test).")
+@click.option("--probe/--no-probe", default=True, help="Probe the brains (spawns the CLIs) before starting.")
+def windows(headless: bool, once: bool, probe: bool) -> None:
+    """Start (or smoke test) the Windows shell. --headless needs no display."""
+    from mcp_vision.buddy.app_windows import run_windows_app
+
+    try:
+        run_windows_app(headless=headless or once, probe=probe, once=once)
+    except RuntimeError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+
+@buddy.command()
+@click.option("--probe/--no-probe", default=True, help="Ask this machine, not just the OS name.")
+@click.option("--json", "as_json", is_flag=True, help="Print the table as JSON.")
+def capabilities(probe: bool, as_json: bool) -> None:
+    """What Plip can and can't do on this machine, and what it uses instead."""
+    from mcp_vision.platforms import capabilities as table
+
+    caps = table(probe=probe)
+    if as_json:
+        click.echo(json.dumps({"platform": caps.platform, "capabilities": caps.as_rows()}, indent=2))
+        return
+    click.echo(f"Plip on {caps.platform}:")
+    for group, rows in caps.groups():
+        click.echo(f"\n  {group}")
+        for row in rows:
+            mark = "ok" if row.supported else "no"
+            click.echo(f"    [{mark:>2}] {row.label}  ({row.evidence})")
+            if row.detail:
+                click.echo(f"         {row.detail}")
+            if row.instead:
+                click.echo(f"         uses: {row.instead}")
 
 
 @buddy.command()
@@ -185,6 +232,160 @@ def memory_prompt() -> None:
     click.echo(MEMORY_PROMPT)
 
 
+@buddy.group()
+def learn() -> None:
+    """Learning sessions: opt in, see what was recorded, export it, delete it."""
+
+
+@learn.command("start")
+@click.option("--by", type=click.Choice(["student", "teacher", "guardian", "demo"]), default="student",
+              help="Who is giving consent for this session.")
+@click.option("--class", "class_id", default="", help="Class code, if a teacher summary is wanted.")
+@click.option("--screenshots/--no-screenshots", default=False, help="Let Plip capture pixels this session.")
+@click.option("--map/--no-map", "screen_map", default=False, help="Let Plip read the window map this session.")
+@click.option("--share/--no-share", default=False, help="Mark this session's events shareable with a teacher.")
+def learn_start(by: str, class_id: str, screenshots: bool, screen_map: bool, share: bool) -> None:
+    """Start a session. Everything optional is off unless you ask for it."""
+    from mcp_vision.learning import LearningSession
+
+    session = LearningSession()
+    try:
+        session.start(granted_by=by, class_id=class_id, screenshots=screenshots,
+                      screen_context=screen_map, share_with_teacher=share,
+                      note="Started from the command line.")
+    except ValueError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(session.consent.summary())
+    click.echo(f"  student id (local pseudonym): {session.student_id}")
+    if share and not class_id:
+        click.echo("  note: sharing is on but no class code was given, so no teacher can read it yet.")
+
+
+@learn.command("status")
+def learn_status() -> None:
+    """What is running, what is on, and how much has been recorded."""
+    from mcp_vision.learning import LearningLog, SessionConsent
+
+    consent = SessionConsent.load()
+    log = LearningLog()
+    click.echo(consent.summary())
+    for row in consent.as_rows():
+        mark = "on" if row["on"] else "off"
+        click.echo(f"  [{mark:>3}] {row['label']}")
+        if not row["available"]:
+            click.echo(f"         {consent.why_not(row['id'])}")
+    events = log.events()
+    click.echo(f"  {len(events)} event(s) kept, retention {log.max_age_days} days, at {log.path}")
+
+
+@learn.command("pause")
+def learn_pause() -> None:
+    """Stop recording without ending the session."""
+    from mcp_vision.learning import SessionConsent
+
+    click.echo(SessionConsent.load().pause().save().summary())
+
+
+@learn.command("resume")
+def learn_resume() -> None:
+    """Carry on recording."""
+    from mcp_vision.learning import SessionConsent
+
+    click.echo(SessionConsent.load().resume().save().summary())
+
+
+@learn.command("stop")
+def learn_stop() -> None:
+    """End the session. Nothing is recorded afterwards."""
+    from mcp_vision.learning import LearningSession, SessionConsent
+
+    session = LearningSession(consent=SessionConsent.load())
+    session.stop()
+    click.echo("Session stopped. Nothing is being recorded.")
+
+
+@learn.command("export")
+@click.option("--json", "as_json", is_flag=True, help="One indented JSON array instead of JSON Lines.")
+@click.option("--out", type=click.Path(dir_okay=False), default=None, help="Write to a file.")
+def learn_export(as_json: bool, out: str | None) -> None:
+    """Your own copy of every learning event on this machine."""
+    from mcp_vision.learning import LearningLog
+
+    log = LearningLog()
+    text = log.export_json() if as_json else log.export()
+    if out:
+        from pathlib import Path
+
+        Path(out).write_text(text, encoding="utf-8")
+        click.echo(f"Wrote {len(log.events())} event(s) to {out}")
+    else:
+        click.echo(text, nl=False)
+
+
+@learn.command("delete")
+@click.option("--yes", is_flag=True, help="Don't ask.")
+def learn_delete(yes: bool) -> None:
+    """Delete every learning event, the session record and the local id."""
+    from mcp_vision.learning import LearningSession
+
+    if not yes:
+        click.confirm("Delete all learning events, the consent record and this machine's student id?", abort=True)
+    gone = LearningSession().forget_everything()
+    click.echo(f"Deleted {gone} event(s), the consent record and the local student id.")
+
+
+@learn.command("summary")
+@click.option("--class", "class_id", required=True, help="The class to summarise.")
+@click.option("--authorized-for", "authorized", multiple=True,
+              help="A class you are authorised to read (repeatable). Required: no roster, no summary.")
+@click.option("--student", default="", help="One student's pseudonymous id.")
+@click.option("--json", "as_json", is_flag=True, help="Print the report as JSON.")
+def learn_summary(class_id: str, authorized: tuple[str, ...], student: str, as_json: bool) -> None:
+    """The teacher-facing summary: measured counts, then clearly-labelled inference."""
+    from mcp_vision.learning import LearningLog
+    from mcp_vision.learning.summary import class_summary, summarise_log
+
+    log = LearningLog()
+    allowed = list(authorized)
+    if student:
+        report = summarise_log(log, allowed_classes=allowed, student_id=student, class_id=class_id)
+        click.echo(json.dumps(report.as_dict(), indent=2) if as_json else report.as_text())
+        return
+    everyone = class_summary(log, allowed_classes=allowed, class_id=class_id)
+    if as_json:
+        click.echo(json.dumps(everyone, indent=2))
+        return
+    if not everyone["authorized"]:
+        raise click.ClickException(everyone["note"])
+    if not everyone["students"]:
+        click.echo(f"Nothing shared for class {class_id} yet.")
+        return
+    for entry in everyone["students"]:
+        report = summarise_log(log, allowed_classes=allowed, student_id=entry["studentId"], class_id=class_id)
+        click.echo(report.as_text())
+        click.echo("")
+
+
+@learn.command("demo")
+@click.option("--seed", default=7, show_default=True, help="Which synthetic run to generate.")
+def learn_demo(seed: int) -> None:
+    """Write synthetic sessions so the summary can be seen working. No real data."""
+    from mcp_vision.learning import LearningLog
+    from mcp_vision.learning.demo import CLASS_ID, seed_log
+
+    count = seed_log(LearningLog(), seed=seed)
+    click.echo(f"Wrote {count} synthetic event(s) for class {CLASS_ID} (all invented).")
+    click.echo(f"Try: plip learn summary --class {CLASS_ID} --authorized-for {CLASS_ID}")
+
+
+@learn.command("contract")
+def learn_contract() -> None:
+    """What this build believes learning-event contract v1 is."""
+    from mcp_vision.learning import contract_summary
+
+    click.echo(json.dumps(contract_summary(), indent=2))
+
+
 SETUP_KEYS = (
     ("ANTHROPIC_API_KEY", "Anthropic API key (skip it if you use Claude Code, Codex, Cursor, or Gemini)"),
     ("TYPESAFE_API_KEY", "TypeSafe Jev key for fast routing (optional; console.typesafe.ai)"),
@@ -291,6 +492,23 @@ def doctor(ping: bool) -> None:
             if key == "screenRecording":
                 ok &= value is True
             line(value, name, {True: "granted", False: "denied", None: "not asked yet"}[value])
+    elif sys.platform == "win32":
+        from mcp_vision.platforms import capabilities as table
+
+        caps = table(probe=True)
+        line(None, "shell", "the top-of-screen strip (no notch, no AppKit on Windows)")
+        from mcp_vision.buddy.app_windows import tkinter_available
+
+        has_tk, why = tkinter_available()
+        ok &= has_tk
+        line(has_tk, "window", "Tkinter is here" if has_tk else why)
+        for cap_id in ("screen_capture", "screen_context", "push_to_talk", "speech_in", "speech_out", "click"):
+            row = caps[cap_id]
+            line(row.supported, row.label.lower(), (row.instead or row.detail) if row.supported else row.detail)
+        from mcp_vision.learning import SessionConsent
+
+        line(None, "learning session", SessionConsent.load().summary())
+        click.echo("  (`plip capabilities` lists everything, with what Plip uses instead)")
     else:
-        line(None, "notch app", "macOS only; `plip ask --image` works everywhere")
+        line(None, "desktop shell", "macOS and Windows only; `plip ask --image` works everywhere")
     sys.exit(0 if ok else 1)

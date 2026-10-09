@@ -173,6 +173,13 @@ engines (through real subprocesses) and a full `plip` CLI run against a fake Cla
 Code. The macOS layer is three WKWebViews (island, mascot, dashboard) rendering one
 React bundle, plus an event tap and audio glue. See [docs/BUDDY.md](docs/BUDDY.md).
 
+**On Windows** Plip runs as a strip at the top of your screen instead of the notch,
+with the AppleScript, Spotlight, Apple Speech and pointing features switched off and
+labelled rather than faked — `plip capabilities` prints exactly what this machine can
+do. It also adds opt-in learning sessions and teacher-facing summaries
+(`plip learn`). Not yet verified on a real Windows machine; see
+[docs/WINDOWS.md](docs/WINDOWS.md).
+
 ## Development
 
 ```bash

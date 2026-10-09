@@ -111,6 +111,7 @@ class PortableHost:
     """Works anywhere; macOS-only features raise ``NotSupported``."""
 
     name = "portable"
+    search_roots: tuple[str, ...] = SEARCH_ROOTS      # user folders ``find_files`` walks
 
     def __init__(self, home: str | None = None):
         self.home = os.path.expanduser(home or "~")
@@ -146,7 +147,7 @@ class PortableHost:
         extensions = KIND_EXTENSIONS.get(kind, set())
         hits: list[FileHit] = []
         deadline = time.monotonic() + 2.5
-        for root_name in SEARCH_ROOTS:
+        for root_name in self.search_roots:
             root = Path(self.home) / root_name
             if not root.is_dir():
                 continue
@@ -712,4 +713,14 @@ for _chars, _shift in (("asdfhgzxcv\x00bqweryt123465=97-80]ou[ip\x00lj'k;\\,/nm.
 
 
 def default_host() -> PortableHost:
-    return MacHost() if sys.platform == "darwin" else PortableHost()
+    """The host for this machine: macOS, Windows, or the portable subset."""
+    from mcp_vision.platforms import MACOS, WINDOWS, current_platform
+
+    platform = current_platform()
+    if platform == MACOS:
+        return MacHost()
+    if platform == WINDOWS:
+        from mcp_vision.buddy.actions.host_windows import WindowsHost
+
+        return WindowsHost()
+    return PortableHost()

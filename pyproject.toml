@@ -1,7 +1,7 @@
 [project]
 name = "mcp-vision-runtime"
 version = "0.10.0"
-description = "Plip: an AI buddy in your MacBook's notch. Talk, it sees your screen, answers aloud and points, on your Claude, ChatGPT, Cursor or Gemini plan."
+description = "Plip: an AI buddy in your MacBook's notch, or a strip at the top of your Windows screen. Talk, it sees your screen, answers aloud and points, on your Claude, ChatGPT, Cursor or Gemini plan."
 authors = [{name = "Hussain"}]
 license = "MIT"
 readme = "README.md"
@@ -12,10 +12,13 @@ dependencies = [
     "Pillow>=10.0.0",
     "pydantic>=2.0.0",
     "pydantic-settings>=2.0.0",
-    "pyautogui>=0.9.54; sys_platform != 'darwin'",       # cursor position off macOS (headless `plip ask`)
+    # cursor position where there's no native call for it (headless `plip ask` on Linux);
+    # macOS uses Quartz and Windows uses user32 directly, so neither needs it.
+    "pyautogui>=0.9.54; sys_platform != 'darwin' and sys_platform != 'win32'",
     "click>=8.1.0",
     "websockets>=13.0",
-    "sounddevice>=0.4.6; sys_platform == 'darwin'",
+    # the microphone for AssemblyAI streaming: the only speech engine Windows has here
+    "sounddevice>=0.4.6; sys_platform == 'darwin' or sys_platform == 'win32'",
     "sherpa-onnx>=1.13.8; sys_platform == 'darwin'",     # runs Parakeet; the model itself is an opt-in download
     "sherpa-onnx-core>=1.13.8; sys_platform == 'darwin'",   # sherpa-onnx's native half (uv's lock misses it)
     "pyobjc-framework-ApplicationServices>=10.0; sys_platform == 'darwin'",
