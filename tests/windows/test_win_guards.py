@@ -405,14 +405,24 @@ def test_the_environment_override_still_wins_everywhere(monkeypatch, tmp_path):
 
 
 # -- private files ------------------------------------------------------------------
-def test_make_private_locks_a_file_down_on_posix(tmp_path):
+def test_make_private_reports_that_it_worked(tmp_path):
+    from mcp_vision.paths import make_private
+
+    target = tmp_path / "secret.env"
+    target.write_text("ANTHROPIC_API_KEY=sk-ant-test")
+    assert make_private(target) is True
+
+
+@pytest.mark.skipif(sys.platform == "win32",
+                    reason="NTFS has no POSIX mode bits; Windows goes through icacls instead")
+def test_make_private_sets_the_posix_mode(tmp_path):
     import stat
 
     from mcp_vision.paths import make_private
 
     target = tmp_path / "secret.env"
     target.write_text("ANTHROPIC_API_KEY=sk-ant-test")
-    assert make_private(target) is True
+    make_private(target)
     assert stat.S_IMODE(target.stat().st_mode) == 0o600
 
 
