@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plip Study Buddy &mdash; settings and data</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+<main>
+  <h1>Plip Study Buddy</h1>
+  <p class="lede">
+    A study buddy for one browser tab at a time. It helps you reason through your own work. It cannot
+    type into a page, fill a field, press a key or submit anything, by design.
+  </p>
+
+  <section>
+    <h2>Who you are here</h2>
+    <p class="note">
+      Plip uses a random id, not your name or your email. Nothing here identifies you unless your school
+      maps the id back to you on their own side.
+    </p>
+    <label>Your pseudonymous id <input id="studentId" type="text" readonly></label>
+    <label>Class code (optional, from your teacher)
+      <input id="classId" type="text" maxlength="64" placeholder="e.g. maths-9b-2026">
+    </label>
+  </section>
+
+  <section>
+    <h2>Sharing with your teacher</h2>
+    <label class="check">
+      <input id="shareWithTeacher" type="checkbox">
+      Mark this session&rsquo;s events as shareable with my teacher
+    </label>
+    <p class="note">
+      Off by default. When it is on, events are <em>marked</em> shareable and go into the export file
+      below. Nothing is uploaded by this extension: you or your school move the file. What an event
+      holds: counts (tasks, hints, attempts), an outcome you reported yourself, how long a task took, and
+      concept ids you confirmed. What it never holds: page text, URLs, selections, what you typed to
+      Plip, or any screenshot.
+    </p>
+    <p class="note warn">
+      Plip cannot measure attention, effort, mastery or a grade, and nothing it exports should be read as
+      any of those.
+    </p>
+  </section>
+
+  <section>
+    <h2>The model</h2>
+    <label>Where answers come from
+      <select id="provider">
+        <option value="mock">Local practice tutor &mdash; no network, no credentials</option>
+        <option value="proxy">School model proxy</option>
+      </select>
+    </label>
+    <label>Proxy URL <input id="proxyUrl" type="url" placeholder="https://plip-proxy.your-school.example/chat"></label>
+    <label>Session token from your school (not an API key)
+      <input id="proxyToken" type="password" autocomplete="off" placeholder="optional">
+    </label>
+    <p class="note" id="proxy-note"></p>
+    <p class="note">
+      A model key never belongs in a browser. The proxy holds it, checks who is asking, and streams text
+      back. If you paste something starting with <code>sk-ant-</code> here, Plip refuses it.
+    </p>
+  </section>
+
+  <section>
+    <h2>Voice</h2>
+    <label>Speaking to Plip
+      <select id="voiceMode">
+        <option value="off">Off &mdash; typing only</option>
+        <option value="proxy">Through my school&rsquo;s server</option>
+        <option value="chrome">Chrome&rsquo;s own recogniser (audio goes to Google)</option>
+      </select>
+    </label>
+    <label>Transcription URL (optional &mdash; otherwise derived from the proxy URL above)
+      <input id="transcribeUrl" type="url" placeholder="https://plip-proxy.your-school.example/listen">
+    </label>
+    <p class="note" id="voice-note"></p>
+    <p class="note">
+      Off by default, and never required: typing works for everything and never sends audio anywhere.
+    </p>
+    <ul class="note">
+      <li><strong>Through your school&rsquo;s server</strong>: Plip records a clip while you hold the
+        microphone, posts it once to the URL above, and shows you the words. Your school&rsquo;s server
+        holds the speech provider&rsquo;s key (the reference server uses Deepgram); this extension never
+        has one and will refuse to post audio straight to a speech company.</li>
+      <li><strong>Chrome&rsquo;s own recogniser</strong>: no server to run, but Chrome
+        <strong>sends your audio to Google</strong>.</li>
+    </ul>
+    <div class="row">
+      <button id="mic-check">Check microphone</button>
+    </div>
+    <p class="note" id="mic-note">
+      Chrome asks for the microphone on this page rather than in the side panel. Check it here once and
+      the panel can use it afterwards.
+    </p>
+  </section>
+
+  <section>
+    <h2>Your data</h2>
+    <label>Keep events for
+      <select id="retentionDays">
+        <option value="1">1 day</option>
+        <option value="7">7 days</option>
+        <option value="14">14 days</option>
+        <option value="30">30 days</option>
+      </select>
+    </label>
+    <p class="note">Anything older is dropped automatically, every time Plip reads or writes.</p>
+    <p id="tally" class="tally"></p>
+    <div class="row">
+      <button id="export">Export shareable events&hellip;</button>
+      <button id="export-all">Export everything&hellip;</button>
+      <button id="wipe" class="danger">Delete all events</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sites Plip may read</h2>
+    <ul id="origins"></ul>
+    <p class="note">
+      One site at a time, granted by you from the panel. Plip asks Chrome for that one origin and nothing
+      else; it never asks for all sites. Chrome&rsquo;s own pages, the Web Store, and sign-in, payment and
+      password pages are refused even if a grant exists.
+    </p>
+  </section>
+
+  <section>
+    <h2>What Plip cannot do here</h2>
+    <p class="note">
+      This is a browser extension, so most of what Plip does on a Mac is simply not possible. No native
+      helper changes that, and this extension does not have one.
+    </p>
+    <table id="capabilities"></table>
+  </section>
+
+  <section>
+    <h2>School use</h2>
+    <p class="note">
+      Student-facing software in a school needs a decision from the school: who consents, for which
+      pupils, under which policy. This preview is built so those answers are possible to implement
+      (opt-in sessions, pseudonymous ids, short retention, export and delete, no hidden collection), and
+      it makes no claim of FERPA, COPPA or GDPR compliance. It has not been reviewed or certified by
+      anyone, and it is not published on the Chrome Web Store. Demo data only.
+    </p>
+  </section>
+</main>
+<script type="module" src="options.js"></script>
+</body>
+</html>

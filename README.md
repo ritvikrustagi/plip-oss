@@ -187,6 +187,25 @@ npm run e2e                                # clicks through the island and dashb
 
 More in [CONTRIBUTING.md](CONTRIBUTING.md).
 
+### Plip Study Buddy for the browser
+
+`apps/extension/` is a Manifest V3 Chrome side-panel study buddy for students
+(the primary path on a Chromebook, and the same in desktop Chrome). It helps a
+student reason through their own work and deliberately cannot type into a page
+or submit anything. No build step, no dependencies:
+
+```bash
+# chrome://extensions -> Developer mode -> Load unpacked -> apps/extension
+node --test "tests/extension/*.test.mjs"      # 111 unit tests (+12 proxy tests in pytest)
+node tests/extension/browser-demo.mjs         # 39 steps in a real browser
+cd apps/extension && npm run pack             # -> dist/*.zip (does not publish)
+```
+
+It is a preview: not on the Chrome Web Store, not verified on Chromebook
+hardware. Setup, the permission model, the capability matrix against Plip on
+macOS, and the opt-in learning-event contract are in
+[docs/EXTENSION.md](docs/EXTENSION.md).
+
 ## License
 
 MIT
