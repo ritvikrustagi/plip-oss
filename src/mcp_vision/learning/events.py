@@ -13,7 +13,7 @@ dashboard can read all three:
     timestamp      ISO-8601 with an offset
     platform       windows | chromebook | extension
     type           one of EVENT_TYPES
-    taskId         optional
+    taskId         required for task_started and task_completed, optional otherwise
     conceptIds     list of short concept slugs
     evidence       optional: attempts, hintCount, outcome, durationMs, studentConfirmed
     shareWithTeacher  bool
@@ -44,7 +44,11 @@ PLATFORMS = ("windows", "chromebook", "extension")
 FIELDS = ("eventId", "schemaVersion", "sessionId", "studentId", "classId", "timestamp", "platform",
           "type", "taskId", "conceptIds", "evidence", "shareWithTeacher")
 EVIDENCE_FIELDS = ("attempts", "hintCount", "outcome", "durationMs", "studentConfirmed")
-OUTCOMES = ("correct", "incorrect", "partial", "abandoned", "unknown")
+# Exactly the enum in contracts/learning-event.schema.json. There is deliberately no
+# "unknown": an outcome nobody reported is an *absent* outcome, and recording one would
+# be a claim about nothing. tests/windows/test_learning_events.py holds this to the
+# contract file, so the two cannot drift apart in silence again.
+OUTCOMES = ("correct", "incorrect", "partial", "skipped", "completed", "incomplete", "abandoned")
 
 # Keys that must never appear in a learning event, with the reason. Checked by name and
 # by suffix so ``answerText`` and ``promptText`` are caught along with ``text``.
@@ -139,8 +143,12 @@ def clean_evidence(evidence: dict[str, Any] | None) -> dict[str, Any] | None:
         elif key == "studentConfirmed":
             kept[key] = bool(value)
         else:
+            # An outcome we do not recognise is dropped, not rewritten. Coercing it to a
+            # placeholder would turn "we were not told" into a recorded claim, and the
+            # dashboard's schema would refuse the event anyway.
             outcome = _slug(value, 20)
-            kept[key] = outcome if outcome in OUTCOMES else "unknown"
+            if outcome in OUTCOMES:
+                kept[key] = outcome
     return kept or None
 
 

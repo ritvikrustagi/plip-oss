@@ -1,0 +1,41 @@
+{
+  "$comment": "DEMO ONLY. Synthetic classes, synthetic rosters, synthetic tokens. No real student records, no real school, no credentials. Student ids are pseudonymous; the display labels live here (the demo's stand-in for a school directory) and never travel on a learning event.",
+  "classes": [
+    {
+      "classId": "cls_math7a",
+      "name": "Math 7 · Period 2 (demo)",
+      "joinCode": "MATH-7A2",
+      "teacherIds": ["tea_rivera"],
+      "studentIds": ["stu_a1b2", "stu_c3d4", "stu_e5f6", "stu_g7h8"],
+      "plannedConceptIds": [
+        "fractions.equivalent",
+        "fractions.add-unlike",
+        "fractions.simplify",
+        "ratios.unit-rate",
+        "geometry.area-rect"
+      ]
+    },
+    {
+      "classId": "cls_math7b",
+      "name": "Math 7 · Period 4 (demo)",
+      "joinCode": "MATH-7B4",
+      "teacherIds": ["tea_okafor"],
+      "studentIds": ["stu_a1b2", "stu_j9k0"],
+      "plannedConceptIds": ["fractions.equivalent", "ratios.unit-rate"]
+    }
+  ],
+  "roster": [
+    { "studentId": "stu_a1b2", "label": "Avery L. (demo)" },
+    { "studentId": "stu_c3d4", "label": "Bo T. (demo)" },
+    { "studentId": "stu_e5f6", "label": "Cam R. (demo)" },
+    { "studentId": "stu_g7h8", "label": "Dee K. (demo)" },
+    { "studentId": "stu_j9k0", "label": "Eli M. (demo)" }
+  ],
+  "identities": [
+    { "token": "demo-student-avery", "id": "stu_a1b2", "role": "student", "studentId": "stu_a1b2", "displayName": "Avery L. (demo)", "classIds": ["cls_math7a", "cls_math7b"] },
+    { "token": "demo-student-bo", "id": "stu_c3d4", "role": "student", "studentId": "stu_c3d4", "displayName": "Bo T. (demo)", "classIds": ["cls_math7a"] },
+    { "token": "demo-student-eli", "id": "stu_j9k0", "role": "student", "studentId": "stu_j9k0", "displayName": "Eli M. (demo)", "classIds": ["cls_math7b"] },
+    { "token": "demo-teacher-rivera", "id": "tea_rivera", "role": "teacher", "teacherId": "tea_rivera", "displayName": "Ms. Rivera (demo)", "classIds": ["cls_math7a"] },
+    { "token": "demo-teacher-okafor", "id": "tea_okafor", "role": "teacher", "teacherId": "tea_okafor", "displayName": "Mr. Okafor (demo)", "classIds": ["cls_math7b"] }
+  ]
+}

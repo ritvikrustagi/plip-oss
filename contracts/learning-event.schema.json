@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ritvikrustagi/plip-oss/contracts/learning-event.schema.json",
+  "title": "Plip learning event (v1)",
+  "description": "One thing that happened during an opted-in study session. Shared contract for every Plip learning surface: the Chromebook web app, the browser extension, and the desktop build. A learning event records that something happened and how much help it took. It never carries what was on the screen, what was typed, where the student browsed, or what the model said.",
+  "$comment": "Owned by apps/education (Chromebook chat). Producers on other platforms must emit exactly this shape. Additional properties are refused on purpose: that is what keeps screenshots, URLs, transcripts and prompt text out of the pipe.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "schemaVersion", "sessionId", "studentId", "timestamp", "platform", "type", "conceptIds", "shareWithTeacher"],
+  "properties": {
+    "eventId": {
+      "description": "Unique per event, so a retried upload is not counted twice.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{8,64}$"
+    },
+    "schemaVersion": {
+      "description": "Contract version. Only 1 exists.",
+      "const": 1
+    },
+    "sessionId": {
+      "description": "The opted-in session this event belongs to.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{6,64}$"
+    },
+    "studentId": {
+      "description": "Pseudonymous, school-issued or demo-issued. Never an email address, never a name. The mapping from this id to a real person lives only in the school's roster system, never in an event.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{3,64}$",
+      "not": { "pattern": "@" }
+    },
+    "classId": {
+      "description": "Set once the session has been linked to a class. Absent means the work is the student's own and no teacher can be shown it.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{3,64}$"
+    },
+    "timestamp": {
+      "description": "When it happened, ISO-8601 with an offset or Z.",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
+    },
+    "platform": {
+      "description": "Which Plip surface produced it.",
+      "type": "string",
+      "enum": ["windows", "chromebook", "extension"]
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "session_started",
+        "task_started",
+        "hint_requested",
+        "attempt_submitted",
+        "task_completed",
+        "session_ended"
+      ]
+    },
+    "taskId": {
+      "description": "The practice task, when the event is about one.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+    },
+    "conceptIds": {
+      "description": "Curriculum concepts the task declares. Identifiers from the class plan, not free text about the student.",
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$" }
+    },
+    "evidence": {
+      "description": "Counts and durations that were measured directly. Nothing here is a judgement about the student.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attempts": { "description": "Answers submitted for this task so far.", "type": "integer", "minimum": 0, "maximum": 1000 },
+        "hintCount": { "description": "Hints the student asked for on this task so far.", "type": "integer", "minimum": 0, "maximum": 1000 },
+        "outcome": {
+          "description": "How the task or attempt ended, as scored against the task's own answer key. Not a grade. Omit it when nothing was reported: there is no value meaning \"unknown\", because an absent outcome already says that and a recorded one would be a claim about nothing.",
+          "type": "string",
+          "enum": ["correct", "incorrect", "partial", "skipped", "completed", "incomplete", "abandoned"]
+        },
+        "durationMs": {
+          "description": "Time the session was running and not paused. Time is not attention: see docs/CHROMEBOOK.md.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 86400000
+        },
+        "studentConfirmed": {
+          "description": "The student pressed the button that says this happened (e.g. \"I finished this\"). False means the app inferred it.",
+          "type": "boolean"
+        }
+      }
+    },
+    "shareWithTeacher": {
+      "description": "The student's choice for this event, decided before it was recorded. False means no teacher summary may ever include it; a later opt-out flips it to false on events already stored.",
+      "type": "boolean"
+    }
+  },
+  "allOf": [
+    {
+      "$comment": "A teacher can only be shown work that is attached to a class.",
+      "if": { "properties": { "shareWithTeacher": { "const": true } }, "required": ["shareWithTeacher"] },
+      "then": { "required": ["classId"] }
+    },
+    {
+      "$comment": "Starting and finishing are definitionally about a task, so they must name one. A hint or an attempt may come before a task has been picked - a student asking for help with no task open is a real thing, and refusing to record it would lose a hint rather than gain a guarantee.",
+      "if": { "properties": { "type": { "enum": ["task_started", "task_completed"] } }, "required": ["type"] },
+      "then": { "required": ["taskId"] }
+    }
+  ]
+}
