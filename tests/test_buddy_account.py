@@ -386,7 +386,15 @@ def test_a_purged_anonymous_row_stays_a_local_name_until_they_act(tmp_path):
 
 
 def test_google_links_to_the_anonymous_account_so_nobody_is_counted_twice(tmp_path):
+    # start() hands the Supabase round trip to a background thread, so "there is
+    # nothing to open yet" is only true until that thread answers. Asserting it
+    # against a thread already running is a race the test loses whenever the
+    # machine is quick, which on CI it sometimes is. Hold the reply here instead,
+    # and the empty state below is a fact rather than a coin toss.
+    answering = threading.Event()
+
     def link(method, url, headers, body):                        # Supabase: here's where to send the browser
+        assert answering.wait(10), "the test never released the sign-in reply"
         parsed = urlparse(url)
         assert (method, parsed.path, body) == ("GET", "/auth/v1/user/identities/authorize", None)
         assert headers == {"apikey": KEY, "Authorization": "Bearer an2"}          # the renewed token, not the old
@@ -400,6 +408,7 @@ def test_google_links_to_the_anonymous_account_so_nobody_is_counted_twice(tmp_pa
     acct.prompt = True
     assert acct.anonymous and acct.start("google") and acct.status == "waiting"
     assert acct.link == "" and acct.snapshot()["url"] == ""                 # nothing to "open again" yet
+    answering.set()
     assert wait_for(lambda: opened) and opened == [acct.link] and "flow=link" in acct.link
     assert supabase.calls[0][1] == f"{URL}/auth/v1/token?grant_type=refresh_token"
     page = browser(acct.link, code="the-code")
