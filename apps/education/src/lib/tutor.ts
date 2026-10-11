@@ -73,7 +73,7 @@ export function checkAnswer(task: Task, text: string): { correct: boolean; why: 
 }
 
 const CHECK_WORDS = /^(is it|answer|i think|my answer|=|it'?s)\b/i
-const HELP_WORDS = /\b(hint|help|stuck|i don'?t (know|get)|no idea|confused|clue)\b/i
+const HELP_WORDS = /\b(hint|help|stuck|i don'?t (know|get|understand)|no idea|confused|clue|explain|how|why|what is it|what do i do|where do i start)\b/i
 const ANSWER_WORDS = /\b(just tell me|what'?s the answer|give me the answer|tell me the answer)\b/i
 const META_WORDS = /\b(what (are|do) you (record|collect|see|know)|privacy|my teacher see|who sees)\b/i
 
@@ -102,7 +102,10 @@ export function respond(task: Task | null, text: string, hintsUsed: number): Rep
     }
   }
 
-  return { kind: 'note', text: `We are on "${task.title}". ${task.prompt} Type what you have, or ask for a hint.` }
+  // any other question ("what?", "is this right?") is a request for help
+  if (/\?\s*$/.test(said)) return hint(task, hintsUsed)
+
+  return { kind: 'note', text: `I didn't catch that. Type an answer, like 3/4, or ask me "how do I start?" and I will give you a hint.` }
 }
 
 /** The next rung of the task's hint ladder. */
