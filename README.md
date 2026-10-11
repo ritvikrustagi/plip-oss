@@ -33,14 +33,13 @@ happens until you say yes.
 
 ## Download
 
-Free and open source, on both platforms. The signed Mac build comes from
-**[Plip's releases](https://github.com/hussainn7/plip-oss/releases/latest)**; the Windows build comes from
-**[this fork's releases](https://github.com/ritvikrustagi/plip-oss/releases/latest)**, where the Windows port lives.
+Free and open source, on both platforms. Both builds come from
+**[the releases page](https://github.com/ritvikrustagi/plip-oss/releases)**.
 
 | | |
 |---|---|
-| **[⬇ Plip for Mac (.dmg)](https://github.com/hussainn7/plip-oss/releases/latest)** | macOS 13+, Apple Silicon. Signed and notarised. Lives in the notch. |
-| **[⬇ Plip for Windows (.zip)](https://github.com/ritvikrustagi/plip-oss/releases/latest)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
+| **[⬇ Plip for Mac (.dmg)](https://github.com/ritvikrustagi/plip-oss/releases/download/v0.10.0/Plip-0.10.0.dmg)** | macOS 13+, Apple Silicon. Signed and notarised. Lives in the notch. |
+| **[⬇ Plip for Windows (.zip)](https://github.com/ritvikrustagi/plip-oss/releases/download/v0.10.0-windows.1/Plip-0.10.0-windows.zip)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
 
 ### Mac
 
@@ -86,13 +85,13 @@ Spotlight content search, the pointing mascot, and the React dashboard. Plip gre
 with the reason rather than failing at you.
 
 Something broken? Click **Report a bug** in Plip's menu bar (Mac) or **Settings → General**, or
-[open a GitHub issue](https://github.com/hussainn7/plip-oss/issues).
+[open a GitHub issue](https://github.com/ritvikrustagi/plip-oss/issues).
 
 ## Quick start (from source)
 
 ```bash
 # macOS
-curl -fsSL https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ritvikrustagi/plip-oss/main/scripts/install.sh | bash
 plip                 # Plip moves into your notch; the dashboard opens on first run
 ```
 

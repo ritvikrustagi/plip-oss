@@ -123,7 +123,9 @@ def test_the_real_request_reads_githubs_answer():
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps(RELEASE).encode())
+            windows = {"tag_name": "v0.10.0-windows.1", "draft": False, "prerelease": False,
+                       "assets": [{"name": "Plip-0.10.0-windows.zip"}]}
+            self.wfile.write(json.dumps([windows, RELEASE]).encode())
 
         def log_message(self, *args):
             pass
@@ -131,9 +133,9 @@ def test_the_real_request_reads_githubs_answer():
     server = HTTPServer(("127.0.0.1", 0), Api)
     threading.Thread(target=server.serve_forever, daemon=True).start()
     try:
-        data = github_latest(f"http://127.0.0.1:{server.server_address[1]}/repos/x/releases/latest")
+        data = github_latest(f"http://127.0.0.1:{server.server_address[1]}/repos/x/releases")
         assert data["tag_name"] == "v0.9.0"
-        assert seen[0][0] == "/repos/x/releases/latest" and "github" in seen[0][1] and seen[0][2].startswith("Plip/")
+        assert seen[0][0] == "/repos/x/releases" and "github" in seen[0][1] and seen[0][2].startswith("Plip/")
     finally:
         server.shutdown()
         server.server_close()

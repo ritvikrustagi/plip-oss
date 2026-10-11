@@ -426,14 +426,14 @@ Three things this port needs from them:
 
 ### The landing page
 
-`site/index.html` has a download section with Mac and Windows side by side. The
-signed DMG is only published upstream, so Mac points there; the Windows zip is
-only published on this fork, so Windows points here. In short:
+`site/index.html` has a download section with Mac and Windows side by side. Both
+buttons link straight to the files on this repo's releases, so a click downloads
+(bump the tags on each release). In short:
 
 ```html
 <div class="downloads">
-  <a class="btn" href="https://github.com/hussainn7/plip-oss/releases/latest">Download for Mac</a>
-  <a class="btn ghost" href="https://github.com/ritvikrustagi/plip-oss/releases/latest">Download for Windows</a>
+  <a class="btn" href="https://github.com/ritvikrustagi/plip-oss/releases/download/v0.10.0/Plip-0.10.0.dmg">Download for Mac</a>
+  <a class="btn ghost" href="https://github.com/ritvikrustagi/plip-oss/releases/download/v0.10.0-windows.1/Plip-0.10.0-windows.zip">Download for Windows</a>
   <p class="note">Mac: signed .dmg, macOS 13+. Windows: early unsigned build, Windows 10/11 —
     see <a href="https://github.com/ritvikrustagi/plip-oss/blob/main/docs/WINDOWS.md">what works</a>.</p>
 </div>

@@ -1,6 +1,6 @@
 """Tells you when a newer Plip is out, so you can download it.
 
-Once a day Plip asks GitHub for the latest release of hussainn7/plip-oss: one GET to api.github.com with
+Once a day Plip asks GitHub for the latest Mac release of ritvikrustagi/plip-oss: one GET to api.github.com with
 nothing about you in it (GitHub sees the request, like any download). A newer version shows in the menu
 bar, on Home and in Settings → General, and once in the notch. Download opens the release's DMG.
 
@@ -21,8 +21,8 @@ from mcp_vision import __version__
 
 log = logging.getLogger("mcp_vision.buddy.updates")
 
-LATEST = "https://api.github.com/repos/hussainn7/plip-oss/releases/latest"
-RELEASES = "https://github.com/hussainn7/plip-oss/releases/"     # Download only ever opens a page under here
+LATEST = "https://api.github.com/repos/ritvikrustagi/plip-oss/releases?per_page=30"
+RELEASES = "https://github.com/ritvikrustagi/plip-oss/releases/"  # Download only ever opens a page under here
 EVERY = 24 * 60 * 60                                             # ask GitHub at most once a day
 
 
@@ -45,6 +45,9 @@ def github_latest(url: str = LATEST) -> dict[str, Any]:
                                                    "User-Agent": f"Plip/{__version__}"})
     with urllib.request.urlopen(request, timeout=10) as response:
         data = json.loads(response.read() or b"{}")
+    if isinstance(data, list):     # Windows builds share the releases list, so take the newest one with a DMG
+        return next((item for item in data if isinstance(item, dict)
+                     and (_release(item) or {}).get("url", "").endswith(".dmg")), {})
     return data if isinstance(data, dict) else {}
 
 
