@@ -17,7 +17,7 @@ import { SqliteStore } from '../server/db/sqlite.mjs'
 import { loadFixtures } from '../server/store.mjs'
 import { readRoster, parseCsv } from '../server/roster-import.mjs'
 import { startProductionServer } from '../server/serve.mjs'
-import { makeLearningEvent, validateLearningEvent } from '../shared/events.mjs'
+import { isoNow, makeLearningEvent, validateLearningEvent } from '../shared/events.mjs'
 import { safeRedirect } from '../server/auth/index.mjs'
 import { startFakeIdp } from './fake-idp.mjs'
 
@@ -585,6 +585,10 @@ test('a student removed from a class stops being visible on the next roster sync
 test('work survives a restart, and retention still clears what is too old', async () => {
   const file = join(scratch, `persist-${Date.now()}.sqlite`)
   const catalogue = { tasks: [], concepts: [] }
+  // A fixed clock the store reads, and that the event below is stamped from.
+  // Taking the stamp off the real clock instead makes this test pass or fail
+  // depending on what today's date happens to be against the fixed one - which
+  // is how it passed when it was written and failed two days later.
   let clock = Date.UTC(2026, 9, 9, 12, 0, 0)
 
   const first = new SqliteStore({ file, retentionDays: 7, catalogue, now: () => clock })
@@ -595,7 +599,7 @@ test('work survives a restart, and retention still clears what is too old', asyn
   const kid = first.upsertUserFromClaims({ issuer: 'https://idp.test', subject: 'k', email: 'k@s.example', displayName: 'K' })
   const session = first.createSession({ studentId: /** @type {string} */ (kid.studentId), classId: 'cls_a', shareWithTeacher: true })
   first.addEvent(makeLearningEvent({ type: 'task_started', sessionId: session.sessionId, studentId: /** @type {string} */ (kid.studentId),
-    classId: 'cls_a', taskId: 't1', conceptIds: [], shareWithTeacher: true }))
+    classId: 'cls_a', taskId: 't1', conceptIds: [], shareWithTeacher: true, timestamp: isoNow(clock) }))
   first.close()
 
   const second = new SqliteStore({ file, retentionDays: 7, catalogue, now: () => clock })
