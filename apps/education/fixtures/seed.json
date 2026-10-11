@@ -1,0 +1,37 @@
+{
+  "$comment": "Synthetic work from earlier in the week, so a teacher opening the demo dashboard sees something. Timestamps are built at load time from minutesAgo, so the fixtures never go stale or fall outside the retention window. Session keys are grouped per entry; the loader turns each into a real session id.",
+  "events": [
+    { "minutesAgo": 1450, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "session_started", "conceptIds": [], "shareWithTeacher": true },
+    { "minutesAgo": 1449, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "task_started", "taskId": "frac-add-1", "conceptIds": ["fractions.add-unlike", "fractions.equivalent"], "shareWithTeacher": true, "evidence": { "attempts": 0, "hintCount": 0 } },
+    { "minutesAgo": 1447, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "hint_requested", "taskId": "frac-add-1", "conceptIds": ["fractions.add-unlike", "fractions.equivalent"], "shareWithTeacher": true, "evidence": { "hintCount": 1 } },
+    { "minutesAgo": 1446, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "attempt_submitted", "taskId": "frac-add-1", "conceptIds": ["fractions.add-unlike", "fractions.equivalent"], "shareWithTeacher": true, "evidence": { "attempts": 1, "hintCount": 1, "outcome": "incorrect" } },
+    { "minutesAgo": 1445, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "hint_requested", "taskId": "frac-add-1", "conceptIds": ["fractions.add-unlike", "fractions.equivalent"], "shareWithTeacher": true, "evidence": { "hintCount": 2 } },
+    { "minutesAgo": 1444, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "hint_requested", "taskId": "frac-add-1", "conceptIds": ["fractions.add-unlike", "fractions.equivalent"], "shareWithTeacher": true, "evidence": { "hintCount": 3 } },
+    { "minutesAgo": 1443, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "attempt_submitted", "taskId": "frac-add-1", "conceptIds": ["fractions.add-unlike", "fractions.equivalent"], "shareWithTeacher": true, "evidence": { "attempts": 2, "hintCount": 3, "outcome": "correct" } },
+    { "minutesAgo": 1442, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "task_completed", "taskId": "frac-add-1", "conceptIds": ["fractions.add-unlike", "fractions.equivalent"], "shareWithTeacher": true, "evidence": { "attempts": 2, "hintCount": 3, "outcome": "correct", "durationMs": 480000, "studentConfirmed": true } },
+    { "minutesAgo": 1441, "session": "s1", "studentId": "stu_c3d4", "classId": "cls_math7a", "type": "session_ended", "conceptIds": [], "shareWithTeacher": true, "evidence": { "durationMs": 600000 } },
+
+    { "minutesAgo": 900, "session": "s2", "studentId": "stu_e5f6", "classId": "cls_math7a", "type": "session_started", "conceptIds": [], "shareWithTeacher": true },
+    { "minutesAgo": 899, "session": "s2", "studentId": "stu_e5f6", "classId": "cls_math7a", "type": "task_started", "taskId": "frac-simplify-1", "conceptIds": ["fractions.simplify"], "shareWithTeacher": true, "evidence": { "attempts": 0, "hintCount": 0 } },
+    { "minutesAgo": 897, "session": "s2", "studentId": "stu_e5f6", "classId": "cls_math7a", "type": "attempt_submitted", "taskId": "frac-simplify-1", "conceptIds": ["fractions.simplify"], "shareWithTeacher": true, "evidence": { "attempts": 1, "hintCount": 0, "outcome": "correct" } },
+    { "minutesAgo": 896, "session": "s2", "studentId": "stu_e5f6", "classId": "cls_math7a", "type": "task_completed", "taskId": "frac-simplify-1", "conceptIds": ["fractions.simplify"], "shareWithTeacher": true, "evidence": { "attempts": 1, "hintCount": 0, "outcome": "correct", "durationMs": 150000, "studentConfirmed": true } },
+    { "minutesAgo": 894, "session": "s2", "studentId": "stu_e5f6", "classId": "cls_math7a", "type": "task_started", "taskId": "ratio-rate-1", "conceptIds": ["ratios.unit-rate"], "shareWithTeacher": true, "evidence": { "attempts": 0, "hintCount": 0 } },
+    { "minutesAgo": 890, "session": "s2", "studentId": "stu_e5f6", "classId": "cls_math7a", "type": "session_ended", "conceptIds": [], "shareWithTeacher": true, "evidence": { "durationMs": 540000 } },
+
+    { "minutesAgo": 300, "session": "s3", "studentId": "stu_g7h8", "classId": "cls_math7a", "type": "session_started", "conceptIds": [], "shareWithTeacher": false },
+    { "minutesAgo": 299, "session": "s3", "studentId": "stu_g7h8", "type": "task_started", "taskId": "frac-equiv-1", "conceptIds": ["fractions.equivalent"], "shareWithTeacher": false, "evidence": { "attempts": 0, "hintCount": 0 } },
+    { "minutesAgo": 296, "session": "s3", "studentId": "stu_g7h8", "type": "task_completed", "taskId": "frac-equiv-1", "conceptIds": ["fractions.equivalent"], "shareWithTeacher": false, "evidence": { "attempts": 1, "hintCount": 0, "outcome": "correct", "durationMs": 180000, "studentConfirmed": true } },
+
+    { "minutesAgo": 200, "session": "s4", "studentId": "stu_j9k0", "classId": "cls_math7b", "type": "session_started", "conceptIds": [], "shareWithTeacher": true },
+    { "minutesAgo": 199, "session": "s4", "studentId": "stu_j9k0", "classId": "cls_math7b", "type": "task_started", "taskId": "ratio-rate-1", "conceptIds": ["ratios.unit-rate"], "shareWithTeacher": true, "evidence": { "attempts": 0, "hintCount": 0 } },
+    { "minutesAgo": 197, "session": "s4", "studentId": "stu_j9k0", "classId": "cls_math7b", "type": "attempt_submitted", "taskId": "ratio-rate-1", "conceptIds": ["ratios.unit-rate"], "shareWithTeacher": true, "evidence": { "attempts": 1, "hintCount": 0, "outcome": "incorrect" } },
+    { "minutesAgo": 195, "session": "s4", "studentId": "stu_j9k0", "classId": "cls_math7b", "type": "attempt_submitted", "taskId": "ratio-rate-1", "conceptIds": ["ratios.unit-rate"], "shareWithTeacher": true, "evidence": { "attempts": 2, "hintCount": 0, "outcome": "incorrect" } },
+    { "minutesAgo": 194, "session": "s4", "studentId": "stu_j9k0", "classId": "cls_math7b", "type": "session_ended", "conceptIds": [], "shareWithTeacher": true, "evidence": { "durationMs": 360000 } },
+
+    { "minutesAgo": 120, "session": "s5", "studentId": "stu_a1b2", "classId": "cls_math7a", "type": "session_started", "conceptIds": [], "shareWithTeacher": true },
+    { "minutesAgo": 119, "session": "s5", "studentId": "stu_a1b2", "classId": "cls_math7a", "type": "task_started", "taskId": "frac-equiv-1", "conceptIds": ["fractions.equivalent"], "shareWithTeacher": true, "evidence": { "attempts": 0, "hintCount": 0 } },
+    { "minutesAgo": 117, "session": "s5", "studentId": "stu_a1b2", "classId": "cls_math7a", "type": "attempt_submitted", "taskId": "frac-equiv-1", "conceptIds": ["fractions.equivalent"], "shareWithTeacher": true, "evidence": { "attempts": 1, "hintCount": 0, "outcome": "correct" } },
+    { "minutesAgo": 116, "session": "s5", "studentId": "stu_a1b2", "classId": "cls_math7a", "type": "task_completed", "taskId": "frac-equiv-1", "conceptIds": ["fractions.equivalent"], "shareWithTeacher": true, "evidence": { "attempts": 1, "hintCount": 0, "outcome": "correct", "durationMs": 210000, "studentConfirmed": true } },
+    { "minutesAgo": 115, "session": "s5", "studentId": "stu_a1b2", "classId": "cls_math7a", "type": "session_ended", "conceptIds": [], "shareWithTeacher": true, "evidence": { "durationMs": 300000 } }
+  ]
+}

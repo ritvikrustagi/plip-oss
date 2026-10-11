@@ -1,0 +1,105 @@
+{
+  "$comment": "Synthetic practice material. No real curriculum, no real student work.",
+  "concepts": [
+    { "conceptId": "fractions.equivalent", "label": "Equivalent fractions", "subject": "Math" },
+    { "conceptId": "fractions.add-unlike", "label": "Adding fractions with unlike denominators", "subject": "Math" },
+    { "conceptId": "fractions.simplify", "label": "Simplifying fractions", "subject": "Math" },
+    { "conceptId": "ratios.unit-rate", "label": "Unit rate", "subject": "Math" },
+    { "conceptId": "geometry.area-rect", "label": "Area of a rectangle", "subject": "Math" }
+  ],
+  "tasks": [
+    {
+      "taskId": "frac-equiv-1",
+      "title": "Three ways to write one half",
+      "subject": "Math",
+      "conceptIds": ["fractions.equivalent"],
+      "prompt": "Write three fractions that are equal to 1/2. Separate them with commas.",
+      "steps": [
+        { "id": "s1", "label": "Pick a number to multiply by" },
+        { "id": "s2", "label": "Multiply the top and the bottom by it" },
+        { "id": "s3", "label": "Check it still means one half" }
+      ],
+      "answer": {
+        "kind": "set",
+        "count": 3,
+        "rule": "equivalent-to",
+        "value": 0.5,
+        "explain": "Any fraction whose top is half its bottom works: 2/4, 3/6, 5/10, 50/100."
+      },
+      "hints": [
+        "A fraction stays the same if you multiply the top and the bottom by the same number. Try starting from 1/2.",
+        "1/2 with top and bottom doubled is 2/4. What do you get if you multiply both by 3?",
+        "2/4, 3/6 and 4/8 all mean one half. Write any three like that."
+      ]
+    },
+    {
+      "taskId": "frac-add-1",
+      "title": "One third plus one quarter",
+      "subject": "Math",
+      "conceptIds": ["fractions.add-unlike", "fractions.equivalent"],
+      "prompt": "What is 1/3 + 1/4? Give your answer as a fraction.",
+      "steps": [
+        { "id": "s1", "label": "Find a denominator both fit into" },
+        { "id": "s2", "label": "Rewrite both fractions with it" },
+        { "id": "s3", "label": "Add the tops, keep the bottom" }
+      ],
+      "answer": {
+        "kind": "fraction",
+        "value": 0.5833333333333333,
+        "accept": ["7/12"],
+        "explain": "12 is the smallest number both 3 and 4 divide into. 1/3 is 4/12, 1/4 is 3/12, and 4/12 + 3/12 is 7/12."
+      },
+      "hints": [
+        "You cannot add thirds to quarters directly. What number do both 3 and 4 divide into?",
+        "Use twelfths. How many twelfths is 1/3? How many is 1/4?",
+        "1/3 is 4/12 and 1/4 is 3/12. Add the tops: 4 + 3 twelfths."
+      ]
+    },
+    {
+      "taskId": "frac-simplify-1",
+      "title": "Make it as small as it goes",
+      "subject": "Math",
+      "conceptIds": ["fractions.simplify"],
+      "prompt": "Write 18/24 in its simplest form.",
+      "steps": [
+        { "id": "s1", "label": "Find a number that divides both" },
+        { "id": "s2", "label": "Divide the top and the bottom by it" },
+        { "id": "s3", "label": "Check nothing divides both any more" }
+      ],
+      "answer": {
+        "kind": "fraction",
+        "value": 0.75,
+        "accept": ["3/4"],
+        "explain": "6 divides both 18 and 24. 18 ÷ 6 is 3 and 24 ÷ 6 is 4, which gives 3/4, and nothing divides 3 and 4."
+      },
+      "hints": [
+        "Look for a number that divides both 18 and 24. Start with 2, then 3.",
+        "Both divide by 6. What is 18 ÷ 6, and what is 24 ÷ 6?",
+        "18/24 divided top and bottom by 6 is 3/4."
+      ]
+    },
+    {
+      "taskId": "ratio-rate-1",
+      "title": "Price per apple",
+      "subject": "Math",
+      "conceptIds": ["ratios.unit-rate"],
+      "prompt": "Six apples cost 150 cents. How many cents is one apple?",
+      "steps": [
+        { "id": "s1", "label": "Spot what you are dividing by" },
+        { "id": "s2", "label": "Divide the total by the number of apples" },
+        { "id": "s3", "label": "Say what the number means" }
+      ],
+      "answer": {
+        "kind": "number",
+        "value": 25,
+        "accept": ["25", "25 cents"],
+        "explain": "150 cents shared between 6 apples is 150 ÷ 6 = 25 cents each."
+      },
+      "hints": [
+        "A unit rate is the cost of exactly one. What do you divide by to get from 6 apples to 1?",
+        "Divide the total cost by the number of apples: 150 ÷ 6.",
+        "150 ÷ 6 is 25, so one apple is 25 cents."
+      ]
+    }
+  ]
+}

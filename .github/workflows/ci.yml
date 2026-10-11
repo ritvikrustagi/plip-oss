@@ -133,3 +133,40 @@ jobs:
           git diff --exit-code -- ../src/mcp_vision/buddy/web/index.html
       - name: Click through the island and dashboard
         run: npm run e2e
+
+  # The student web app and the teacher dashboard. Node 24 because the
+  # production store uses node:sqlite, which is only built in from 24.
+  education:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/education
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: apps/education/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run typecheck
+      - name: Tests, against both stores
+        run: npm test
+      - run: npm run build
+      - name: Click through the demo, then a production server with a real sign-in
+        run: npm run e2e
+
+  # The Chrome side panel. No dependencies and no build step, so this is just
+  # the test runner. The browser demo needs a headed Chrome and is not run here.
+  extension:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - name: Extension unit tests
+        run: node --test "tests/extension/*.test.mjs"
