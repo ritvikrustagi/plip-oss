@@ -80,7 +80,9 @@ export function GeneralTab({ state, composer: initial = null }: { state: Setting
             title={<>Plip <span className="font-mono text-[12px] font-normal text-white/40">v{state.version}</span></>}
             detail={state.update.available
               ? `Version ${state.update.available.version} is out. Download it, quit Plip, then drag the new one into Applications.`
-              : 'Open source and private by default. Your memory, history and keys never leave this Mac.'}
+              : state.memory?.sync?.enabled
+                ? 'Open source. Saved facts sync with your account; history and keys stay on this device.'
+                : 'Open source and private by default. Your memory, history and keys never leave this Mac.'}
             action={state.update.available
               ? <Button variant="brand" onClick={() => send('update-download')}>Download {state.update.available.version}</Button>
               : <Button variant="ghost" onClick={() => send('open-url', { url: REPO_URL })}>GitHub <ArrowUpRight className="size-3.5" /></Button>}

@@ -97,7 +97,7 @@ class WindowsShell:
     @classmethod
     def build(cls, *, on_main=None, probe: bool = True, start_hotkeys: bool = True) -> WindowsShell:
         from mcp_vision.buddy.factory import apply_prefs
-        from mcp_vision.buddy.memory import Memory
+        from mcp_vision.buddy.memory.postgres import make_memory
         from mcp_vision.buddy.settings import load_settings
         from mcp_vision.buddy.store import History, Prefs
         from mcp_vision.buddy.usage import UsageLog
@@ -110,7 +110,7 @@ class WindowsShell:
         workers.install(loop)
         threading.Thread(target=loop.run_forever, daemon=True, name="plip-loop").start()
         shell = cls(settings=settings, prefs=prefs, loop=loop, on_main=on_main,
-                    history=History(), memory=Memory(), usage=UsageLog())
+                    history=History(), memory=make_memory(settings), usage=UsageLog())
         shell.rebuild(probe=probe)
         if start_hotkeys:
             shell.start_hotkeys()
@@ -250,6 +250,8 @@ class WindowsShell:
         return timer
 
     def shutdown(self) -> None:
+        if self.memory is not None and hasattr(self.memory, "close"):
+            self.memory.close()
         if self.hotkeys is not None:
             self.hotkeys.stop()
         companion = self.controller.companion

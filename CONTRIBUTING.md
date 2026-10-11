@@ -82,7 +82,8 @@ the query), and never fold guest rows into "sign-ups" on a slide. A trigger on `
 uses has it). `private` isn't served by the Data API and grants nothing to `anon` or `authenticated`, so the app's
 key can't read it, only the dashboard can. Deleting someone in Authentication → Users deletes their row too.
 
-Sign-in sends only what Google and Supabase need to sign someone in; keep it that way. The setup funnel
+Sign-in sends only what Google and Supabase need to sign someone in. Optional [memory sync](docs/MEMORY.md)
+uses a separate Postgres table and authenticated RPCs for saved facts; it is off by default. The setup funnel
 (`mcp_vision.analytics.track`, the events in `FUNNEL`) is keyed on the install id, like the ping, and carries the
 account id as a property so PostHog and the user list line up: which steps were reached, never what was asked.
 README.md's Analytics section says exactly that; change both or neither.

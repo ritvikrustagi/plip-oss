@@ -133,11 +133,14 @@ class Memory:
         self.contacts = data.get("contacts", [])
         self.handles = data.get("handles", [])
 
+    def _data(self) -> dict:
+        return {"facts": [asdict(fact) for fact in self.facts], "imports": self.imports,
+                "contacts": self.contacts, "handles": self.handles}
+
     def save(self) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         tmp = self.path.with_suffix(".tmp")
-        tmp.write_text(json.dumps({"facts": [asdict(fact) for fact in self.facts], "imports": self.imports,
-                                   "contacts": self.contacts, "handles": self.handles}, indent=1))
+        tmp.write_text(json.dumps(self._data(), indent=1))
         from mcp_vision.paths import make_private
 
         make_private(tmp)         # what Plip knows about you is this user's alone

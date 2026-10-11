@@ -121,6 +121,8 @@ def make_companion(settings: BuddySettings, *, pointer: Pointer | None = None,
                    notes=None, memory=None, usage=None, usage_kind: str = "voice",
                    context=_DEFAULT) -> Companion:
     settings = apply_prefs(settings, prefs)
+    if memory is not None and hasattr(memory, "for_account"):
+        memory = memory.for_account()
     jev = make_jev(settings)
     capturer = capturer or ScreenCapturer(max_edge=settings.max_image_edge, quality=settings.jpeg_quality)
     watcher = None

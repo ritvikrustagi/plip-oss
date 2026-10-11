@@ -82,6 +82,7 @@ class BuddySettings(BaseSettings):
         "PLIP_SUPABASE_URL", "BUDDY_SUPABASE_URL"))
     supabase_key: str | None = Field(default=None, validation_alias=AliasChoices(
         "PLIP_SUPABASE_KEY", "BUDDY_SUPABASE_KEY"))
+    memory_sync: bool = Field(default=False, validation_alias="PLIP_MEMORY_SYNC")
 
 
 def load_settings(**overrides) -> BuddySettings:

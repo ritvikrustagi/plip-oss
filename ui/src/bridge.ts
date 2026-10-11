@@ -142,6 +142,7 @@ export interface ImportStatus {
 }
 
 export interface MemoryPanel {
+  sync?: { enabled: boolean; available: boolean; status: string }
   profile: Record<string, string>
   facts: FactCard[]
   imports: Record<string, ImportStatus>

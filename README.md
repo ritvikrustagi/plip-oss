@@ -181,9 +181,13 @@ seconds from what's already on your Mac:
 - **ChatGPT, Claude or Gemini memory**: copy Plip's prompt into your assistant and paste
   its answer back. This is the same pattern as Claude's Import Memory.
 
-Everything lives in `~/.config/mcp-vision/memory.json` (mode 0600). Passport, card and
+By default, memory lives in `~/.config/mcp-vision/memory.json` (mode 0600). Passport, card and
 Social Security numbers are detected, stored privately, and never sent to the model.
 From the terminal: `plip memory import contacts`, `plip memory show`, `plip memory prompt`.
+
+Optional [Postgres memory sync](docs/MEMORY.md) keeps saved facts with your Supabase account across devices.
+It uses a separate cache per account, keeps detected sensitive facts local, and leaves existing local memory
+untouched unless you explicitly import it. Enable it with `PLIP_MEMORY_SYNC=true` after applying the migration.
 
 ![The knowledge panel and import sources](docs/img/dashboard-memory.jpg)
 
@@ -289,9 +293,10 @@ Macs yet.
   picture (once you've signed in; the picture is downloaded once, to show in Settings) and the session.
 - Each time Plip starts, it renews the session with Supabase once. If your account was removed, Plip signs out and
   makes a new guest one. Offline, the name stays here and the account is made next launch.
-- What you ask Plip, your screen, memory and history are never sent to the account server or tied to your account.
+- What you ask Plip, your screen and conversation history are never sent to the account server. Memory also stays
+  local by default; enabling [memory sync](docs/MEMORY.md) sends saved non-sensitive facts tied to your account.
   Which setup steps you reached is counted, with the account id ([Analytics](#analytics)).
-- A guest account holds nothing about you but its random name. **Sign out** ends its session; the rows
+- A guest account holds its random name and, if memory sync is enabled, its saved facts. **Sign out** ends its session; the rows
   themselves are cleared from the server from time to time, and Plip doesn't make a new one until you sign out or
   reinstall. The opt-out below covers the analytics, not the account server: a download with a Supabase project
   talks to it whenever Plip starts.

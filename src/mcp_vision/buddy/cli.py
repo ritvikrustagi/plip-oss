@@ -106,11 +106,10 @@ def ask(question: str, images: tuple[str, ...], speak: bool, as_json: bool, engi
                                            quality=settings.jpeg_quality) if images else None)
     speaker = None if speak else QueueSpeaker(PrintVoice(write=lambda text: None))
     try:
-        from mcp_vision.buddy.memory import Memory
-
         from mcp_vision.buddy.usage import UsageLog
 
-        companion = make_companion(settings, capturer=capturer, speaker=speaker, prefs=prefs, memory=Memory(),
+        store = _memory_store()
+        companion = make_companion(settings, capturer=capturer, speaker=speaker, prefs=prefs, memory=store,
                                    usage=UsageLog(), usage_kind="cli")
     except SetupError as exc:
         raise click.ClickException(str(exc)) from exc
@@ -151,6 +150,7 @@ def ask(question: str, images: tuple[str, ...], speak: bool, as_json: bool, engi
                    f"first_speech={result.timings.get('first_speech', '-')}ms "
                    f"total={result.timings.get('spoken', '-')}ms", err=True)
     code = 0 if result.state == "done" else 1
+    _sync_memory(store)
     _finish(loop, companion, code)
     sys.exit(code)
 
@@ -183,12 +183,50 @@ def memory() -> None:
     """See or import what Plip knows about you."""
 
 
+def _sync_memory(store) -> None:
+    if hasattr(store, "sync") and not store.sync():
+        click.echo(store.error, err=True)
+
+
+def _memory_store():
+    from mcp_vision.buddy.memory.postgres import make_memory
+    from mcp_vision.buddy.settings import load_settings
+
+    try:
+        store = make_memory(load_settings(), background=False)
+    except ValueError as exc:
+        raise click.ClickException(str(exc)) from exc
+    _sync_memory(store)
+    return store
+
+
+@memory.command("sync")
+@click.option("--import-local", is_flag=True, help="Copy legacy local facts into the current account before syncing.")
+def memory_sync(import_local: bool) -> None:
+    """Sync this account's memory with Postgres. Requires PLIP_MEMORY_SYNC=true."""
+    from mcp_vision.buddy.memory import Memory
+    from mcp_vision.buddy.memory.postgres import AccountMemory
+
+    store = _memory_store()
+    if not isinstance(store, AccountMemory):
+        raise click.ClickException("Set PLIP_MEMORY_SYNC=true and configure Supabase first.")
+    if not store.account.memory_credentials()[0]:
+        raise click.ClickException("Sign in before syncing or importing local memory.")
+    if import_local:
+        destination = store.for_account()
+        for fact in Memory().facts:
+            for source in fact.sources or ["you"]:
+                destination.add(fact.key, fact.value, source, sensitive=fact.sensitive)
+        destination.save()
+    if not store.sync():
+        raise click.ClickException(store.error)
+    click.echo("Memory synced with Postgres. Sensitive facts stay on this device.")
+
+
 @memory.command("show")
 def memory_show() -> None:
     """Print the knowledge panel Plip uses."""
-    from mcp_vision.buddy.memory import Memory
-
-    store = Memory()
+    store = _memory_store()
     if not store.facts:
         click.echo("Plip doesn't know anything about you yet. Try: plip memory import contacts")
         return
@@ -204,9 +242,12 @@ def memory_import(source: str, path: str | None) -> None:
     import os
 
     from mcp_vision.buddy.actions.host import default_host
-    from mcp_vision.buddy.memory import Memory, importers
+    from mcp_vision.buddy.memory import importers
 
-    store = Memory()
+    store = _memory_store()
+    destination = store.for_account() if hasattr(store, "for_account") else store
+    if hasattr(store, "account") and not store.account.memory_credentials()[0]:
+        raise click.ClickException("Sign in before importing account memory.")
     error = ""
     if source in {"chatgpt", "claude", "gemini"}:
         text = open(path, encoding="utf-8").read() if path else click.get_text_stream("stdin").read()
@@ -217,8 +258,9 @@ def memory_import(source: str, path: str | None) -> None:
         facts, error = importers.import_mail(default_host())
     else:
         facts, error = importers.import_autofill(os.path.expanduser("~"))
-    added = store.merge(source, facts, error)
-    store.save()
+    added = destination.merge(source, facts, error)
+    destination.save()
+    _sync_memory(store)
     if error and not facts:
         raise click.ClickException(error)
     click.echo(f"Imported {len(facts)} from {source} ({added} new).")

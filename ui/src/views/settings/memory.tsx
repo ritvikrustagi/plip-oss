@@ -43,7 +43,9 @@ function KnowledgePanel({ state }: { state: SettingsState }) {
 
   if (!name && !rows.length)
     return (
-      <Empty title="Plip doesn’t know you yet" text="Import from your Mac below. It takes a few seconds, stays on this Mac, and lets Plip fill forms and personalize answers." />
+      <Empty title="Plip doesn’t know you yet" text={state.memory?.sync?.enabled
+        ? 'Add a preference or import facts below to personalize answers across your devices.'
+        : 'Import from your Mac below. It takes a few seconds, stays on this Mac, and lets Plip fill forms and personalize answers.'} />
     )
 
   return (
@@ -60,7 +62,7 @@ function KnowledgePanel({ state }: { state: SettingsState }) {
             {location && <span className="text-white/30"> · {location}</span>}
           </div>
         </div>
-        <span className="ml-auto"><Pill tone="info" dot={false}><Lock className="size-3" /> On this Mac</Pill></span>
+        <span className="ml-auto"><Pill tone="info" dot={false}><Lock className="size-3" /> {state.memory?.sync?.enabled ? 'Your account' : 'On this Mac'}</Pill></span>
       </div>
       <div className="divide-y divide-white/[0.05] border-t border-white/[0.05]">
         {rows.map(({ icon: Icon, label, value }) => (
@@ -211,13 +213,23 @@ function AddFact() {
 
 export function MemoryTab({ state }: { state: SettingsState }) {
   const facts = state.memory?.facts ?? []
+  if (state.memory?.sync?.enabled && !state.memory.sync.available) {
+    return <div>
+      <Header eyebrow="Memory" title="What Plip knows about you" />
+      <Empty title="Sign in to save memory" text="Account memory keeps your saved facts separate from other accounts. Finish setup or sign in before adding or importing facts." />
+      <Button onClick={() => send('account-sign-in')}>Sign in with Google</Button>
+    </div>
+  }
   return (
     <div>
       <Header
         eyebrow="Memory"
         title="What Plip knows about you"
-        subtitle="Used to fill forms, message the right people, and answer like someone who knows you. Stored only on this Mac. Passport and card numbers stay private and are never sent to the model."
+        subtitle={state.memory?.sync?.enabled
+          ? 'Saved facts sync with your account and personalize answers across devices. Detected sensitive facts stay on this device and out of model prompts.'
+          : 'Used to fill forms, message the right people, and answer like someone who knows you. Stored only on this Mac. Passport and card numbers stay private and are never sent to the model.'}
       />
+      {state.memory?.sync?.enabled && <p className="mb-4 text-[12.5px] text-white/50" role="status">{state.memory.sync.status}</p>}
       <Section title="You">
         <KnowledgePanel state={state} />
       </Section>
