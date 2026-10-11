@@ -103,7 +103,7 @@ export function Island() {
   const height = expanded ? notchH + Math.min(bodyHeight, MAX_BODY) : notchH
   const radius = expanded ? 26 : Math.round(notchH * 0.42)
 
-  // Open/close sounds on every open and close. Not into listening (mic's on); jitter = one plip, fly-by = silent.
+  // Open/close sounds on every open and close. Not into listening (mic's on); jitter = one pop, fly-by = silent.
   const lastMode = useRef(mode)
   const openedAt = useRef(-Infinity)
   useEffect(() => {
@@ -157,7 +157,7 @@ export function Island() {
                     className="text-[12px] font-semibold tracking-tight text-white/80"
                   >
                     {mode === 'listening' ? 'Listening' : mode === 'thinking' ? 'Thinking' : mode === 'error' ? 'Hmm'
-                      : state.confirm ? 'Your call' : state.finished === 'done' ? 'Done' : 'Plip'}
+                      : state.confirm ? 'Your call' : state.finished === 'done' ? 'Done' : 'Jade'}
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -209,16 +209,16 @@ export function Island() {
 function RightEar({ mode, level, done, finished }: { mode: Mode; level: number; done: boolean; finished: boolean }) {
   if (mode === 'listening') return <Waveform level={level} bars={9} color="bg-dew" />
   if (finished && done && (mode === 'answering' || mode === 'mini')) return <Check className="size-3.5 text-mint" strokeWidth={3} />
-  // TTS reports no level; keep the bars alive while Plip is still talking.
+  // TTS reports no level; keep the bars alive while Jade is still talking.
   if (mode === 'answering' || mode === 'mini')
-    return done && mode === 'mini' ? <Check className="size-3.5 text-mint" strokeWidth={3} /> : <Waveform level={done ? 0.04 : Math.max(level, 0.42)} bars={7} color="bg-plip-200" />
+    return done && mode === 'mini' ? <Check className="size-3.5 text-mint" strokeWidth={3} /> : <Waveform level={done ? 0.04 : Math.max(level, 0.42)} bars={7} color="bg-jade-200" />
   if (mode === 'thinking')
     return (
       <span className="flex gap-1">
         {[0, 1, 2].map((dot) => (
           <motion.span
             key={dot}
-            className="size-1.5 rounded-full bg-plip-300"
+            className="size-1.5 rounded-full bg-jade-300"
             animate={{ opacity: [0.25, 1, 0.25], y: [0, -2, 0] }}
             transition={{ duration: 0.9, repeat: Infinity, delay: dot * 0.15 }}
           />
@@ -226,8 +226,8 @@ function RightEar({ mode, level, done, finished }: { mode: Mode; level: number; 
       </span>
     )
   if (mode === 'error') return <AlertTriangle className="size-3.5 text-coral" />
-  if (mode === 'peek') return <Waveform level={0.08} bars={5} color="bg-plip-200/70" />    // resting: hold to talk
-  return <span className="size-1.5 rounded-full bg-plip-300/60 shadow-[0_0_8px_rgba(143,179,250,0.7)]" />
+  if (mode === 'peek') return <Waveform level={0.08} bars={5} color="bg-jade-200/70" />    // resting: hold to talk
+  return <span className="size-1.5 rounded-full bg-jade-300/60 shadow-[0_0_8px_rgba(143,179,250,0.7)]" />
 }
 
 function Body({ mode }: { mode: Mode }) {
@@ -248,7 +248,7 @@ function Body({ mode }: { mode: Mode }) {
             <span>Your shortcut is off until you allow Accessibility</span>
             <button
               onClick={() => send('grant', { permission: 'accessibility' })}
-              className="rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-slate-950 hover:bg-plip-50"
+              className="rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-slate-950 hover:bg-jade-50"
             >
               Allow
             </button>
@@ -370,12 +370,12 @@ function WalkthroughBar({ state }: { state: IslandState }) {
             key={index}
             className={cn(
               'h-1 rounded-full transition-all duration-500',
-              index < walk.index ? 'w-4 bg-mint' : index === walk.index ? 'w-6 bg-plip-400' : 'w-2.5 bg-white/15',
+              index < walk.index ? 'w-4 bg-mint' : index === walk.index ? 'w-6 bg-jade-400' : 'w-2.5 bg-white/15',
             )}
           />
         ))}
       </div>
-      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-plip-300">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-jade-300">
         Step {walk.index + 1} of {walk.total}
       </span>
       <span className="truncate text-[11px] text-white/45">{walk.label}</span>
@@ -409,7 +409,7 @@ function Checklist({ plan, index }: { plan: string[]; index: number }) {
             <span className={cn('truncate text-[13px] tracking-tight', done ? 'text-white/40 line-through decoration-white/20' : current ? 'font-semibold text-white' : 'text-white/55')}>
               {step}
             </span>
-            {current && <span className="ml-auto shrink-0 rounded-full bg-plip-400/15 px-2 py-0.5 text-[10px] font-semibold text-plip-200">now</span>}
+            {current && <span className="ml-auto shrink-0 rounded-full bg-jade-400/15 px-2 py-0.5 text-[10px] font-semibold text-jade-200">now</span>}
           </motion.li>
         )
       })}
@@ -426,7 +426,7 @@ function Results({ items }: { items: IslandState['results'] }) {
           onClick={() => item.path && send('open-path', { path: item.path })}
           className="flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition hover:bg-white/[0.06]"
         >
-          <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-plip-400/12 text-plip-200">
+          <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-jade-400/12 text-jade-200">
             <FileText className="size-3.5" />
           </span>
           <span className="min-w-0">
@@ -468,7 +468,7 @@ function ConfirmCard() {
           </button>
           <button
             onClick={() => send('confirm-action', { accept: true })}
-            className="flex items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-[12px] font-semibold text-slate-950 shadow-[0_6px_18px_-6px_rgba(255,255,255,0.5)] hover:bg-plip-50"
+            className="flex items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-[12px] font-semibold text-slate-950 shadow-[0_6px_18px_-6px_rgba(255,255,255,0.5)] hover:bg-jade-50"
           >
             <Check className="size-3.5" strokeWidth={3} /> {confirm.confirm}
           </button>
@@ -478,7 +478,7 @@ function ConfirmCard() {
   )
 }
 
-/** Yes / No thanks for Plip's closing suggestion. */
+/** Yes / No thanks for Jade's closing suggestion. */
 function OfferButtons() {
   const answer = (accept: boolean) => {
     island.set({ offer: null })
@@ -496,7 +496,7 @@ function OfferButtons() {
         </button>
         <button
           onClick={() => answer(true)}
-          className="flex items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-[12px] font-semibold text-slate-950 shadow-[0_6px_18px_-6px_rgba(255,255,255,0.5)] hover:bg-plip-50"
+          className="flex items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-[12px] font-semibold text-slate-950 shadow-[0_6px_18px_-6px_rgba(255,255,255,0.5)] hover:bg-jade-50"
         >
           <Check className="size-3.5" strokeWidth={3} /> Yes
         </button>

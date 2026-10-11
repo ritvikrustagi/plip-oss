@@ -80,7 +80,7 @@ class BuddyController:
         self.call_later(self.press_delay, lambda: self._press(press))
 
     def _listen_early(self) -> None:
-        # mic on now (first word); hush Plip so it isn't recorded
+        # mic on now (first word); hush Jade so it isn't recorded
         self._early = False
         if self.setup_error or self.companion is None or self.listener is None or \
                 self.state in {"listening", "finalizing"}:
@@ -144,7 +144,7 @@ class BuddyController:
         self.on_final(text)
 
     def on_release(self) -> None:
-        if self._pressing:                   # a tap: only stops Plip
+        if self._pressing:                   # a tap: only stops Jade
             self.stop()
             return
         if self.state != "listening":
@@ -168,7 +168,7 @@ class BuddyController:
             self.sound("sent")
 
     def stop(self) -> None:
-        """Stop (island, menu bar, quick tap): whatever Plip is doing, including a pending answer."""
+        """Stop (island, menu bar, quick tap): whatever Jade is doing, including a pending answer."""
         self._pressing = 0
         if self.state in {"listening", "finalizing"} and self.listener is not None:
             self.listener.cancel()
@@ -182,13 +182,13 @@ class BuddyController:
         self.call_later(0.3, lambda: self._settle(generation))
 
     def _settle(self, generation: int) -> None:
-        # again, once the stopped turn's last updates are in (they could reopen it or leave Plip "speaking")
+        # again, once the stopped turn's last updates are in (they could reopen it or leave Jade "speaking")
         if generation == self.generation and self.state == "idle" and not self._pressing:
             self.overlay.set_state("idle")
             self.presenter.idle()
 
     def on_cancel(self) -> None:
-        if self._pressing:                   # another app's shortcut: leave Plip alone
+        if self._pressing:                   # another app's shortcut: leave Jade alone
             self._pressing = 0
             self._drop_early()
             return

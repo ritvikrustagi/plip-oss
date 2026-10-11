@@ -9,7 +9,7 @@ import { Button, Card, Header, Pill, Row, Rows, Section } from './ui'
 
 type User = NonNullable<AccountState['user']>
 
-/** Why sign in at all: the one reason Plip gives, everywhere it asks. */
+/** Why sign in at all: the one reason Jade gives, everywhere it asks. */
 export const WHY_SIGN_IN = 'Pro is coming, and signed-in people get it first. Google only, one click, nothing else shared.'
 
 /** Google's "G", as its sign-in buttons show it. */
@@ -44,7 +44,7 @@ export function Avatar({ user, size = 20, className }: { user: User; size?: numb
   return (
     <span
       className={cn('grid shrink-0 place-items-center rounded-full font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.35)]',
-        guest ? 'bg-gradient-to-br from-white/25 to-white/10 text-white/80' : 'bg-gradient-to-br from-plip-300 to-plip-600', className)}
+        guest ? 'bg-gradient-to-br from-white/25 to-white/10 text-white/80' : 'bg-gradient-to-br from-jade-300 to-jade-600', className)}
       style={{ width: size, height: size, fontSize: Math.round(size * (initial.length > 1 ? 0.36 : 0.46)) }}
     >
       {initial}
@@ -64,11 +64,11 @@ export function GoogleSignIn({ state, className, size = 'lg' }: { state: Setting
         disabled={waiting}
         className={cn(
           'inline-flex items-center justify-center gap-3 rounded-full bg-white font-semibold tracking-tight text-slate-950 transition',
-          'shadow-[inset_0_-2px_0_rgba(0,0,0,0.08),0_10px_30px_-10px_rgba(156,194,250,0.55)] hover:bg-plip-50 active:scale-[0.98] disabled:cursor-default disabled:opacity-70 disabled:active:scale-100',
+          'shadow-[inset_0_-2px_0_rgba(0,0,0,0.08),0_10px_30px_-10px_rgba(156,194,250,0.55)] hover:bg-jade-50 active:scale-[0.98] disabled:cursor-default disabled:opacity-70 disabled:active:scale-100',
           size === 'lg' ? 'h-12 w-full max-w-[320px] px-6 text-[15px]' : 'h-10 px-5 text-[13.5px]',
         )}
       >
-        {waiting ? <LoaderCircle className="size-5 animate-spin text-plip-500" /> : <GoogleMark />}
+        {waiting ? <LoaderCircle className="size-5 animate-spin text-jade-500" /> : <GoogleMark />}
         {waiting ? 'Waiting for Google…' : failed ? 'Try again with Google' : 'Continue with Google'}
       </button>
 
@@ -103,13 +103,13 @@ export function SignInCard({ state }: { state: SettingsState }) {
   return (
     <Card className="mb-6 flex items-start gap-4 glow-ring">
       <div className="relative mt-0.5 shrink-0">
-        <div className="absolute inset-0 -z-10 scale-[1.6] rounded-full bg-plip-400/25 blur-2xl" />
+        <div className="absolute inset-0 -z-10 scale-[1.6] rounded-full bg-jade-400/25 blur-2xl" />
         <Mascot size={52} mood={account.status === 'failed' ? 'error' : account.status === 'waiting' ? 'thinking' : 'happy'} />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[15px] font-semibold tracking-tight">Make this Plip yours</div>
+        <div className="text-[15px] font-semibold tracking-tight">Make this Jade yours</div>
         <div className="mt-1 text-[12.5px] leading-relaxed text-white/50">
-          You’re <span className="font-medium text-white/75">{name}</span> for now, and Plip works fully like this. {WHY_SIGN_IN}
+          You’re <span className="font-medium text-white/75">{name}</span> for now, and Jade works fully like this. {WHY_SIGN_IN}
         </div>
         <div className="mt-4 flex items-start gap-3">
           <GoogleSignIn state={state} size="md" />
@@ -134,7 +134,7 @@ export function AccountTab({ state }: { state: SettingsState }) {
   const signedIn = Boolean(user?.email)
   return (
     <div>
-      <Header eyebrow="Account" title={signedIn ? 'Your Plip account' : 'Your Plip, so far'} />
+      <Header eyebrow="Account" title={signedIn ? 'Your Jade account' : 'Your Jade, so far'} />
       <Card className="mb-7 flex items-center gap-4 p-5">
         {user ? <Avatar user={user} size={52} /> : <Mascot size={52} mood="idle" />}
         <div className="min-w-0 flex-1">
@@ -142,7 +142,7 @@ export function AccountTab({ state }: { state: SettingsState }) {
             {user ? (user.name || user.email) : 'Setting up your account…'}
           </div>
           {signedIn && user?.name && <div className="truncate text-[13px] text-white/50">{user.email}</div>}
-          {!signedIn && user && <div className="text-[13px] text-white/50">Guest{since ? ` · since ${since}` : ''}. Plip works fully like this.</div>}
+          {!signedIn && user && <div className="text-[13px] text-white/50">Guest{since ? ` · since ${since}` : ''}. Jade works fully like this.</div>}
         </div>
         <Pill tone={signedIn ? 'good' : 'muted'}>{signedIn ? 'Signed in' : 'Guest'}</Pill>
       </Card>
@@ -163,12 +163,12 @@ export function AccountTab({ state }: { state: SettingsState }) {
       {signedIn && (
         <Section title="Sign-in">
           <Rows>
-            <Row title="Google" detail={`You sign in to Plip with your Google account${since ? `. Member since ${since}` : ''}.`} action={<GoogleMark />} />
+            <Row title="Google" detail={`You sign in to Jade with your Google account${since ? `. Member since ${since}` : ''}.`} action={<GoogleMark />} />
             <Row
               title="Sign out"
               detail={state.memory?.sync?.enabled
-                ? 'Plip keeps working as a guest. Your synced memory stays with this account and returns when you sign back in.'
-                : 'Plip keeps working on this Mac as a guest. Your memory, history and settings stay.'}
+                ? 'Jade keeps working as a guest. Your synced memory stays with this account and returns when you sign back in.'
+                : 'Jade keeps working on this Mac as a guest. Your memory, history and settings stay.'}
               action={<Button variant="ghost" onClick={() => send('account-sign-out')}>Sign out</Button>}
             />
           </Rows>
@@ -178,10 +178,10 @@ export function AccountTab({ state }: { state: SettingsState }) {
       <Section title="What your account holds">
         <Rows>
           <Row title={signedIn ? 'Your name, email and picture' : 'A name like Quiet Nomad'}
-            detail={signedIn ? 'From Google, so we know who uses Plip. No contacts, nothing else.'
-              : 'Picked at random here, so you count as one person using Plip. Google adds your real name, email and picture when you sign in.'} />
+            detail={signedIn ? 'From Google, so we know who uses Jade. No contacts, nothing else.'
+              : 'Picked at random here, so you count as one person using Jade. Google adds your real name, email and picture when you sign in.'} />
           <Row
-            title={state.memory?.sync?.enabled ? 'Saved memory' : 'Not what you do with Plip'}
+            title={state.memory?.sync?.enabled ? 'Saved memory' : 'Not what you do with Jade'}
             detail={state.memory?.sync?.enabled
               ? 'Saved facts sync with your account. Detected sensitive facts, conversation history and learning-event logs stay on this device. Setup steps are counted separately.'
               : 'What you ask, your screen, memory and history stay on this Mac and are never tied to your account. Only which setup steps you reached are counted.'}

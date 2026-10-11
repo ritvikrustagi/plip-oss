@@ -1,4 +1,4 @@
-// The side panel: the only place a student talks to Plip.
+// The side panel: the only place a student talks to Jade.
 //
 // It owns the session, the conversation and the turn loop. The worker owns
 // anything that needs a Chrome API. The shape of a turn follows
@@ -69,7 +69,7 @@ async function boot() {
     if ('classId' in changes) ui.session.classId = changes.classId.newValue || ''
     render()
   })
-  say('system', 'Plip helps you think through your own work. It cannot type in the page and it never '
+  say('system', 'Jade helps you think through your own work. It cannot type in the page and it never '
     + 'submits anything. Start a session when you want it to look at what you are doing.')
   await refreshTab()
   setInterval(refreshTab, 2500)
@@ -83,7 +83,7 @@ dom['session-toggle'].addEventListener('click', () => {
   if (state === ACTIVE) {
     ui.session.pause()
     stopWork()
-    say('system', 'Paused. Plip is not reading the page or recording anything until you start again.')
+    say('system', 'Paused. Jade is not reading the page or recording anything until you start again.')
     clearHighlight()
   } else {
     ui.session.start({})
@@ -101,7 +101,7 @@ dom['session-end'].addEventListener('click', () => {
   const tally = ui.session.summary()
   say('system', `Session ended. Recorded: ${tally.tasksStarted} task(s) started, `
     + `${tally.tasksCompleted} finished, ${tally.hintsRequested} hint(s) asked for, ${tally.attempts} `
-    + `attempt(s) you told Plip about. ${events.length} event(s) written. Export or delete them in settings.`)
+    + `attempt(s) you told Jade about. ${events.length} event(s) written. Export or delete them in settings.`)
   clearHighlight()
   ui.conversation.clear()
   render()
@@ -138,7 +138,7 @@ dom.grant.addEventListener('click', async () => {
     say('system', reply.reason || 'Access was not granted.')
     return
   }
-  say('system', `Plip can now read ${ui.tab.tab.host} while a session is on. Take it back any time.`)
+  say('system', `Jade can now read ${ui.tab.tab.host} while a session is on. Take it back any time.`)
   await refreshTab()
   await loadPage()
 })
@@ -149,7 +149,7 @@ dom.revoke.addEventListener('click', async () => {
   await send({ kind: 'revoke', url })
   ui.page = null
   clearHighlight()
-  say('system', 'Access taken back. Plip can no longer read that site.')
+  say('system', 'Access taken back. Jade can no longer read that site.')
   await refreshTab()
 })
 
@@ -178,7 +178,7 @@ dom['task-done'].addEventListener('click', () => {
   if (!ui.session.task) return
   ui.session.finishTask({ outcome: 'unknown', studentConfirmed: true })
   dom['task-label'].value = ''
-  say('system', 'Marked finished. Plip recorded that you finished it, not whether it was right.')
+  say('system', 'Marked finished. Jade recorded that you finished it, not whether it was right.')
   render()
 })
 
@@ -218,14 +218,14 @@ for (const button of document.querySelectorAll('#attempt [data-outcome]')) {
     if (!outcome) return
     ui.session.attemptSubmitted({ outcome, studentConfirmed: true })
     say('system', `Recorded: you tried something and called it ${outcome}. That is your own report, `
-      + 'not a mark. Plip cannot tell whether an answer is right unless you show it.')
+      + 'not a mark. Jade cannot tell whether an answer is right unless you show it.')
     render()
   })
 }
 
 function guard() {
   if (ui.session.mayWork) return true
-  say('system', 'Start a session first. Plip does not read anything or record anything until you do.')
+  say('system', 'Start a session first. Jade does not read anything or record anything until you do.')
   return false
 }
 
@@ -272,7 +272,7 @@ async function turn(userText, { step = false, depth = 0 } = {}) {
     ...ui.conversation.history(),
     { role: 'user', text: `${turnContext(context)}\n\nstudent: ${userText}`.trim() },
   ]
-  const bubble = say('plip', '')
+  const bubble = say('jade', '')
   const stream = new ReplyStream({})
   const followUps = []
   try {
@@ -289,7 +289,7 @@ async function turn(userText, { step = false, depth = 0 } = {}) {
   } catch (error) {
     bubble.remove()
     if (!cutOff()) {
-      say('system', `Plip could not answer: ${String(error?.message || error).slice(0, 200)}`)
+      say('system', `Jade could not answer: ${String(error?.message || error).slice(0, 200)}`)
       ui.busy = false
       render()
     }
@@ -383,13 +383,13 @@ async function perform(plan, bubble, followUps) {
       // Concepts describe a task. With none open there is nothing truthful to
       // attach them to, so nothing is recorded.
       say('system', `Nothing is open to attach ${concepts.join(', ')} to. Name what you are working on `
-        + 'first, and Plip can record it against that.')
+        + 'first, and Jade can record it against that.')
       return
     }
     ui.session.finishTask({ outcome: 'unknown', studentConfirmed: true, conceptIds: concepts })
     dom['task-label'].value = ''
     say('system', `Recorded, against the task you just finished: ${concepts.join(', ')}. `
-      + 'That is what you confirmed, not what Plip decided.')
+      + 'That is what you confirmed, not what Jade decided.')
     render()
     return
   }
@@ -550,7 +550,7 @@ async function recordThroughSchool() {
         token: ui.settings.proxyToken,
       })
       if (said) submit(said)
-      else say('system', 'Plip heard nothing in that. Try again, or type it.')
+      else say('system', 'Jade heard nothing in that. Try again, or type it.')
     } catch (error) {
       say('system', `${String(error?.message || error)} You can always type instead.`)
     }
@@ -605,11 +605,11 @@ function render() {
     ? 'hidden by Chrome'
     : browserPage ? 'a browser page' : (tab?.host || 'none')
   dom['page-note'].textContent = ui.tab.hidden
-    ? 'Plip did not take the right to see your tabs. Click the Plip button in the toolbar on the tab you '
+    ? 'Jade did not take the right to see your tabs. Click the Jade button in the toolbar on the tab you '
       + 'want help with, or grant that one site.'
     : ui.tab.blocked || (ui.tab.granted
-      ? 'Granted. Plip reads this site only while a session is on, and never password, payment or hidden fields.'
-      : 'Not granted. Plip cannot see this page.')
+      ? 'Granted. Jade reads this site only while a session is on, and never password, payment or hidden fields.'
+      : 'Not granted. Jade cannot see this page.')
   dom.grant.hidden = Boolean(ui.tab.blocked) || ui.tab.granted || !tab?.url
   dom.revoke.hidden = !ui.tab.granted
   dom['task-strip'].hidden = !ui.session?.mayWork
@@ -627,7 +627,7 @@ function render() {
   dom.send.disabled = ui.busy
   dom.input.disabled = ui.busy
   dom['composer-note'].textContent = ui.busy
-    ? 'Plip is thinking…'
+    ? 'Jade is thinking…'
     : `${provider() === mockProvider ? 'Local tutor' : 'School proxy'} · nothing is typed or submitted for you`
 }
 

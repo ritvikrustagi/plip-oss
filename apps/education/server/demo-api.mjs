@@ -58,7 +58,7 @@ if (isMain) {
     retentionDays: Number(process.env.DEMO_RETENTION_DAYS ?? process.env.PLIP_RETENTION_DAYS ?? 7),
     database: process.env.PLIP_DATABASE,
   })
-  console.log(`plip education demo API on ${origin}`)
+  console.log(`jade education demo API on ${origin}`)
   console.log(`  ${DEMO_BANNER}`)
   console.log(`  ${store.stats().events} synthetic events seeded, retention ${config.retentionDays} days, `
     + `store ${config.database ?? 'in memory'}`)

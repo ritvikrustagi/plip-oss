@@ -18,19 +18,19 @@
   --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
 
-  /* Plip: a droplet. Deep ink surfaces, water-clear aqua accent. */
+  /* Jade: a droplet. Deep ink surfaces, water-clear aqua accent. */
   --color-ink: #06070a;
   --color-panel: #0b0d12;
   --color-surface: #10131a;
   --color-raised: #161a23;
   --color-line: rgb(255 255 255 / 0.07);
-  --color-plip-50: #eef4ff;
-  --color-plip-100: #dbe7fe;
-  --color-plip-200: #bcd2fd;
-  --color-plip-300: #8fb3fa;
-  --color-plip-400: #5f8ef4;
-  --color-plip-500: #3e6ef0;
-  --color-plip-600: #2c58e6;
+  --color-jade-50: #eef4ff;
+  --color-jade-100: #dbe7fe;
+  --color-jade-200: #bcd2fd;
+  --color-jade-300: #8fb3fa;
+  --color-jade-400: #5f8ef4;
+  --color-jade-500: #3e6ef0;
+  --color-jade-600: #2c58e6;
   --color-sky-glow: #6d9cf7;
   --color-dew: #5eead4;
   --color-sun: #fbbf24;

@@ -56,7 +56,7 @@ class ActionContext:
     fingerprint: Callable[[float, float], bytes | None] = lambda x, y: None
     # bumped per new request, so a cut-off long scroll stops
     generation: int = 0
-    animate: Callable[[float, float, str], Any] = lambda x, y, label: None   # Plip flies to where it acts
+    animate: Callable[[float, float, str], Any] = lambda x, y, label: None   # Jade flies to where it acts
 
 
 Runner = Callable[[ActionContext, dict], Awaitable[ActionResult] | ActionResult]

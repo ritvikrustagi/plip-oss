@@ -26,7 +26,7 @@ function EngineCard({ engine, check }: { engine: Engine; check?: KeyCheck | null
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <span className="truncate text-[14px] font-semibold tracking-tight">{engine.label}</span>
-            {engine.kind === 'subscription' && <span className="shrink-0 rounded-md bg-plip-400/15 px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-plip-200">Plan</span>}
+            {engine.kind === 'subscription' && <span className="shrink-0 rounded-md bg-jade-400/15 px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-jade-200">Plan</span>}
           </div>
           <div className="mt-1"><Pill tone={tone}>{label}</Pill></div>
         </div>
@@ -70,7 +70,7 @@ export function BrainTab({ state }: { state: SettingsState }) {
     <div>
       <Header
         eyebrow="Brain"
-        title="The AI Plip thinks with"
+        title="The AI Jade thinks with"
         subtitle="Use the plan you already pay for (Claude, ChatGPT or Cursor): one click connects it, with no extra bill. No plan? Google’s Gemini is free."
       />
       <p className="-mt-4 mb-5 text-[11.5px] text-white/35">How fast answers come depends on the provider.</p>
@@ -92,7 +92,7 @@ export function BrainTab({ state }: { state: SettingsState }) {
       </Section>
       <div className="grid grid-cols-2 gap-3">
         <Card>
-          <div className="mb-1 flex items-center gap-2 text-[13.5px] font-semibold"><Gauge className="size-4 text-plip-300" /> Reasoning depth</div>
+          <div className="mb-1 flex items-center gap-2 text-[13.5px] font-semibold"><Gauge className="size-4 text-jade-300" /> Reasoning depth</div>
           <div className="mb-3 text-[12px] text-white/40">Fast answers, or deeper thinking for hard questions.</div>
           <Segmented
             value={state.depth}
@@ -105,7 +105,7 @@ export function BrainTab({ state }: { state: SettingsState }) {
             <div className="flex items-center gap-2 text-[13.5px] font-semibold"><Zap className="size-4 text-sun" /> Jev fast router</div>
             {state.jev.configured ? <Pill tone="good">{state.jev.latencyMs ? `${state.jev.latencyMs} ms` : 'On'}</Pill> : <Pill tone="muted">Optional</Pill>}
           </div>
-          <div className="mb-3 text-[12px] leading-relaxed text-white/40">A ~100 ms System-1 model decides if Plip needs your screen, which monitor, and which control to snap to.</div>
+          <div className="mb-3 text-[12px] leading-relaxed text-white/40">A ~100 ms System-1 model decides if Jade needs your screen, which monitor, and which control to snap to.</div>
           <KeyField name="TYPESAFE_API_KEY" placeholder="TypeSafe key (console.typesafe.ai)" saved={state.jev.configured} />
         </Card>
       </div>

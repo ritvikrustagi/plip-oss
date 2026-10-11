@@ -3,7 +3,7 @@
  * learning events that come out of it.
  *
  * Everything that becomes an event passes through `emit`, so there is one place
- * to read if you want to know exactly what Plip records. It is a short list:
+ * to read if you want to know exactly what Jade records. It is a short list:
  * the session starting and ending, a task being started and finished, a hint
  * being asked for, and an answer being checked. What the student typed, what is
  * on their screen, and what the tutor said are not in it.
@@ -313,7 +313,7 @@ export const actions = {
           : 'Recording for you only. Nothing goes to a teacher unless you turn sharing on.' })
       startClock()
       emit('session_started')
-      say('plip', shareWithTeacher
+      say('jade', shareWithTeacher
         ? 'Session started, and sharing is on: your teacher sees which tasks you worked on, how many hints you asked me for and how many answers you tried. Not what you type. Pick a task and we will start.'
         : 'Session started, just for you. Nothing is shared with a teacher. Pick a task and we will start.', 'note')
     } catch (error) {
@@ -331,7 +331,7 @@ export const actions = {
       setProgress(taskId, { startedAt: Date.now() })
       emit('task_started', { taskId, conceptIds: task.conceptIds, evidence: { attempts: 0, hintCount: 0 } })
     }
-    say('plip', greetTask(task), 'note')
+    say('jade', greetTask(task), 'note')
   },
 
   /** Ticks a step of the checklist. A tick is the student's own note: no event. */
@@ -353,7 +353,7 @@ export const actions = {
     const hintsUsed = progress.hintsUsed + 1
     setProgress(state.taskId, { hintsUsed })
     say('student', 'Can I have a hint?')
-    say('plip', reply.text, 'hint')
+    say('jade', reply.text, 'hint')
     emit('hint_requested', { taskId: task.taskId, conceptIds: task.conceptIds, evidence: { hintCount: hintsUsed } })
   },
 
@@ -364,7 +364,7 @@ export const actions = {
     say('student', text)
     const progress = state.taskId ? progressFor(state.taskId) : blankProgress()
     const reply = respond(task, text, progress.hintsUsed)
-    say('plip', reply.text, reply.kind)
+    say('jade', reply.text, reply.kind)
 
     if (!task || !state.taskId) return reply
     if (reply.hintGiven) {
@@ -404,7 +404,7 @@ export const actions = {
         studentConfirmed: true,
       },
     })
-    say('plip', `Marked “${task.title}” as finished, on your word. Pick another one, or end the session when you are done.`, 'note')
+    say('jade', `Marked “${task.title}” as finished, on your word. Pick another one, or end the session when you are done.`, 'note')
   },
 
   async pause() {
@@ -443,7 +443,7 @@ export const actions = {
     try {
       const { session, note } = await api.setSharing(state.session.sessionId, shareWithTeacher)
       sessionStore.set((current) => ({ session, sharing: session.sharing, busy: false, notice: note, synced: current.synced + 1 }))
-      say('plip', note, 'note')
+      say('jade', note, 'note')
     } catch (error) {
       sessionStore.set({ busy: false, error: error instanceof Error ? error.message : 'Could not change sharing.' })
     }
@@ -513,7 +513,7 @@ export const actions = {
       const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }))
       const link = document.createElement('a')
       link.href = url
-      link.download = `plip-${studentId}-export.json`
+      link.download = `jade-${studentId}-export.json`
       link.click()
       URL.revokeObjectURL(url)
       sessionStore.set({ notice: 'Downloaded. That file is everything the demo API holds about you.' })

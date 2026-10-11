@@ -1,4 +1,4 @@
-"""Plip's own windows (the notch island) step aside for points it's about to click or point at.
+"""Jade's own windows (the notch island) step aside for points it's about to click or point at.
 
 Points are global top-left; a failing listener never blocks the click.
 """
@@ -15,7 +15,7 @@ _listeners: list[Listener] = []
 
 
 def on_clear(listener: Listener) -> Callable[[], None]:
-    """Call ``listener(points, act)`` before Plip touches points; returns an unsubscribe."""
+    """Call ``listener(points, act)`` before Jade touches points; returns an unsubscribe."""
     _listeners.append(listener)
 
     def stop() -> None:
@@ -31,4 +31,4 @@ def clear(points: Iterable[Point], *, act: bool = True) -> None:
         try:
             listener(where, act)
         except Exception:
-            log.exception("a window couldn't make way for Plip")
+            log.exception("a window couldn't make way for Jade")

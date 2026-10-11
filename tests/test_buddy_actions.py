@@ -1,4 +1,4 @@
-"""Plip doing things: the [DO]/[PLAN] protocol, every core skill, the engine, and whole turns."""
+"""Jade doing things: the [DO]/[PLAN] protocol, every core skill, the engine, and whole turns."""
 from __future__ import annotations
 
 import asyncio
@@ -181,7 +181,7 @@ def test_organize_desktop_asks_first_moves_and_undoes(tmp_path):
     assert (folder / "Images" / "cat.jpg").exists() and (folder / "Documents" / "Resume.pdf").exists()
     assert json.loads(undo_file.read_text())[0]["kind"] == "moves"
 
-    # a fresh engine (Plip restarted) can still undo it
+    # a fresh engine (Jade restarted) can still undo it
     e2 = ActionEngine(ActionContext(host=FakeHost(home=str(tmp_path)), state={"desktop": str(folder)}),
                       undo_path=undo_file)
     restored = run(e2.handle("undo", {}))
@@ -263,7 +263,7 @@ def test_timer_schedules_and_announces():
     delay, ring = scheduled[0]
     assert delay == 300
     ring()
-    assert announced == ["Your tea timer is done."] and host.calls[-1] == ("notify", "Plip", "Your tea timer is done.")
+    assert announced == ["Your tea timer is done."] and host.calls[-1] == ("notify", "Jade", "Your tea timer is done.")
     assert run(e.handle("set_timer", {"minutes": 0})).status == "failed"
     assert run(e.handle("set_timer", {"seconds": 30})).result.detail == "30 sec"
 

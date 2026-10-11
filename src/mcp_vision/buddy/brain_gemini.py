@@ -131,7 +131,7 @@ class GeminiKeyBrain:
             finally:
                 put("end", None)
 
-        threading.Thread(target=worker, daemon=True, name="plip-gemini").start()
+        threading.Thread(target=worker, daemon=True, name="jade-gemini").start()
         blocked, finish, usage, model = "", "", None, self.model
         try:
             started = False
@@ -173,7 +173,7 @@ class GeminiKeyBrain:
             yield " That's as far as I can go in one breath. Ask me to keep going."
 
     def _headers(self) -> dict[str, str]:
-        return {"x-goog-api-key": self.api_key, "Content-Type": "application/json", "User-Agent": "Plip"}
+        return {"x-goog-api-key": self.api_key, "Content-Type": "application/json", "User-Agent": "Jade"}
 
     def _get(self, url: str) -> dict[str, Any]:
         request = urllib.request.Request(url, headers=self._headers())

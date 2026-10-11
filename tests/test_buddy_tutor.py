@@ -1,4 +1,4 @@
-"""Tutor mode: the hint ladder climbs one rung per turn, and Plip doesn't do the work."""
+"""Tutor mode: the hint ladder climbs one rung per turn, and Jade doesn't do the work."""
 from __future__ import annotations
 
 import asyncio

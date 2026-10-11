@@ -30,7 +30,7 @@ const GROUPS: { title: string; tabs: { id: Tab; label: string; icon: Icon }[] }[
     ],
   },
   {
-    title: 'Plip',
+    title: 'Jade',
     tabs: [
       { id: 'brain', label: 'Brain', icon: Brain },
       { id: 'voice', label: 'Voice', icon: AudioLines },
@@ -104,14 +104,14 @@ export function Settings() {
 
   return (
     <div className="relative flex h-full overflow-clip bg-ink text-white noise">
-      <div className="pointer-events-none absolute -left-48 -top-64 size-[560px] rounded-full bg-plip-500/[0.14] blur-[130px] animate-aurora" />
+      <div className="pointer-events-none absolute -left-48 -top-64 size-[560px] rounded-full bg-jade-500/[0.14] blur-[130px] animate-aurora" />
       <div className="pointer-events-none absolute -right-56 top-56 size-[460px] rounded-full bg-sky-glow/[0.08] blur-[130px] animate-aurora [animation-delay:-7s]" />
 
       <aside className="relative z-10 flex w-[220px] shrink-0 flex-col border-r border-white/[0.06] bg-black/25 px-3 pb-4 pt-5 backdrop-blur-xl">
         <div className="mb-5 flex items-center gap-2.5 px-2">
           <Mascot size={30} mood="happy" glow={false} />
           <div className="leading-tight">
-            <div className="text-[15px] font-semibold tracking-tight">Plip</div>
+            <div className="text-[15px] font-semibold tracking-tight">Jade</div>
             <div className="font-mono text-[10.5px] text-white/30">v{state.version}</div>
           </div>
         </div>

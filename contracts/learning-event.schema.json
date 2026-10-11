@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/ritvikrustagi/plip-oss/contracts/learning-event.schema.json",
-  "title": "Plip learning event (v1)",
-  "description": "One thing that happened during an opted-in study session. Shared contract for every Plip learning surface: the Chromebook web app, the browser extension, and the desktop build. A learning event records that something happened and how much help it took. It never carries what was on the screen, what was typed, where the student browsed, or what the model said.",
+  "title": "Jade learning event (v1)",
+  "description": "One thing that happened during an opted-in study session. Shared contract for every Jade learning surface: the Chromebook web app, the browser extension, and the desktop build. A learning event records that something happened and how much help it took. It never carries what was on the screen, what was typed, where the student browsed, or what the model said.",
   "$comment": "Owned by apps/education (Chromebook chat). Producers on other platforms must emit exactly this shape. Additional properties are refused on purpose: that is what keeps screenshots, URLs, transcripts and prompt text out of the pipe.",
   "type": "object",
   "additionalProperties": false,
@@ -40,7 +40,7 @@
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})$"
     },
     "platform": {
-      "description": "Which Plip surface produced it.",
+      "description": "Which Jade surface produced it.",
       "type": "string",
       "enum": ["windows", "chromebook", "extension"]
     },

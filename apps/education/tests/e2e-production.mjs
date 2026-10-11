@@ -23,7 +23,7 @@ import { createStore } from '../server/db/index.mjs'
 import { startProductionServer } from '../server/serve.mjs'
 import { startFakeIdp } from './fake-idp.mjs'
 
-const scratch = mkdtempSync(join(tmpdir(), 'plip-prod-e2e-'))
+const scratch = mkdtempSync(join(tmpdir(), 'jade-prod-e2e-'))
 writeFileSync(join(scratch, 'catalogue.json'), JSON.stringify({
   concepts: [{ conceptId: 'fractions.add-unlike', label: 'Adding fractions with unlike denominators', subject: 'Math' }],
   tasks: [{
@@ -54,7 +54,7 @@ const config = load({
   PLIP_DATABASE: join(scratch, 'school.sqlite'),
   PLIP_CATALOGUE: join(scratch, 'catalogue.json'),
   PLIP_OIDC_ISSUER: idp.origin,
-  PLIP_OIDC_CLIENT_ID: 'plip-school',
+  PLIP_OIDC_CLIENT_ID: 'jade-school',
   PLIP_OIDC_CLIENT_SECRET: 'the-client-secret',
   PLIP_OIDC_ALLOWED_DOMAINS: 'school.example',
 })
@@ -126,7 +126,7 @@ await test('a production build shows no demo banner and no fixture sign-in list'
   assert.equal(await page.getByText('Sign in as a student').count(), 0, 'no fixture identities anywhere')
   const body = await page.locator('body').textContent() ?? ''
   assert.equal(body.includes('demo-student'), false)
-  assert.match(body, /Plip does not have a password of its own/)
+  assert.match(body, /Jade does not have a password of its own/)
   assert.deepEqual(consoleErrors, [])
 })
 

@@ -40,11 +40,11 @@ REFUSED_CLAIMS = (
     "engagement or effort - time in the app is not effort",
     "mastery or understanding - completing a task is not evidence of either",
     "a grade or a score - these events were never designed to be marked",
-    "comparison between students - the counts depend on how each one chose to use Plip",
+    "comparison between students - the counts depend on how each one chose to use Jade",
 )
 
 DISCLAIMERS = (
-    "Counts under “measured” are what the student did in Plip, and nothing else.",
+    "Counts under “measured” are what the student did in Jade, and nothing else.",
     "Everything under “inferred” is a hypothesis for you to check with the student.",
     "Screen time is not in this summary because it says nothing about learning.",
     "Only sessions the student opted in to, and chose to share, appear here.",
@@ -62,7 +62,7 @@ class TaskRecord:
     completed: bool = False
     outcome: str = ""
     duration_ms: int | None = None
-    student_confirmed: bool = False       # the student said so, rather than Plip deciding
+    student_confirmed: bool = False       # the student said so, rather than Jade deciding
 
     def as_dict(self) -> dict[str, Any]:
         return {"taskId": self.task_id, "concepts": list(self.concepts), "hints": self.hints,

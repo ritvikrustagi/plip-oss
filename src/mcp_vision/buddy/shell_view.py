@@ -10,7 +10,7 @@ testable on any machine.
 
 ``render()`` returns the text blocks a widget toolkit needs. ``lines()`` is
 the same thing as plain text, which is what the tests read and what
-``plip windows --headless`` prints.
+``jade windows --headless`` prints.
 """
 from __future__ import annotations
 
@@ -189,7 +189,7 @@ class ShellView:
         if view["transcript"]:
             out.append(f"you: {view['transcript']}")
         if view["answer"]:
-            out.append(f"plip: {view['answer']}")
+            out.append(f"jade: {view['answer']}")
         out.extend(f"  {line}" for line in view["checklist"])
         card = view["confirm"]
         if card:

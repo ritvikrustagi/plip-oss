@@ -80,7 +80,7 @@ class AccountMemory:
             self._select()
         self._thread = None
         if background:
-            self._thread = threading.Thread(target=self._run, daemon=True, name='plip-memory-sync')
+            self._thread = threading.Thread(target=self._run, daemon=True, name='jade-memory-sync')
             self._thread.start()
 
     def _select(self) -> Cache:

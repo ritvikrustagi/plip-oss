@@ -115,7 +115,7 @@ export function load(env = process.env) {
   try {
     origin = new URL(publicOrigin)
   } catch {
-    throw new ConfigError(`PLIP_PUBLIC_ORIGIN must be a full URL, e.g. https://plip.school.example. Got ${JSON.stringify(publicOrigin)}.`)
+    throw new ConfigError(`PLIP_PUBLIC_ORIGIN must be a full URL, e.g. https://jade.school.example. Got ${JSON.stringify(publicOrigin)}.`)
   }
   if (origin.protocol !== 'https:' && !allowInsecure)
     throw new ConfigError(

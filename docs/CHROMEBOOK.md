@@ -1,4 +1,4 @@
-# Plip on a Chromebook
+# Jade on a Chromebook
 
 A student-facing study companion and a teacher-facing summary of what the
 student actually did, both running in Chrome on a managed Chromebook. No macOS
@@ -222,7 +222,7 @@ Two consequences worth stating plainly:
 
 ## The learning event contract
 
-One file, shared by every Plip learning surface:
+One file, shared by every Jade learning surface:
 [`contracts/learning-event.schema.json`](../contracts/learning-event.schema.json)
 (JSON Schema 2020-12, owned by `apps/education`).
 
@@ -469,7 +469,7 @@ openssl rand -base64 48           # PLIP_SESSION_SECRET
 Register the redirect URI with your identity provider, exactly:
 
 ```
-https://plip.your-school.example/api/auth/callback
+https://jade.your-school.example/api/auth/callback
 ```
 
 For Google: Cloud Console → APIs & Services → Credentials → OAuth client ID →
@@ -498,9 +498,9 @@ Or with Docker, **built from the repository root** (the event contract lives
 there and both the bundle and the server import it):
 
 ```bash
-docker build -t plip-school -f apps/education/Dockerfile .
+docker build -t jade-school -f apps/education/Dockerfile .
 docker run --env-file apps/education/.env -p 8080:8080 \
-  -v plip-data:/var/lib/plip -v /etc/plip:/etc/plip:ro plip-school
+  -v plip-data:/var/lib/plip -v /etc/plip:/etc/plip:ro jade-school
 ```
 
 ### It refuses to start rather than start unsafely
@@ -759,12 +759,12 @@ over HTTPS next to an update manifest:
 <?xml version="1.0" encoding="UTF-8"?>
 <gupdate xmlns="http://www.google.com/update2/response" protocol="2.0">
   <app appid="EXTENSION_ID_FROM_THE_KEY">
-    <updatecheck codebase="https://plip.school.example/ext/plip-1.0.0.crx" version="1.0.0" />
+    <updatecheck codebase="https://jade.school.example/ext/jade-1.0.0.crx" version="1.0.0" />
   </app>
 </gupdate>
 ```
 
-Then give the Admin Console `EXTENSION_ID;https://plip.school.example/ext/update.xml`.
+Then give the Admin Console `EXTENSION_ID;https://jade.school.example/ext/update.xml`.
 Keep `key.pem` — the extension id is derived from it, and losing it means a new
 id and a re-deploy to every device. **Guard it like a signing key; it does not
 belong in this repository.**

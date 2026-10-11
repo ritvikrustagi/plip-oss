@@ -10,24 +10,24 @@ export function PermissionAction({ id, value, guiding }: { id: string; value: bo
   if (guiding === id)
     return (
       <span className="flex items-center gap-2">
-        <span className="flex items-center gap-1.5 text-[12px] text-white/55"><LoaderCircle className="size-3.5 animate-spin text-plip-300" /> Finish in System Settings</span>
+        <span className="flex items-center gap-1.5 text-[12px] text-white/55"><LoaderCircle className="size-3.5 animate-spin text-jade-300" /> Finish in System Settings</span>
         <Button size="sm" variant="quiet" onClick={() => send('grant', { permission: id })}>Show me again</Button>
       </span>
     )
   return <Button variant="brand" onClick={() => send('grant', { permission: id })}>Allow</Button>
 }
 
-/** Screen Recording only reaches a fresh Plip: one click to restart. */
+/** Screen Recording only reaches a fresh Jade: one click to restart. */
 export function RestartBanner({ state }: { state: SettingsState }) {
   if (!state.permissions.restart) return null
   return (
-    <Card className="mb-5 flex items-center gap-4 border-plip-400/30 bg-plip-400/[0.07]">
-      <span className="grid size-9 place-items-center rounded-xl bg-plip-400/15 text-plip-200"><RotateCw className="size-4" /></span>
+    <Card className="mb-5 flex items-center gap-4 border-jade-400/30 bg-jade-400/[0.07]">
+      <span className="grid size-9 place-items-center rounded-xl bg-jade-400/15 text-jade-200"><RotateCw className="size-4" /></span>
       <div className="flex-1">
         <div className="text-[13.5px] font-semibold">One restart to finish</div>
-        <div className="text-[12px] text-white/50">macOS turns on Screen Recording for Plip the next time it starts.</div>
+        <div className="text-[12px] text-white/50">macOS turns on Screen Recording for Jade the next time it starts.</div>
       </div>
-      <Button variant="primary" onClick={() => send('restart-app')}>Restart Plip</Button>
+      <Button variant="primary" onClick={() => send('restart-app')}>Restart Jade</Button>
     </Card>
   )
 }
@@ -36,7 +36,7 @@ export function VoiceTab({ state }: { state: SettingsState }) {
   const talk = useShortcutLabel()
   return (
     <div>
-      <Header eyebrow="Voice" title="How Plip sounds and listens" subtitle="Works out of the box with macOS voices and on-device recognition. Add keys for a more natural voice, or download Parakeet for sharper listening that stays on your Mac." />
+      <Header eyebrow="Voice" title="How Jade sounds and listens" subtitle="Works out of the box with macOS voices and on-device recognition. Add keys for a more natural voice, or download Parakeet for sharper listening that stays on your Mac." />
       <div className="space-y-3">
         <Card>
           <div className="mb-3 flex items-center justify-between">
@@ -88,7 +88,7 @@ function ParakeetPanel({ model }: { model: ParakeetModel }) {
         nothing leaves your Mac.
       </p>
       {!model.runtime ? (
-        <div className="rounded-xl bg-sun/[0.08] px-3 py-2 text-[12px] text-amber-100/90">Parakeet needs sherpa-onnx: reinstall Plip</div>
+        <div className="rounded-xl bg-sun/[0.08] px-3 py-2 text-[12px] text-amber-100/90">Parakeet needs sherpa-onnx: reinstall Jade</div>
       ) : model.state === 'ready' ? (
         <div className="flex items-center justify-between">
           <Pill tone="good">Listening with Parakeet</Pill>
@@ -121,18 +121,18 @@ function ParakeetPanel({ model }: { model: ParakeetModel }) {
 
 export function PermissionsTab({ state }: { state: SettingsState }) {
   const core = [
-    { key: 'screen', icon: MonitorUp, title: 'Screen Recording', why: 'So Plip can see what you’re asking about.' },
+    { key: 'screen', icon: MonitorUp, title: 'Screen Recording', why: 'So Jade can see what you’re asking about.' },
     { key: 'accessibility', icon: Hand, title: 'Accessibility', why: 'The hold-to-talk shortcut, precise pointing, typing and form filling.' },
     { key: 'microphone', icon: Mic, title: 'Microphone', why: 'Only while you hold the shortcut. Audio is never saved.' },
     { key: 'speech', icon: MessageSquareText, title: 'Speech Recognition', why: 'On-device transcription when AssemblyAI is off.' },
   ] as const
   const extra = [
     { key: 'contacts', icon: Contact, title: 'Contacts', why: 'Your card for Memory, and finding who to message.' },
-    { key: 'automation', icon: WandSparkles, title: 'Automation', why: 'Lets Plip ask Messages, Reminders, Notes and Mail to do things.' },
+    { key: 'automation', icon: WandSparkles, title: 'Automation', why: 'Lets Jade ask Messages, Reminders, Notes and Mail to do things.' },
   ] as const
   return (
     <div>
-      <Header eyebrow="Privacy first" title="Permissions" subtitle="One click each: Plip opens the right page in System Settings and shows you exactly what to switch on. It only looks when you ask." action={<Button variant="quiet" onClick={() => send('refresh')}>Check again</Button>} />
+      <Header eyebrow="Privacy first" title="Permissions" subtitle="One click each: Jade opens the right page in System Settings and shows you exactly what to switch on. It only looks when you ask." action={<Button variant="quiet" onClick={() => send('refresh')}>Check again</Button>} />
       <RestartBanner state={state} />
       <Section title="Needed">
         <Card className="divide-y divide-white/[0.05] p-0">
@@ -177,7 +177,7 @@ export function HistoryPanel({ state }: { state: SettingsState }) {
   return (
     <div>
       {!state.history.length ? (
-        <Empty title="Nothing yet" text={`Hold ${talk} and ask Plip something.`} />
+        <Empty title="Nothing yet" text={`Hold ${talk} and ask Jade something.`} />
       ) : (
         <div className="space-y-2">
           <div className="mb-3 flex items-center justify-between gap-6">

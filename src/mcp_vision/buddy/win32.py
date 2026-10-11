@@ -1,13 +1,13 @@
-"""The small slice of Win32 Plip needs, behind one object that tests can fake.
+"""The small slice of Win32 Jade needs, behind one object that tests can fake.
 
 Nothing in here is imported on macOS: ``user32()`` returns ``None`` unless
 ``ctypes.windll`` exists. The structures and the key tables are plain
 ``ctypes``, so they can be built and checked on any OS, which is how the
 Windows input path is tested without a Windows machine.
 
-What Plip deliberately does *not* do here: no keyboard hook, no
+What Jade deliberately does *not* do here: no keyboard hook, no
 ``GetWindowText`` on an edit control, no clipboard read. Push-to-talk polls
-the four modifier keys with ``GetAsyncKeyState`` and nothing else, so Plip
+the four modifier keys with ``GetAsyncKeyState`` and nothing else, so Jade
 cannot see what you type.
 """
 from __future__ import annotations
@@ -117,7 +117,7 @@ def click_inputs(button: str = "left", count: int = 1) -> list[INPUT]:
 
 
 def wheel_inputs(dy: int = 0, dx: int = 0) -> list[INPUT]:
-    """``dy`` lines, positive = scroll down (as the rest of Plip means it)."""
+    """``dy`` lines, positive = scroll down (as the rest of Jade means it)."""
     events: list[INPUT] = []
     if dy:
         events.append(mouse_input(MOUSEEVENTF_WHEEL, data=-int(dy) * WHEEL_DELTA))
@@ -127,7 +127,7 @@ def wheel_inputs(dy: int = 0, dx: int = 0) -> list[INPUT]:
 
 
 # -- keys ----------------------------------------------------------------------------
-# Virtual-key codes. Plip's action vocabulary is written for a Mac ("cmd+t"), so the
+# Virtual-key codes. Jade's action vocabulary is written for a Mac ("cmd+t"), so the
 # Windows side maps Command onto Control: that is what the same shortcut is called here.
 VK = {
     "return": 0x0D, "enter": 0x0D, "tab": 0x09, "space": 0x20, "delete": 0x08, "backspace": 0x08,

@@ -19,7 +19,7 @@ import { makeLearningEvent } from '../shared/events.mjs'
  * "the demo enforces it" would mean nothing.
  */
 const useSqlite = process.env.PLIP_TEST_STORE === 'sqlite'
-const scratch = useSqlite ? mkdtempSync(join(tmpdir(), 'plip-api-')) : null
+const scratch = useSqlite ? mkdtempSync(join(tmpdir(), 'jade-api-')) : null
 
 /** @param {{ port?: number, retentionDays?: number }} [options] */
 const startApi = (options = {}) => startDemoApi({

@@ -235,7 +235,7 @@ def test_a_walkthrough_is_routed_once_and_keeps_its_effort_and_screen_every_step
     from mcp_vision.buddy.router import rule_route
 
     class Router:
-        """User's question routes deep; Plip's check-ins would route quick."""
+        """User's question routes deep; Jade's check-ins would route quick."""
 
         def __init__(self):
             self.heard = []
@@ -329,7 +329,7 @@ def test_the_map_shows_whats_typed_in_boxes_by_their_label_and_never_a_secret():
     assert ScreenContext(controls=controls).find("search products").value == "usb-c hub"    # found by its label
 
 
-def test_text_plip_just_typed_isnt_the_page_changing():
+def test_text_jade_just_typed_isnt_the_page_changing():
     from mcp_vision.buddy.companion import TurnResult
 
     before = ScreenContext(app="Safari", controls=[Control("Search", "text field", 600, 60)])

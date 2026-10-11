@@ -1,18 +1,18 @@
-# Plip on Windows
+# Jade on Windows
 
-Plip grew up in a MacBook's notch. This is the Windows port: the same
+Jade grew up in a MacBook's notch. This is the Windows port: the same
 companion, the same walkthrough checklist, the same ask-before-you-act rule,
 with the macOS-only parts replaced by what Windows actually has — and with the
 parts that have no Windows equivalent switched off and labelled, rather than
 faked.
 
-It is also where Plip becomes a **student-facing learning assistant**: a
+It is also where Jade becomes a **student-facing learning assistant**: a
 learning session you have to start by hand, events that are counts and concept
 names, and a teacher summary that keeps measured evidence apart from guesswork.
 
 > **Not verified on Windows yet.** Everything below was written and tested on
 > macOS. The Win32 input path, the window reader and the hotkey poller are
-> exercised against fakes that assert the exact bytes and calls Plip would make,
+> exercised against fakes that assert the exact bytes and calls Jade would make,
 > and the whole package is import-checked in an interpreter with every pyobjc
 > module blocked — but no line of this has run against a real `user32.dll`.
 > See [What still needs a Windows machine](#what-still-needs-a-windows-machine).
@@ -24,10 +24,10 @@ names, and a teacher summary that keeps measured evidence apart from guesswork.
 Three ways in, easiest first.
 
 1. **A tagged release.** [This fork's Releases page](https://github.com/ritvikrustagi/plip-oss/releases/latest)
-   carries `Plip-<version>-windows.zip` — the wheel, `install.ps1`, this document and a short
+   carries `Jade-<version>-windows.zip` — the wheel, `install.ps1`, this document and a short
    README. Built and smoke-tested on a real `windows-latest` runner by the `windows` job in `.github/workflows/release.yml`.
 2. **Any CI run, no tag needed.** Every push builds the wheel on Windows and uploads it as the
-   `plip-windows-wheel` artifact. Open the run on the Actions tab, download it, then
+   `jade-windows-wheel` artifact. Open the run on the Actions tab, download it, then
    `pip install` the `.whl`. This is the quickest way to put a build in a tester's hands
    straight after a merge.
 3. **One line in PowerShell**, straight from the repo:
@@ -38,7 +38,7 @@ unsigned; the pip route avoids that entirely, which is why it's the one the READ
 
 ### What to ask a tester to report
 
-`plip capabilities` and `plip doctor` first — their output says what this port believed about
+`jade capabilities` and `jade doctor` first — their output says what this port believed about
 the machine, which is the most useful thing to compare against what actually happened. Then the
 list under [What still needs a Windows machine](#what-still-needs-a-windows-machine): the
 window's look and placement, whether `Ctrl+Alt` is heard, whether typing and clicking land in
@@ -53,19 +53,19 @@ py -3.12 -m venv .venv
 .venv\Scripts\activate
 pip install -e .
 
-plip capabilities          # what this machine can and can't do, and what Plip uses instead
-plip doctor                # keys, brain, voice, window
-plip                       # the shell: a strip at the top of your screen
+jade capabilities          # what this machine can and can't do, and what Jade uses instead
+jade doctor                # keys, brain, voice, window
+jade                       # the shell: a strip at the top of your screen
 ```
 
-No brain yet? `plip doctor` says which to set up. Any of Claude Code, Codex,
+No brain yet? `jade doctor` says which to set up. Any of Claude Code, Codex,
 Cursor, Gemini or an API key works the same as on macOS.
 
 Useful variants:
 
 ```powershell
-plip windows --once --no-probe   # build the shell, print it as text, exit (the CI smoke test)
-plip windows --headless          # run with no window at all
+jade windows --once --no-probe   # build the shell, print it as text, exit (the CI smoke test)
+jade windows --headless          # run with no window at all
 ```
 
 State lives in `%LOCALAPPDATA%\Plip`, settings and keys in `%APPDATA%\Plip`.
@@ -77,11 +77,11 @@ macOS and Linux keep their old `~/.local/share/mcp-vision` and
 
 ## What replaces what
 
-Nothing here pretends. `plip capabilities` prints this table from
+Nothing here pretends. `jade capabilities` prints this table from
 `src/mcp_vision/platforms/__init__.py`, and the shell greys out each row it
 can't do with the same sentence next to it.
 
-| What Plip does | macOS | Windows |
+| What Jade does | macOS | Windows |
 |---|---|---|
 | The surface | notch island + mascot (AppKit + WKWebView) | a borderless, always-on-top strip at the top centre, drawn with Tkinter |
 | Settings | the React dashboard in a WKWebView | the shell's own panel (plain widgets) — **the React UI is not ported** |
@@ -89,7 +89,7 @@ can't do with the same sentence next to it.
 | Push-to-talk | Quartz event tap (needs Accessibility) | `GetAsyncKeyState` polling of **four modifier keys only** — no keyboard hook |
 | Speech in | on-device Apple Speech, or AssemblyAI | **none on-device**; AssemblyAI with a key, otherwise type |
 | Speech out | `say` / `NSSpeechSynthesizer`, or ElevenLabs | SAPI through `System.Speech` in PowerShell, or ElevenLabs |
-| Screenshots | `CGWindowListCreateImage`, Plip's own windows excluded | `mss`, **off until the session switches it on** |
+| Screenshots | `CGWindowListCreateImage`, Jade's own windows excluded | `mss`, **off until the session switches it on** |
 | Screen map | the Accessibility tree: controls, page text, selection | window titles + visible Win32 child controls; **blind on browsers, Electron and UWP** |
 | Clicking, scrolling, typing | Quartz events | `user32` `SendInput` |
 | Key combos | mac key codes | virtual-key codes; **Command maps to Ctrl**, Option to Alt |
@@ -98,7 +98,7 @@ can't do with the same sentence next to it.
 | Finding files | Spotlight (`mdfind`), including file contents | a filename walk of your user folders — **slower, no content search** |
 | Notifications | `display notification` | a Windows toast (`Windows.UI.Notifications`) |
 | Dark mode, volume, display sleep | AppleScript | **not available** — AppleScript doesn't exist here |
-| Apple Shortcuts | `shortcuts run` | **not available** — no Windows equivalent Plip can drive |
+| Apple Shortcuts | `shortcuts run` | **not available** — no Windows equivalent Jade can drive |
 | Pointing at a spot on screen | the mascot flies there and labels it | **not available** — the strip names the target instead |
 | Local memory | yours, on this machine | the same, minus the macOS importers (Contacts, Mail, browser autofill) |
 | Learning events | the same | the same |
@@ -140,11 +140,11 @@ policy document.
 
 **Push-to-talk is not a keylogger.** The obvious way to do hold-to-talk on
 Windows is `SetWindowsHookEx`/`WH_KEYBOARD_LL`, which sees every keystroke in
-every application. Plip doesn't install one. It polls `GetAsyncKeyState` for
+every application. Jade doesn't install one. It polls `GetAsyncKeyState` for
 Ctrl, Alt, Shift and Win — four keys, nothing else
 (`tests/windows/test_win_hotkey.py::test_polling_asks_about_nothing_else`
 asserts the exact set). The cost is one behaviour given up: on macOS a letter
-typed during the chord cancels the press, and here Plip can't tell, so it
+typed during the chord cancels the press, and here Jade can't tell, so it
 doesn't claim to.
 
 **The window map never reads what you type.** It reads window titles, class
@@ -172,7 +172,7 @@ autofill) are deliberately **not** ported: reading a student's saved form data
 is not something a learning assistant should do.
 
 **No keys in code or in a bundle.** Keys stay in `%APPDATA%\Plip\.env` (written
-0600 by `plip setup`) or the environment. Nothing in `src/` or the committed
+0600 by `jade setup`) or the environment. Nothing in `src/` or the committed
 web bundle contains one.
 
 ---
@@ -185,11 +185,11 @@ Nothing is recorded until someone starts a session, and every switch inside it
 starts off.
 
 ```powershell
-plip learn start --by student --class 7B --share     # or use Session… in the shell
-plip learn status                                    # what's on, what's recorded, where
-plip learn pause                                     # stop recording, keep the session
-plip learn resume
-plip learn stop
+jade learn start --by student --class 7B --share     # or use Session… in the shell
+jade learn status                                    # what's on, what's recorded, where
+jade learn pause                                     # stop recording, keep the session
+jade learn resume
+jade learn stop
 ```
 
 | Switch | Default | What it allows |
@@ -206,7 +206,7 @@ quietly resume collection.
 ### What an event contains
 
 Contract v1, shared with the web/PWA and the browser extension so one
-dashboard reads all three. `plip learn contract` prints what this build
+dashboard reads all three. `jade learn contract` prints what this build
 believes it is.
 
 ```json
@@ -232,16 +232,16 @@ dropped on read rather than trusted.
 ### Retention, export, delete
 
 * **Retention**: 30 days, trimmed on every write (`LearningLog.max_age_days`).
-* **Export**: `plip learn export` (JSON Lines) or `--json` (one array), or
+* **Export**: `jade learn export` (JSON Lines) or `--json` (one array), or
   **Export my data** in the shell.
-* **Delete**: `plip learn delete` removes every event, the consent record *and*
+* **Delete**: `jade learn delete` removes every event, the consent record *and*
   the machine's pseudonym. `delete_session` drops one session.
 
 ### The teacher summary
 
 ```powershell
-plip learn demo                                               # synthetic data, all invented
-plip learn summary --class demo-class --authorized-for demo-class
+jade learn demo                                               # synthetic data, all invented
+jade learn summary --class demo-class --authorized-for demo-class
 ```
 
 Two gates, both required: the event was recorded with `shareWithTeacher` true,
@@ -269,12 +269,12 @@ This summary does not and cannot show:
   - engagement or effort - time in the app is not effort
   - mastery or understanding - completing a task is not evidence of either
   - a grade or a score - these events were never designed to be marked
-  - comparison between students - the counts depend on how each one chose to use Plip
+  - comparison between students - the counts depend on how each one chose to use Jade
 ```
 
 Every inference carries the counts it rests on (`basis`) and a confidence of
 `low` or `moderate`. Completions the student confirmed themselves are counted
-separately from ones Plip decided. Screen time is not a field, and
+separately from ones Jade decided. Screen time is not a field, and
 `test_learning_summary.py` asserts the words "mastery", "attention",
 "engaged", "grade" and "score" never appear in a finding.
 
@@ -329,8 +329,8 @@ explicit `context=`. The macOS path through all of them is byte-identical.
 Honest list of what this Mac could not answer.
 
 **Verified by CI on a real `windows-latest` runner:** the package imports with no
-pyobjc, the wheel installs, `plip --help`, `plip capabilities`, `plip learn` and
-`plip windows --once` all run, and the port's own 334 tests pass.
+pyobjc, the wheel installs, `jade --help`, `jade capabilities`, `jade learn` and
+`jade windows --once` all run, and the port's own 334 tests pass.
 
 **Cannot be verified by CI - these need a person at a Windows desktop:**
 
@@ -344,7 +344,7 @@ pyobjc, the wheel installs, `plip --help`, `plip capabilities`, `plip learn` and
 4. The Tkinter strip's appearance and behaviour: always-on-top against the
    taskbar, DPI scaling, multi-monitor placement, and whether it should be
    click-through.
-5. `mss` screen capture on Windows, and whether Plip's own strip appears in
+5. `mss` screen capture on Windows, and whether Jade's own strip appears in
    the capture (on macOS it is excluded; there is no equivalent exclusion here
    yet, so **expect the strip to show up in screenshots**).
 6. The SAPI voice: whether `System.Speech` is present on all editions, and how
@@ -376,7 +376,7 @@ causes above portable is its own piece of work, and the table is the to-do list.
 
 ### The one real bug it caught
 
-`os.chmod(path, 0o600)` is how Plip keeps the API-key dotenv, the sign-in token,
+`os.chmod(path, 0o600)` is how Jade keeps the API-key dotenv, the sign-in token,
 the memory file and the learning pseudonym to one user. On Windows that line does
 nothing at all, so on a shared machine - a school machine, exactly the case this
 port is for - another student could read them.
@@ -411,7 +411,7 @@ Three things this port needs from them:
 
 1. **`contracts/learning-event.schema.json`** — owned by the web/PWA side.
    `learning/events.py` is this build's Python mirror of it:
-   `plip learn contract --json` prints `FIELDS`, `EVENT_TYPES`, `PLATFORMS`,
+   `jade learn contract --json` prints `FIELDS`, `EVENT_TYPES`, `PLATFORMS`,
    `EVIDENCE_FIELDS`, `OUTCOMES` and the forbidden-field list. Please diff that
    against the schema; a drift should become a test on both sides.
 2. **The teacher dashboard** should read `LearningLog.export_for_teacher(…)`
@@ -432,8 +432,8 @@ buttons link straight to the files on this repo's releases, so a click downloads
 
 ```html
 <div class="downloads">
-  <a class="btn" href="https://github.com/ritvikrustagi/plip-oss/releases/download/v0.10.0/Plip-0.10.0.dmg">Download for Mac</a>
-  <a class="btn ghost" href="https://github.com/ritvikrustagi/plip-oss/releases/download/v0.10.0-windows.1/Plip-0.10.0-windows.zip">Download for Windows</a>
+  <a class="btn" href="https://github.com/ritvikrustagi/plip-oss/releases/download/v0.11.0/Jade-0.11.0.dmg">Download for Mac</a>
+  <a class="btn ghost" href="https://github.com/ritvikrustagi/plip-oss/releases/download/v0.11.0/Jade-0.11.0-windows.zip">Download for Windows</a>
   <p class="note">Mac: signed .dmg, macOS 13+. Windows: early unsigned build, Windows 10/11 —
     see <a href="https://github.com/ritvikrustagi/plip-oss/blob/main/docs/WINDOWS.md">what works</a>.</p>
 </div>

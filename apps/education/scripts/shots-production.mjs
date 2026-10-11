@@ -19,7 +19,7 @@ import { makeLearningEvent } from '../shared/events.mjs'
 
 const out = resolve(process.env.SHOTS_DIR ?? fileURLToPath(new URL('../../../.context/education', import.meta.url)))
 await mkdir(out, { recursive: true })
-const scratch = await mkdtemp(join(tmpdir(), 'plip-shots-'))
+const scratch = await mkdtemp(join(tmpdir(), 'jade-shots-'))
 await writeFile(join(scratch, 'catalogue.json'),
   JSON.stringify(JSON.parse(await (await import('node:fs/promises')).readFile(
     fileURLToPath(new URL('../fixtures/catalogue.json', import.meta.url)), 'utf8'))))
@@ -38,7 +38,7 @@ const config = load({
   PLIP_DATABASE: join(scratch, 'school.sqlite'),
   PLIP_CATALOGUE: join(scratch, 'catalogue.json'),
   PLIP_OIDC_ISSUER: idp.origin,
-  PLIP_OIDC_CLIENT_ID: 'plip-school',
+  PLIP_OIDC_CLIENT_ID: 'jade-school',
   PLIP_OIDC_CLIENT_SECRET: 'not-real',
   PLIP_OIDC_ALLOWED_DOMAINS: 'school.example',
 })

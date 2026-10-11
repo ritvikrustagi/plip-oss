@@ -1,8 +1,8 @@
 /**
  * Two-way bridge between the UI and the Python engine.
  *
- * Native (macOS WKWebView): Python calls `window.__plip(message)`; the UI
- * calls `window.webkit.messageHandlers.plip.postMessage(command)`.
+ * Native (macOS WKWebView): Python calls `window.__jade(message)`; the UI
+ * calls `window.webkit.messageHandlers.jade.postMessage(command)`.
  * Browser preview: commands go to an in-page mock so every surface can be
  * developed, screenshotted, and demoed without a Mac.
  */
@@ -168,9 +168,9 @@ export interface GuideState {
 export const defaultGuide: GuideState = {
   permission: 'accessibility',
   name: 'Accessibility',
-  app: 'Plip',
+  app: 'Jade',
   icon: '',
-  title: 'Drag Plip into the list above',
+  title: 'Drag Jade into the list above',
   hint: 'That turns on Accessibility. Already listed? Just switch it on.',
   draggable: true,
   granted: false,
@@ -240,11 +240,11 @@ export interface Shortcut {
 /** General's shortcut picker: choice, options, whether it works. */
 export interface HotkeyState extends Shortcut {
   works: boolean
-  owner: string              // app needing Accessibility: Plip or its terminal
+  owner: string              // app needing Accessibility: Jade or its terminal
   choices: Shortcut[]
 }
 
-/** A newer Plip on GitHub (asked once a day, unless they turned it off). */
+/** A newer Jade on GitHub (asked once a day, unless they turned it off). */
 export interface UpdateState {
   enabled: boolean
   current: string
@@ -312,7 +312,7 @@ export const defaultIsland: IslandState = {
 export const defaultMascot: MascotState = { mood: 'idle', level: 0, lean: 0, look: { x: 0, y: 0 }, label: '' }
 
 export const defaultSettings: SettingsState = {
-  version: '0.10.0',
+  version: '0.11.0',
   engines: [],
   depth: 'balanced',
   permissions: { screen: null, accessibility: null, microphone: null, speech: null },
@@ -333,9 +333,9 @@ export const defaultSettings: SettingsState = {
   connect: '',
   report: '',
   account: { available: false, identified: false, anonymous: false, prompt: false },
-  update: { enabled: true, current: '0.10.0', available: null },
+  update: { enabled: true, current: '0.11.0', available: null },
   hotkey: {
-    id: 'control+option', keys: ['⌃', '⌥'], label: 'Control + Option', works: true, owner: 'Plip',
+    id: 'control+option', keys: ['⌃', '⌥'], label: 'Control + Option', works: true, owner: 'Jade',
     choices: [
       { id: 'control+option', keys: ['⌃', '⌥'], label: 'Control + Option' },
       { id: 'option+command', keys: ['⌥', '⌘'], label: 'Option + Command' },
@@ -436,17 +436,17 @@ export function receive(message: Inbound) {
 
 declare global {
   interface Window {
-    __plip?: (message: Inbound | Inbound[]) => void
-    __PLIP_SURFACE__?: string
-    webkit?: { messageHandlers?: { plip?: { postMessage: (body: unknown) => void } } }
+    __jade?: (message: Inbound | Inbound[]) => void
+    __JADE_SURFACE__?: string
+    webkit?: { messageHandlers?: { jade?: { postMessage: (body: unknown) => void } } }
   }
 }
 
-window.__plip = (message) => {
+window.__jade = (message) => {
   for (const item of Array.isArray(message) ? message : [message]) receive(item)
 }
 
-export const isNative = () => Boolean(window.webkit?.messageHandlers?.plip)
+export const isNative = () => Boolean(window.webkit?.messageHandlers?.jade)
 
 type Command = { cmd: string; [key: string]: unknown }
 const mockHandlers: Array<(command: Command) => void> = []
@@ -457,7 +457,7 @@ export function onMockCommand(handler: (command: Command) => void) {
 
 export function send(cmd: string, payload: Record<string, unknown> = {}) {
   const body = { cmd, ...payload }
-  const handler = window.webkit?.messageHandlers?.plip
+  const handler = window.webkit?.messageHandlers?.jade
   // A JSON string crosses the WebKit bridge as a plain NSString: no dictionary conversion surprises.
   if (handler) handler.postMessage(JSON.stringify(body))
   else mockHandlers.forEach((mock) => mock(body))

@@ -1,4 +1,4 @@
-"""Plip's hands: click, scroll, press keys, drag. Targets: a map id, a visible label, or screenshot x,y.
+"""Jade's hands: click, scroll, press keys, drag. Targets: a map id, a visible label, or screenshot x,y.
 
 Scrolls check themselves and try fallbacks; scroll_to searches locally, no model turns. Risky clicks ask first.
 """
@@ -248,7 +248,7 @@ class _Spot(NamedTuple):
 
 
 class _Click(NamedTuple):
-    """Plip's last click: a plain scroll next means that panel."""
+    """Jade's last click: a plain scroll next means that panel."""
 
     x: float
     y: float
@@ -364,7 +364,7 @@ def _spots(ctx: ActionContext, args: dict, seen, lead: list | None = None) -> li
 def _guesses(ctx: ActionContext, now, areas, frame, biggest) -> list[_Spot]:
     spots = []
     mouse = _ask(ctx, "mouse_position")
-    left = ctx.state.get("pointer")                                      # where Plip last left it
+    left = ctx.state.get("pointer")                                      # where Jade last left it
     theirs = mouse is not None and (left is None or not _near(mouse, left))
     click = _clicked(ctx, now, frame, moved_on=theirs)
     if click is not None:

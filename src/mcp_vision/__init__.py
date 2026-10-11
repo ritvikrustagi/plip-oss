@@ -1,6 +1,6 @@
-"""Plip: a voice buddy in your MacBook's notch that sees your screen and points at things."""
+"""Jade: a voice buddy in your MacBook's notch that sees your screen and points at things."""
 
-__version__ = "0.10.0"
+__version__ = "0.11.0"
 
 from mcp_vision.log import get_logger
 

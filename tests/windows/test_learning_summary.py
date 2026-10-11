@@ -102,7 +102,7 @@ def test_a_task_started_and_never_finished_is_not_completed():
     assert records[0].completed is False and records[0].outcome == ""
 
 
-def test_a_completion_plip_inferred_is_counted_separately_from_one_the_student_confirmed(tmp_path):
+def test_a_completion_jade_inferred_is_counted_separately_from_one_the_student_confirmed(tmp_path):
     events = [event("task_completed", task_id="t1", evidence={"outcome": "correct", "studentConfirmed": False}),
               event("task_completed", task_id="t2", evidence={"outcome": "correct", "studentConfirmed": True})]
     report = summarise_log(log_with(events, tmp_path), allowed_classes=["7B"], class_id="7B")

@@ -1,10 +1,10 @@
-"""Plip on Windows: a strip at the top of the screen, drawn with Tkinter.
+"""Jade on Windows: a strip at the top of the screen, drawn with Tkinter.
 
 Windows has no notch and no AppKit, so the island becomes a borderless,
 always-on-top window pinned to the top centre of the primary display - the
 same job, done with what the OS has. Tkinter is deliberate: it ships with
 CPython on Windows, so a ``pip install`` is enough to get a window and no
-native build step stands between a student and a running Plip. The React
+native build step stands between a student and a running Jade. The React
 dashboard stays macOS-only for now (it needs WKWebView); the controls it
 holds appear here as plain rows, each one greyed out with its reason when
 this machine can't do it.
@@ -39,7 +39,7 @@ def tkinter_available() -> tuple[bool, str]:
         import tkinter  # noqa: F401
     except ImportError as exc:
         return False, (f"Tkinter isn't in this Python ({exc}). On Windows it comes with the python.org "
-                       "installer; reinstall Python with the tcl/tk option, or run `plip windows --headless`.")
+                       "installer; reinstall Python with the tcl/tk option, or run `jade windows --headless`.")
     return True, ""
 
 
@@ -54,7 +54,7 @@ class StripWindow:
         self.jobs: queue.Queue = queue.Queue()
         root = tk.Tk()
         self.root = root
-        root.title("Plip")
+        root.title("Jade")
         root.configure(bg=BG)
         root.attributes("-topmost", True)
         try:
@@ -137,7 +137,7 @@ class StripWindow:
             try:
                 job()
             except Exception:
-                log.exception("a Plip UI job failed")
+                log.exception("a Jade UI job failed")
         self.root.after(60, self._drain)
 
     def schedule_redraw(self) -> None:
@@ -171,7 +171,7 @@ class StripWindow:
         """Start/pause/stop, the three data switches, export and delete - all in one place."""
         tk = self.tk
         panel = tk.Toplevel(self.root, bg=BG)
-        panel.title("Plip - this learning session")
+        panel.title("Jade - this learning session")
         panel.attributes("-topmost", True)
         line = tk.Label(panel, text=self.shell.consent.summary(), bg=BG, fg=FG, anchor="w",
                         font=("Segoe UI Semibold", 10), wraplength=460, justify="left")
@@ -239,7 +239,7 @@ class StripWindow:
         from pathlib import Path
 
         text = self.shell.export_learning()
-        target = Path.home() / "plip-learning-export.jsonl"
+        target = Path.home() / "jade-learning-export.jsonl"
         target.write_text(text, encoding="utf-8")
         self.shell.view.notice(f"Exported {len(text.splitlines())} event(s) to {target}")
 
@@ -263,7 +263,7 @@ def run_headless(shell: Any, *, prints=print, once: bool = False) -> None:
     if once:
         shell.shutdown()
         return
-    prints("Plip is running without a window. Ctrl+C to stop.")
+    prints("Jade is running without a window. Ctrl+C to stop.")
     try:
         threading.Event().wait()
     except KeyboardInterrupt:
@@ -273,12 +273,12 @@ def run_headless(shell: Any, *, prints=print, once: bool = False) -> None:
 
 
 def run_windows_app(*, headless: bool = False, probe: bool = True, once: bool = False) -> None:
-    """Start Plip's Windows shell. Raises ``RuntimeError`` with the reason if it can't."""
+    """Start Jade's Windows shell. Raises ``RuntimeError`` with the reason if it can't."""
     from mcp_vision.buddy.shell_windows import WindowsShell
     from mcp_vision.platforms import capabilities, current_platform
 
     if current_platform() not in {"windows", "other"} and not headless:
-        raise RuntimeError("The Windows shell is for Windows. On a Mac run `plip` for the notch app.")
+        raise RuntimeError("The Windows shell is for Windows. On a Mac run `jade` for the notch app.")
     if headless:
         shell = WindowsShell.build(probe=probe, start_hotkeys=False)
         run_headless(shell, once=once)
@@ -295,7 +295,7 @@ def run_windows_app(*, headless: bool = False, probe: bool = True, once: bool = 
     caps = capabilities(probe=True)
     if mode == "none":
         shell.view.notice("Push-to-talk is off: " + (caps.why_not("push_to_talk")
-                                                     or "Plip can't reach user32 on this machine."))
+                                                     or "Jade can't reach user32 on this machine."))
     if not caps.supports("speech_in"):
         shell.view.notice("Type your question in the box: " + caps.why_not("speech_in"))
     shell.view.notice("Screenshots and the window map stay off until you switch them on in Session…")

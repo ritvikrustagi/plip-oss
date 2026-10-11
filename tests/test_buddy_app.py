@@ -1,4 +1,4 @@
-"""Plip's app layer without AppKit: presenter, settings backend, prefs, web bridge, island/mascot math."""
+"""Jade's app layer without AppKit: presenter, settings backend, prefs, web bridge, island/mascot math."""
 from __future__ import annotations
 
 import json
@@ -167,7 +167,7 @@ def test_controller_hooks_and_result_callback():
     loop.call_soon_threadsafe(loop.stop)
 
 
-def test_another_apps_control_option_shortcut_never_cuts_plip_off_and_a_tap_still_does():
+def test_another_apps_control_option_shortcut_never_cuts_jade_off_and_a_tap_still_does():
     interrupts, later, hushed = [], [], []
 
     class Companion:
@@ -413,8 +413,8 @@ def test_bridge_parses_commands_and_escapes_scripts():
     assert parse_command("[1, 2]") is None and parse_command("nope") is None
     assert parse_command('{"cmd": 3}') is None
     script = script_for([{"type": "append", "field": "answer", "text": "</script> \"quoted\" ✓"}])
-    assert script.startswith("window.__plip && window.__plip([")
-    assert json.loads(script.split("window.__plip(", 1)[1][:-1])[0]["text"] == "</script> \"quoted\" ✓"
+    assert script.startswith("window.__jade && window.__jade([")
+    assert json.loads(script.split("window.__jade(", 1)[1][:-1])[0]["text"] == "</script> \"quoted\" ✓"
 
 
 class FakeScreen:
@@ -590,15 +590,15 @@ def test_the_controller_says_the_shortcut_they_picked():
     assert view.calls[-1] == ("failed", "I didn't catch that. Hold ⌥⌘ and try again.")
 
 
-def test_the_island_lets_plips_own_clicks_through_and_ignores_the_cursor_it_parked():
+def test_the_island_lets_jades_own_clicks_through_and_ignores_the_cursor_it_parked():
     from mcp_vision.buddy.clear_path import clear, on_clear
     from mcp_vision.buddy.island_macos import PARK_SLOP, YIELD_SECONDS, HoverGate
 
     gate = HoverGate()
     assert gate.takes((500, 900), over=True, now=0.0)                       # user hovering: it takes the mouse
-    gate.plip_moved((500, 900), now=10.0)                                    # plip clicks a tab under the notch
+    gate.jade_moved((500, 900), now=10.0)                                    # jade clicks a tab under the notch
     assert not gate.takes((500, 900), over=True, now=10.0 + YIELD_SECONDS / 2)     # click-through while it acts
-    assert not gate.takes((500 + PARK_SLOP / 2, 900), over=True, now=20.0)  # where plip left it: not a hover
+    assert not gate.takes((500 + PARK_SLOP / 2, 900), over=True, now=20.0)  # where jade left it: not a hover
     assert gate.takes((560, 900), over=True, now=20.0)                       # they moved it: theirs again
     heard = []
     stop = on_clear(lambda points, act: heard.append((points, act)))
@@ -614,7 +614,7 @@ def test_the_shortcut_warnings_button_and_the_voice_test_use_what_the_app_handle
     assert ("grant", "accessibility") in calls["platform"]
     svc.handle({"cmd": "set-hotkey", "id": "option+command"})
     svc.handle({"cmd": "test-voice"})
-    assert ("say", "Hey, I'm Plip. Hold option and command, and ask me anything.") in calls["platform"]
+    assert ("say", "Hey, I'm Jade. Hold option and command, and ask me anything.") in calls["platform"]
 
 
 def test_a_task_shows_what_its_working_toward_and_which_step_and_keeps_it_across_steps():

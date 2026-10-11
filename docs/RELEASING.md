@@ -1,4 +1,4 @@
-# Releasing Plip
+# Releasing Jade
 
 ## Build the DMG on your Mac
 
@@ -6,8 +6,8 @@
 .venv/bin/python scripts/build_dmg.py
 ```
 
-You get `dist/Plip.app` and `dist/Plip-<version>.dmg`: a self-contained app (uv's
-CPython 3.12, Plip and its dependencies inside, a small launcher, hardened runtime,
+You get `dist/Jade.app` and `dist/Jade-<version>.dmg`: a self-contained app (uv's
+CPython 3.12, Jade and its dependencies inside, a small launcher, hardened runtime,
 every binary signed) on a drag-to-Applications disk image. It needs an Apple-silicon
 Mac, the Xcode command line tools and `uv`. The DMG window's background comes from
 `cd ui && npm run brand`.
@@ -17,7 +17,7 @@ gives people a guest account after the walkthrough and offers Google after their
 project it baked in.
 
 Without your Apple certificate it is signed **ad hoc**: the first time people open it,
-macOS says it can't check Plip, and they go to System Settings → Privacy & Security →
+macOS says it can't check Jade, and they go to System Settings → Privacy & Security →
 **Open Anyway**. The README and the DMG window both say so.
 
 ## Ship a release
@@ -27,7 +27,7 @@ macOS says it can't check Plip, and they go to System Settings → Privacy & Sec
 2. Commit, then `git tag v0.8.0 && git push origin v0.8.0`.
 3. GitHub Actions (`.github/workflows/release.yml`) builds the DMG on a Mac and attaches it to
    the release. The README links to `releases/latest`, so the download link never changes.
-4. Everyone on a Plip that has the update check (`src/mcp_vision/buddy/updates.py`, after 0.8.0) hears about it
+4. Everyone on a Jade that has the update check (`src/mcp_vision/buddy/updates.py`, after 0.8.0) hears about it
    within a day: the notch says so once, and the menu bar, Home and Settings → General offer **Download**, which
    opens the new DMG. It reads GitHub's latest release, so drafts and pre-releases (`v1.0-rc1`) never show up,
    and a release without a DMG yet points at its page. Copies from 0.8.0 or before don't check, so tell those

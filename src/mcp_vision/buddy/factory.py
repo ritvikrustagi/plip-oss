@@ -1,4 +1,4 @@
-"""Assemble Plip from settings + preferences. Platform pieces are chosen at runtime."""
+"""Assemble Jade from settings + preferences. Platform pieces are chosen at runtime."""
 from __future__ import annotations
 
 import sys
@@ -13,8 +13,8 @@ from mcp_vision.buddy.store import Prefs
 DEPTH_EFFORT = {"fast": "low", "balanced": "medium", "deep": "high"}
 # Tutor mode looks and reads but never does the work: everything else is refused with this sentence.
 TUTOR_ACTIONS = frozenset({"look", "read_page", "scroll", "scroll_to", "wait", "remember", "forget", "set_timer"})
-TUTOR_REFUSAL = ("Plip is in tutor mode, so it teaches you how instead of doing it for you. "
-                 "Switch tutor mode off in Plip's settings to have Plip do things.")
+TUTOR_REFUSAL = ("Jade is in tutor mode, so it teaches you how instead of doing it for you. "
+                 "Switch tutor mode off in Jade's settings to have Jade do things.")
 _DEFAULT = object()      # "not given", so an explicit ``context=None`` can mean "no screen map"
 
 
@@ -43,7 +43,7 @@ def make_brain(settings: BuddySettings, engines: list | None = None) -> Any:
 
     engine = choose_engine(settings, engines)
     if engine is None:
-        raise SetupError("Pick a brain: sign in to Claude Code, Codex, or Cursor, or add an API key in Plip's settings.")
+        raise SetupError("Pick a brain: sign in to Claude Code, Codex, or Cursor, or add an API key in Jade's settings.")
     return make_engine_brain(engine, settings)
 
 
@@ -79,7 +79,7 @@ def make_snapper(settings: BuddySettings, jev=None) -> Snapper | None:
 
 
 def make_context(settings: BuddySettings):
-    """The screen map for this OS, or ``None`` where Plip has no reader."""
+    """The screen map for this OS, or ``None`` where Jade has no reader."""
     from mcp_vision.platforms import MACOS, WINDOWS, current_platform
 
     platform = current_platform()
@@ -160,7 +160,7 @@ def make_companion(settings: BuddySettings, *, pointer: Pointer | None = None,
 
 
 def make_notes(memory=None):
-    """What Plip knows about the user, added to the system prompt."""
+    """What Jade knows about the user, added to the system prompt."""
     if memory is None:
         return None
     return memory.summary

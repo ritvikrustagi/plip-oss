@@ -1,7 +1,7 @@
-"""Turn engine and push-to-talk events into Island / Plip UI messages.
+"""Turn engine and push-to-talk events into Island / Jade UI messages.
 
 Platform-neutral: ``post_island`` receives lists of bridge messages (see
-``ui/src/bridge.ts``) and ``set_mood`` receives Plip's mood and level. The
+``ui/src/bridge.ts``) and ``set_mood`` receives Jade's mood and level. The
 macOS host hops both onto the main thread and into the web views.
 """
 from __future__ import annotations
@@ -165,7 +165,7 @@ class Presenter:
         self._island(offer=str(data.get("text") or "")[:160] or None)
 
     def _on_quiet(self, _data: dict[str, Any]) -> None:
-        """Plip stopped talking: a finished answer may tuck away now."""
+        """Jade stopped talking: a finished answer may tuck away now."""
         self._island(speaking=False)
 
     def _on_goal(self, data: dict[str, Any]) -> None:

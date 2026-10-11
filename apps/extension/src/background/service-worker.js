@@ -109,7 +109,7 @@ async function pageOp({ op, args = {} }) {
   if (!tab.url) {
     return {
       ok: false,
-      reason: 'Plip cannot see which page this is. Click the Plip button in the toolbar on that tab, '
+      reason: 'Jade cannot see which page this is. Click the Jade button in the toolbar on that tab, '
         + 'or grant the site from the panel.',
     }
   }
@@ -127,7 +127,7 @@ async function pageOp({ op, args = {} }) {
     if (/cannot access|host permission|extensions gallery|chrome:\/\//i.test(reason)) {
       return {
         ok: false,
-        reason: 'Chrome will not let Plip read this page. Grant this site from the panel, or open the '
+        reason: 'Chrome will not let Jade read this page. Grant this site from the panel, or open the '
           + 'panel from the toolbar button on the tab you want help with.',
       }
     }
@@ -144,7 +144,7 @@ function actionFor(op) {
 async function call(tabId, op, args) {
   const [frame] = await chrome.scripting.executeScript({
     target: { tabId },
-    func: (name, payload) => globalThis.PlipOutline.handle(name, payload),
+    func: (name, payload) => globalThis.JadeOutline.handle(name, payload),
     args: [op, args],
   })
   return frame?.result ?? { ok: false, reason: 'The page did not answer.' }

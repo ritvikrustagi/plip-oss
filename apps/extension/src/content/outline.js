@@ -1,7 +1,7 @@
 // Visual DOM grounding, injected into one granted tab on demand.
 //
 // This is the browser's answer to src/mcp_vision/buddy/screen_context.py and
-// src/mcp_vision/buddy/pointing.py: Plip on macOS screenshots the display and
+// src/mcp_vision/buddy/pointing.py: Jade on macOS screenshots the display and
 // builds a map of accessibility controls with pixel centres, then flies out of
 // the notch to point at one. Here there are no pixels and no screenshots - the
 // outline is built from the DOM, every item gets a ref, and pointing means
@@ -17,12 +17,12 @@
 // duplicated here, so there is one source of truth for what is never read.
 
 ;(() => {
-  if (globalThis.PlipOutline) return
+  if (globalThis.JadeOutline) return
 
   const MAX_ITEMS = 120
   const MAX_TEXT = 160
   const MAX_PAGE_TEXT = 6000 // about one screenshot in tokens, as read_page is on macOS
-  const HIGHLIGHT_ID = '__plip-study-highlight'
+  const HIGHLIGHT_ID = '__jade-study-highlight'
 
   const state = {
     rules: null,
@@ -190,7 +190,7 @@
       'display:none', 'margin:0', 'padding:0',
     ].join(';')
     const label = document.createElement('div')
-    label.dataset.plipLabel = '1'
+    label.dataset.jadeLabel = '1'
     label.style.cssText = [
       'position:absolute', 'left:-3px', 'top:-26px', 'background:#7c3aed', 'color:#fff',
       'font:600 12px/1.6 system-ui,sans-serif', 'padding:1px 8px', 'border-radius:6px',
@@ -215,7 +215,7 @@
     if (!element) return { ok: false, reason: `Nothing on the page matches ${ref}.` }
     const node = box()
     const name = label || clip(textOf(element), 40) || 'here'
-    node.querySelector('[data-plip-label]').textContent = name
+    node.querySelector('[data-jade-label]').textContent = name
     place(node, element)
     element.scrollIntoView({ block: 'center', behavior: 'smooth' })
     // Re-measure for a while: a smooth scroll, a lazy image or a late font can
@@ -283,10 +283,10 @@
     const type = (element.getAttribute('type') || '').toLowerCase()
     const own = `${textOf(element)} ${labelOf(element)} ${element.value || ''} ${label}`
     if (type === 'submit' || type === 'image' || element.form) {
-      return { ok: false, reason: 'That control belongs to a form, so Plip will not click it. Submitting is yours.' }
+      return { ok: false, reason: 'That control belongs to a form, so Jade will not click it. Submitting is yours.' }
     }
     if (rules && rules.risky.test(own)) {
-      return { ok: false, reason: `Plip will not click “${clip(own, 40)}”.` }
+      return { ok: false, reason: `Jade will not click “${clip(own, 40)}”.` }
     }
     element.click()
     return { ok: true, label: clip(own, 40) }
@@ -303,7 +303,7 @@
     click,
   }
 
-  globalThis.PlipOutline = {
+  globalThis.JadeOutline = {
     handle(op, args = {}) {
       const run = OPS[op]
       if (!run) return { ok: false, reason: `unknown op ${op}` }

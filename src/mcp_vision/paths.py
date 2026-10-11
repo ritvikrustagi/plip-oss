@@ -7,7 +7,7 @@ from pathlib import Path
 def _default_state_dir() -> Path:
     """Where this OS expects a program to keep its own data.
 
-    macOS and Linux keep the path Plip has always used, so an existing install
+    macOS and Linux keep the path Jade has always used, so an existing install
     finds its history and prefs where it left them. Windows has no
     ``~/.local/share`` convention, so state goes to ``%LOCALAPPDATA%\\Plip``.
     """
@@ -28,7 +28,7 @@ def make_private(path) -> bool:
     no-op: NTFS has no POSIX mode bits, Python reports 0o666 back, and the file
     stays readable by everyone else on the machine. That matters here, because
     the files this is used on are the API-key dotenv, the sign-in token, what
-    Plip remembers about you and the learning pseudonym - on a shared school
+    Jade remembers about you and the learning pseudonym - on a shared school
     machine, exactly the files another student must not be able to open.
 
     So on Windows it asks ``icacls`` to drop inheritance and grant the current

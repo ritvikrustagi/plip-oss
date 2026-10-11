@@ -85,7 +85,7 @@ class WindowsShell:
             companion=None, overlay=self.strip, loop=loop, presenter=self.presenter,
             call_later=self._call_later, on_main=lambda fn, *args: self.on_main(lambda: fn(*args)),
             on_result=self._recorded, say=lambda text: None,
-            setup_error="Plip is still waking up. Try again in a second.",
+            setup_error="Jade is still waking up. Try again in a second.",
             press_delay=BuddyController.PRESS_DELAY,
         )
         self.controller.shortcut, self.controller.shortcut_keys = "Ctrl+Alt", "Ctrl+Alt"
@@ -108,7 +108,7 @@ class WindowsShell:
         from mcp_vision.buddy import workers
 
         workers.install(loop)
-        threading.Thread(target=loop.run_forever, daemon=True, name="plip-loop").start()
+        threading.Thread(target=loop.run_forever, daemon=True, name="jade-loop").start()
         shell = cls(settings=settings, prefs=prefs, loop=loop, on_main=on_main,
                     history=History(), memory=make_memory(settings), usage=UsageLog())
         shell.rebuild(probe=probe)
@@ -149,7 +149,7 @@ class WindowsShell:
         except SetupError as exc:
             companion, self.setup_error = None, str(exc)
         except Exception as exc:                      # a broken optional piece must not kill the shell
-            log.exception("could not build Plip's brain on Windows")
+            log.exception("could not build Jade's brain on Windows")
             companion, self.setup_error = None, f"Couldn't start the brain: {exc}"
         self.controller.companion = companion
         try:

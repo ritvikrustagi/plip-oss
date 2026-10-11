@@ -22,15 +22,15 @@ _CLASSES: dict[str, type] = {}
 
 
 def responsible_app() -> tuple[str, str]:
-    """(name, bundle path) of the app macOS grants permissions to: Plip.app, or the terminal Plip runs in."""
+    """(name, bundle path) of the app macOS grants permissions to: Jade.app, or the terminal Jade runs in."""
     from Foundation import NSBundle
 
     bundle = str(NSBundle.mainBundle().bundlePath() or "")
     if bundle.endswith(".app"):
-        return "Plip", bundle
+        return "Jade", bundle
     app = bundle_for(_pid_path(_responsible_pid(os.getpid()) or 0))
     if not app:
-        return "Plip", ""
+        return "Jade", ""
     try:
         import plistlib
 

@@ -1,6 +1,6 @@
-"""Tells you when a newer Plip is out, so you can download it.
+"""Tells you when a newer Jade is out, so you can download it.
 
-Once a day Plip asks GitHub for the latest Mac release of ritvikrustagi/plip-oss: one GET to api.github.com with
+Once a day Jade asks GitHub for the latest Mac release of ritvikrustagi/plip-oss: one GET to api.github.com with
 nothing about you in it (GitHub sees the request, like any download). A newer version shows in the menu
 bar, on Home and in Settings → General, and once in the notch. Download opens the release's DMG.
 
@@ -42,7 +42,7 @@ def newer(latest: str, current: str) -> bool:
 
 def github_latest(url: str = LATEST) -> dict[str, Any]:
     request = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json",
-                                                   "User-Agent": f"Plip/{__version__}"})
+                                                   "User-Agent": f"Jade/{__version__}"})
     with urllib.request.urlopen(request, timeout=10) as response:
         data = json.loads(response.read() or b"{}")
     if isinstance(data, list):     # Windows builds share the releases list, so take the newest one with a DMG
@@ -52,7 +52,7 @@ def github_latest(url: str = LATEST) -> dict[str, Any]:
 
 
 def _release(data: dict[str, Any]) -> dict[str, str] | None:
-    """The parts Plip uses: the version, the DMG to download (else the release page), and the page."""
+    """The parts Jade uses: the version, the DMG to download (else the release page), and the page."""
     version = str(data.get("tag_name") or "").strip().lstrip("v")
     if data.get("draft") or data.get("prerelease") or not version_tuple(version):
         return None

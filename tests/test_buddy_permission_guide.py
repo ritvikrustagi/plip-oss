@@ -15,8 +15,8 @@ def test_each_permission_opens_its_own_page():
 
 def test_the_card_says_drag_where_the_list_takes_apps_and_switch_on_where_it_doesnt():
     assert {"accessibility", "screen"} <= DRAGGABLE and "microphone" not in DRAGGABLE
-    title, hint = card_text("accessibility", "Plip")
-    assert title == "Drag Plip into the list above" and "Already listed" in hint
+    title, hint = card_text("accessibility", "Jade")
+    assert title == "Drag Jade into the list above" and "Already listed" in hint
     title, _ = card_text("microphone", "Terminal")
     assert title == "Switch on Terminal in the list above"
 
@@ -94,7 +94,7 @@ def test_closing_system_settings_without_switching_it_on_stands_the_card_down():
 
 
 def test_the_app_to_drag_is_the_bundle_around_the_process():
-    assert bundle_for("/Applications/Plip.app/Contents/MacOS/Plip") == "/Applications/Plip.app"
+    assert bundle_for("/Applications/Jade.app/Contents/MacOS/Jade") == "/Applications/Jade.app"
     assert bundle_for("/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal") == \
         "/System/Applications/Utilities/Terminal.app"
     assert bundle_for("/opt/homebrew/bin/python3.12") == ""                  # not in an app: nothing to drag
@@ -114,7 +114,7 @@ def test_settings_shows_which_card_is_up_and_when_a_restart_finishes_it(tmp_path
     assert snapshot["permissions"]["restart"] is True and snapshot["permissions"]["guiding"] == "accessibility"
     assert service().snapshot()["permissions"]["restart"] is False
     restarted, granted = [], []
-    plip = service(restart=lambda: restarted.append(True), request_permission=granted.append)
-    plip.handle({"cmd": "restart-app"})
-    plip.handle({"cmd": "grant", "permission": "accessibility"})
+    jade = service(restart=lambda: restarted.append(True), request_permission=granted.append)
+    jade.handle({"cmd": "restart-app"})
+    jade.handle({"cmd": "grant", "permission": "accessibility"})
     assert restarted == [True] and granted == ["accessibility"]

@@ -1,9 +1,9 @@
-"""Plip next to your cursor (macOS): native motion, web-rendered character.
+"""Jade next to your cursor (macOS): native motion, web-rendered character.
 
-The BuddyAnimator decides where Plip is each frame (follow the cursor, arc to
+The BuddyAnimator decides where Jade is each frame (follow the cursor, arc to
 a target, hold, fly home); this window follows it at 60 Hz. The web view
-draws Plip and the typed label bubble and only hears about changes: mood,
-where Plip looks, and how it leans while flying.
+draws Jade and the typed label bubble and only hears about changes: mood,
+where Jade looks, and how it leans while flying.
 """
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from mcp_vision.buddy.overlay_macos import _ticker_class, mouse_global, screen_r
 from mcp_vision.buddy.web_host import WebSurface
 
 WIDTH, HEIGHT = 260.0, 96.0
-ANCHOR = (26.0, 26.0)               # Plip's center inside the web view (MascotView.MASCOT_ANCHOR)
+ANCHOR = (26.0, 26.0)               # Jade's center inside the web view (MascotView.MASCOT_ANCHOR)
 SEND_INTERVAL = 1 / 30
 
 
@@ -30,11 +30,11 @@ def mascot_state(render: RenderState, mood: str, level: float, velocity: tuple[f
     if flying and speed > 0.5:
         look = (vx / speed, vy / speed)
     elif render.mode == "pointing":
-        look = (-0.7, -0.7)                       # the target sits up-left of where Plip lands
+        look = (-0.7, -0.7)                       # the target sits up-left of where Jade lands
     else:
         dx, dy = mouse[0] - render.x, mouse[1] - render.y
         distance = math.hypot(dx, dy) or 1.0
-        look = (dx / distance, dy / distance)     # idle Plip keeps an eye on your cursor
+        look = (dx / distance, dy / distance)     # idle Jade keeps an eye on your cursor
     lean = max(-16.0, min(16.0, vx * 0.9)) if flying else 0.0
     return {
         "mood": "pointing" if pointing else mood,

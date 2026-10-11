@@ -1,7 +1,7 @@
 // Render the DMG window background (scripts/build_dmg.py) from HTML:
 //   assets/brand/dmg/background.png      660x440, what Finder shows at 1x
 //   assets/brand/dmg/background@2x.png   1320x880 for Retina (build_dmg joins both with tiffutil)
-// Finder draws Plip at (180, 232) and Applications at (480, 232), 112 px icons, names
+// Finder draws Jade at (180, 232) and Applications at (480, 232), 112 px icons, names
 // underneath in dark text, so each name sits on a light frosted card.
 // Usage: npm run brand
 import { mkdirSync, readFileSync } from 'node:fs'
@@ -32,13 +32,13 @@ h1 { position: absolute; top: 46px; width: 100%; text-align: center; font-size: 
 .note b { color: rgba(255,255,255,0.65); font-weight: 560; }
 </style></head><body>
 ${icons.map((x) => `<div class="glow" style="left:${x}px"></div><div class="card" style="left:${x}px"></div>`).join('')}
-<h1>Drag Plip into Applications</h1>
+<h1>Drag Jade into Applications</h1>
 <svg class="arrow" width="156" height="64" viewBox="0 0 156 64">
   <defs><linearGradient id="a" x1="0" x2="1"><stop offset="0" stop-color="#8fb3fa" stop-opacity="0.3"/><stop offset="1" stop-color="#8fb3fa"/></linearGradient></defs>
   <path d="M8 44 C 48 8, 104 8, 140 38" fill="none" stroke="url(#a)" stroke-width="3.4" stroke-linecap="round"/>
   <path d="M126 28 L 141 39 L 123 44" fill="none" stroke="#8fb3fa" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
-<div class="note">First open: if macOS says it can't check Plip, go to <b>System Settings → Privacy &amp; Security → Open Anyway</b>.</div>
+<div class="note">First open: if macOS says it can't check Jade, go to <b>System Settings → Privacy &amp; Security → Open Anyway</b>.</div>
 </body></html>`
 
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {})

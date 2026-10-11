@@ -6,9 +6,9 @@ from ``GetAsyncKeyState`` on exactly four keys - Ctrl, Alt, Shift, Win -
 polled on a background thread. That is a deliberate choice over
 ``SetWindowsHookEx``/``WH_KEYBOARD_LL``: a low-level hook sees every
 keystroke in every app, which is the one thing a learning assistant on a
-student's machine must not do. The cost is one behaviour Plip gives up:
+student's machine must not do. The cost is one behaviour Jade gives up:
 on macOS a letter typed during the chord cancels the press (it was another
-app's shortcut), and here Plip can't tell, so it doesn't claim to.
+app's shortcut), and here Jade can't tell, so it doesn't claim to.
 
 Chord names are shared with macOS so Settings and prefs stay portable;
 ``describe`` renders them the way Windows writes them (Ctrl, Alt, Win).
@@ -23,7 +23,7 @@ from mcp_vision.buddy.win32 import VK_CONTROL, VK_LWIN, VK_MENU, VK_SHIFT, Win32
 
 POLL_INTERVAL = 0.02            # 50 Hz: fast enough that a quick hold is never missed
 
-# The mac bit Plip already uses -> the Windows key that means the same thing.
+# The mac bit Jade already uses -> the Windows key that means the same thing.
 # Option is Alt; Command is the Windows key (it is only ever a chord member here).
 WATCHED = ((CONTROL, VK_CONTROL), (OPTION, VK_MENU), (SHIFT, VK_SHIFT), (COMMAND, VK_LWIN))
 
@@ -70,7 +70,7 @@ class WindowsHotkeyListener:
             return "none"
         self._stop.clear()
         self.mechanism = "polling"
-        self._thread = threading.Thread(target=self._loop, daemon=True, name="plip-hotkey")
+        self._thread = threading.Thread(target=self._loop, daemon=True, name="jade-hotkey")
         self._thread.start()
         return self.mechanism
 
@@ -102,8 +102,8 @@ class WindowsHotkeyListener:
 
 
 def keyboard_owner() -> str:
-    """Windows hands Plip the modifier state with no permission prompt."""
-    return "Plip"
+    """Windows hands Jade the modifier state with no permission prompt."""
+    return "Jade"
 
 
 def can_listen(input_api=None) -> bool:
