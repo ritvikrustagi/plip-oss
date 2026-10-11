@@ -1,4 +1,4 @@
-"""Bring your details into Plip from the places they already live.
+"""Bring your details into Jade from the places they already live.
 
 Every importer returns ``(facts, error)`` where facts are ``(key, value)``
 pairs. Nothing leaves the Mac: files are read locally and AppleScript asks
@@ -256,7 +256,7 @@ def import_autofill(home: str) -> tuple[Facts, str]:
 # -- AI memory (ChatGPT, Claude, Gemini) ------------------------------------------------------------------
 
 MEMORY_PROMPT = (
-    "I'm setting up Plip, my AI assistant on my Mac, and want it to know what you know about me. "
+    "I'm setting up Jade, my AI assistant on my Mac, and want it to know what you know about me. "
     "List everything you've saved in memory or learned about me, one fact per line, as `key: value`. "
     "Include my name, email, phone, home address, birthday, where I work and my role, school, important "
     "people (as `person: name, relationship`), preferences (food, travel, airline seats, brands), "
@@ -323,7 +323,7 @@ def parse_ai_memory(text: str) -> Facts:
 def _why(exc: Exception, app: str) -> str:
     text = str(exc).lower()
     if "not authorized" in text or "-1743" in text or "not allowed" in text:
-        return f"Allow Plip to control {app} (System Settings → Privacy & Security → Automation)."
+        return f"Allow Jade to control {app} (System Settings → Privacy & Security → Automation)."
     if "macos" in text:
         return str(exc)
     return f"Couldn't read {app}."

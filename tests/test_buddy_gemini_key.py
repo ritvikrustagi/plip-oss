@@ -60,7 +60,7 @@ def text(words, **extra):
 
 def run(brain, turns, **kw):
     async def collect():
-        return [piece async for piece in brain.stream(system="be plip", turns=turns, **kw)]
+        return [piece async for piece in brain.stream(system="be jade", turns=turns, **kw)]
     return "".join(asyncio.run(collect()))
 
 
@@ -75,7 +75,7 @@ def test_a_turn_streams_with_the_screenshot_and_reports_what_it_used():
     url, body, headers = google.sent[0]
     assert url.endswith("/models/gemini-flash-latest:streamGenerateContent?alt=sse")
     assert headers["X-goog-api-key"] == "AIza-test" and "AIza" not in url          # key never in the URL
-    assert body["systemInstruction"] == {"parts": [{"text": "be plip"}]}
+    assert body["systemInstruction"] == {"parts": [{"text": "be jade"}]}
     assert [content["role"] for content in body["contents"]] == ["user", "model", "user"]
     assert "inlineData" in body["contents"][2]["parts"][0] and body["contents"][2]["parts"][-1] == {"text": "where is export"}
     assert body["generationConfig"]["thinkingConfig"] == {"thinkingLevel": "low"}

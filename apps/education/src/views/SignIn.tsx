@@ -17,14 +17,14 @@ import { api, type DemoIdentity } from '../lib/api'
 import { actions, sessionStore } from '../lib/session'
 import { useStore } from '../store'
 import { Button, DemoBanner, Spinner } from '../components/bits'
-import { PlipMark } from '../components/PlipMark'
+import { JadeMark } from '../components/JadeMark'
 
 function Header() {
   return (
     <div className="flex items-center gap-3">
-      <PlipMark className="size-10" />
+      <JadeMark className="size-10" />
       <div>
-        <h1 className="text-[22px] font-semibold tracking-tight text-gradient">Plip for school</h1>
+        <h1 className="text-[22px] font-semibold tracking-tight text-gradient">Jade for school</h1>
         <p className="text-[13px] text-white/50">
           A practice session you start on purpose. Works on a Chromebook, in the browser, with nothing to install.
         </p>
@@ -39,10 +39,10 @@ function SchoolSignIn({ signInUrl }: { signInUrl: string }) {
   return (
     <section className="card p-5" data-testid="school-sign-in">
       <h2 className="flex items-center gap-2 text-[15px] font-semibold text-white">
-        <School className="size-4 text-plip-300" /> Sign in with your school account
+        <School className="size-4 text-jade-300" /> Sign in with your school account
       </h2>
       <p className="mt-2 text-[13px] leading-relaxed text-white/60">
-        Plip does not have a password of its own. Your school signs you in, and tells Plip only your name, your email
+        Jade does not have a password of its own. Your school signs you in, and tells Jade only your name, your email
         address and that the sign-in worked.
       </p>
       {signInProblem && (
@@ -53,7 +53,7 @@ function SchoolSignIn({ signInUrl }: { signInUrl: string }) {
       <a
         href={signInUrl}
         data-testid="sign-in-school"
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-plip-500 px-3.5 py-2.5 text-[13.5px] font-semibold text-white transition hover:bg-plip-400"
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-jade-500 px-3.5 py-2.5 text-[13.5px] font-semibold text-white transition hover:bg-jade-400"
       >
         <LogIn className="size-4" /> Continue
       </a>
@@ -88,7 +88,7 @@ function DemoSignIn() {
     <>
       <section className="card p-4">
         <h2 className="flex items-center gap-2 text-[14px] font-semibold text-white">
-          <GraduationCap className="size-4 text-plip-300" /> Sign in as a student
+          <GraduationCap className="size-4 text-jade-300" /> Sign in as a student
         </h2>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {students.map((identity) => (

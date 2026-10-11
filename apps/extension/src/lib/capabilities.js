@@ -1,8 +1,8 @@
-// What this extension can and cannot do, next to Plip on macOS.
+// What this extension can and cannot do, next to Jade on macOS.
 //
-// Shown in the panel's "What Plip can't do here" view and rendered into
+// Shown in the panel's "What Jade can't do here" view and rendered into
 // docs/EXTENSION.md, so the two can never drift. A pure Chrome extension has
-// no desktop, so several of Plip's defining features are simply absent -
+// no desktop, so several of Jade's defining features are simply absent -
 // saying so plainly is the point of this file. Nothing here is made possible
 // by a native helper, because this extension does not have one and does not
 // want one.
@@ -80,7 +80,7 @@ export const CAPABILITIES = [
 
 /** A markdown table, so the docs and the panel say the same thing. */
 export function capabilityTable() {
-  const header = '| Feature | Plip on macOS | This extension |\n| --- | --- | --- |'
+  const header = '| Feature | Jade on macOS | This extension |\n| --- | --- | --- |'
   const rows = CAPABILITIES.map((row) => `| ${row.feature} | ${row.mac} | ${row.extension} |`)
   return [header, ...rows].join('\n')
 }

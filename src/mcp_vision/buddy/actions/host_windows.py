@@ -8,7 +8,7 @@ macOS                 Windows
 ``open -a``           ``os.startfile`` + the Start Menu's ``.lnk`` files
 ``open -R``           ``explorer /select,``
 ``mdfind``            a filename walk of your user folders (no content search)
-``osascript``         ``powershell`` for the few things Plip needs
+``osascript``         ``powershell`` for the few things Jade needs
 ``display notif.``    a Windows toast (``Windows.UI.Notifications``)
 Quartz events         ``user32`` ``SendInput``
 ``shortcuts``         nothing: Apple Shortcuts have no Windows twin
@@ -44,7 +44,7 @@ $texts = $template.GetElementsByTagName('text')
 $texts.Item(0).AppendChild($template.CreateTextNode($env:PLIP_TOAST_TITLE)) > $null
 $texts.Item(1).AppendChild($template.CreateTextNode($env:PLIP_TOAST_BODY)) > $null
 $toast = [Windows.UI.Notifications.ToastNotification]::new($template)
-[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Plip').Show($toast)
+[Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Jade').Show($toast)
 """
 
 
@@ -85,7 +85,7 @@ class WindowsHost(PortableHost):
     def open(self, target: str) -> None:
         """A file, folder or URL, handed to whatever Windows has registered for it."""
         if self._startfile is None:
-            raise NotSupported("Plip can't open things from this Python build.")
+            raise NotSupported("Jade can't open things from this Python build.")
         self._startfile(target)
 
     def reveal(self, path: str) -> None:
@@ -102,7 +102,7 @@ class WindowsHost(PortableHost):
     def powershell(self, script: str, timeout: float = 15.0, env: dict[str, str] | None = None) -> str:
         """Run a PowerShell snippet. Raises ``NotSupported`` when PowerShell isn't on PATH."""
         if not self.powershell_exe:
-            raise NotSupported("PowerShell isn't on this machine's PATH, so Plip can't ask Windows to do that.")
+            raise NotSupported("PowerShell isn't on this machine's PATH, so Jade can't ask Windows to do that.")
         argv = [self.powershell_exe, "-NoProfile", "-NonInteractive", "-Command", script]
         merged = {**os.environ, **(env or {})} if env else None
         done = subprocess.run(argv, capture_output=True, text=True, timeout=timeout,
@@ -119,10 +119,10 @@ class WindowsHost(PortableHost):
             pass                        # a toast is never worth failing an action over
 
     def shortcuts(self) -> list[str]:
-        raise NotSupported("Apple Shortcuts are macOS-only; Windows has no list for Plip to run.")
+        raise NotSupported("Apple Shortcuts are macOS-only; Windows has no list for Jade to run.")
 
     def run_shortcut(self, name: str) -> str:
-        raise NotSupported("Apple Shortcuts are macOS-only; Windows has no list for Plip to run.")
+        raise NotSupported("Apple Shortcuts are macOS-only; Windows has no list for Jade to run.")
 
     # -- keyboard and mouse --------------------------------------------------------
     def type_text(self, text: str) -> None:
@@ -168,18 +168,18 @@ class WindowsHost(PortableHost):
     def mouse_position(self) -> tuple[float, float] | None:
         return self.input.cursor()
 
-    # -- grounding Plip does not have on Windows -----------------------------------
+    # -- grounding Jade does not have on Windows -----------------------------------
     # PortableHost already answers these with "don't know" (None / False / Reveal()),
     # which is the honest answer: there is no UI Automation reader yet. Listing them
     # here keeps the gap visible to anyone reading this file.
     def set_field(self, x: float, y: float, value: str) -> bool:
         raise NotSupported("Filling a field directly needs the macOS Accessibility API. "
-                           "Plip can click it and type instead.")
+                           "Jade can click it and type instead.")
 
     # -- internals -----------------------------------------------------------------
     def _require_input(self) -> None:
         if not self.input.available:
-            raise NotSupported("Plip can't reach user32 from this Python, so it can't move the mouse "
+            raise NotSupported("Jade can't reach user32 from this Python, so it can't move the mouse "
                                "or type for you.")
 
     def _send(self, events) -> None:

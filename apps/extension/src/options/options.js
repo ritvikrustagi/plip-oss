@@ -55,7 +55,7 @@ function note(settings) {
     return
   }
   const problem = checkProxyConfig(settings)
-  field('proxy-note').textContent = problem || 'Proxy configured. Plip holds no model key.'
+  field('proxy-note').textContent = problem || 'Proxy configured. Jade holds no model key.'
 }
 
 async function save() {
@@ -82,13 +82,13 @@ field('export').addEventListener('click', async () => {
     field('tally').textContent = 'Nothing is marked shareable, so there is nothing to export.'
     return
   }
-  download(`plip-learning-events-${stamp()}.json`, bundle)
+  download(`jade-learning-events-${stamp()}.json`, bundle)
 })
 
 field('export-all').addEventListener('click', async () => {
   const settings = await readSettings()
-  download(`plip-all-events-${stamp()}.json`, {
-    note: 'Everything Plip has stored for you, shareable or not. For your own records.',
+  download(`jade-all-events-${stamp()}.json`, {
+    note: 'Everything Jade has stored for you, shareable or not. For your own records.',
     studentId: settings.studentId,
     classId: settings.classId,
     retentionDays: settings.retentionDays,
@@ -155,7 +155,7 @@ async function origins() {
 function capabilities() {
   const table = field('capabilities')
   const head = document.createElement('tr')
-  for (const text of ['Feature', 'Plip on macOS', 'This extension']) {
+  for (const text of ['Feature', 'Jade on macOS', 'This extension']) {
     const cell = document.createElement('th')
     cell.textContent = text
     head.append(cell)

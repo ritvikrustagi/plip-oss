@@ -9,10 +9,10 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 def release_env() -> Path | None:
-    """``Plip.app/Contents/Resources/plip.env``: what a release build carries (the sign-in project), nothing secret."""
+    """``Jade.app/Contents/Resources/jade.env``: what a release build carries (the sign-in project), nothing secret."""
     home = Path(sys.prefix)
     if home.name == "python" and home.parent.name == "Resources" and home.parent.parent.name == "Contents":
-        return home.parent / "plip.env"
+        return home.parent / "jade.env"
     return None
 
 

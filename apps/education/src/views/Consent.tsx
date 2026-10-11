@@ -12,7 +12,7 @@ import { Eye, EyeOff, Play } from 'lucide-react'
 import { actions, sessionStore } from '../lib/session'
 import { useStore } from '../store'
 import { Button, DemoBanner, Spinner } from '../components/bits'
-import { PlipMark } from '../components/PlipMark'
+import { JadeMark } from '../components/JadeMark'
 import { voiceSupport } from '../lib/speech'
 
 const RECORDED = [
@@ -44,7 +44,7 @@ export function Consent() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4 sm:p-6">
       <header className="flex items-center gap-3">
-        <PlipMark className="size-9" />
+        <JadeMark className="size-9" />
         <div className="min-w-0">
           <h1 className="text-[19px] font-semibold tracking-tight text-white">Start a practice session</h1>
           <p className="truncate text-[12.5px] text-white/50">Signed in as {identity?.displayName} · {identity?.studentId}</p>
@@ -56,7 +56,7 @@ export function Consent() {
       {notice && <p className="card p-3 text-[12.5px] leading-relaxed text-dew">{notice}</p>}
 
       <section className="card p-4 sm:p-5">
-        <h2 className="text-[15px] font-semibold text-white">While a session is running, Plip writes down</h2>
+        <h2 className="text-[15px] font-semibold text-white">While a session is running, Jade writes down</h2>
         <ul className="mt-2 space-y-1.5">
           {RECORDED.map((line) => (
             <li key={line} className="flex gap-2 text-[13px] leading-relaxed text-white/75">
@@ -86,7 +86,7 @@ export function Consent() {
             data-testid="opt-in"
             checked={optIn}
             onChange={(event) => setOptIn(event.target.checked)}
-            className="mt-1 size-4 shrink-0 accent-plip-500"
+            className="mt-1 size-4 shrink-0 accent-jade-500"
           />
           <span className="text-[13.5px] leading-relaxed text-white/85">
             I want to start a session now, and I understand what is written down.
@@ -100,7 +100,7 @@ export function Consent() {
               data-testid="share-with-teacher"
               checked={share}
               onChange={(event) => setShare(event.target.checked)}
-              className="mt-1 size-4 shrink-0 accent-plip-500"
+              className="mt-1 size-4 shrink-0 accent-jade-500"
             />
             <span className="text-[13.5px] leading-relaxed text-white/85">
               Share this session’s counts with my teacher.

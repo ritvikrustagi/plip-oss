@@ -1,4 +1,4 @@
-"""A newer Plip: asked of GitHub once a day, offered in the menu bar and Settings, told once in the notch."""
+"""A newer Jade: asked of GitHub once a day, offered in the menu bar and Settings, told once in the notch."""
 from __future__ import annotations
 
 import json
@@ -7,9 +7,9 @@ from mcp_vision.buddy.settings_service import Platform, SettingsService
 from mcp_vision.buddy.store import Prefs
 from mcp_vision.buddy.updates import RELEASES, Updates, newer, version_tuple
 
-DMG = RELEASES + "download/v0.9.0/Plip-0.9.0.dmg"
+DMG = RELEASES + "download/v0.9.0/Jade-0.9.0.dmg"
 RELEASE = {"tag_name": "v0.9.0", "draft": False, "prerelease": False, "html_url": RELEASES + "tag/v0.9.0",
-           "assets": [{"name": "Plip-0.9.0.dmg", "browser_download_url": DMG}]}
+           "assets": [{"name": "Jade-0.9.0.dmg", "browser_download_url": DMG}]}
 
 
 class Settings:
@@ -70,9 +70,9 @@ def test_offline_keeps_the_last_answer_and_says_nothing_new(tmp_path):
     assert made.check()["version"] == "0.9.0" and github.calls == 2 and len(told) == 1
 
 
-def test_download_only_ever_opens_plips_own_releases(tmp_path):
-    elsewhere = {**RELEASE, "html_url": "https://evil.example/plip",
-                 "assets": [{"name": "Plip.dmg", "browser_download_url": "https://evil.example/Plip.dmg"}]}
+def test_download_only_ever_opens_jades_own_releases(tmp_path):
+    elsewhere = {**RELEASE, "html_url": "https://evil.example/jade",
+                 "assets": [{"name": "Jade.dmg", "browser_download_url": "https://evil.example/Jade.dmg"}]}
     made, *_ = updates(tmp_path, elsewhere)
     assert made.check() == {"version": "0.9.0", "url": RELEASES + "latest", "page": RELEASES + "latest"}
     no_dmg, *_ = updates(tmp_path / "b", {**RELEASE, "assets": []})
@@ -124,7 +124,7 @@ def test_the_real_request_reads_githubs_answer():
             self.send_header("Content-Type", "application/json")
             self.end_headers()
             windows = {"tag_name": "v0.10.0-windows.1", "draft": False, "prerelease": False,
-                       "assets": [{"name": "Plip-0.10.0-windows.zip"}]}
+                       "assets": [{"name": "Jade-0.10.0-windows.zip"}]}
             self.wfile.write(json.dumps([windows, RELEASE]).encode())
 
         def log_message(self, *args):
@@ -135,7 +135,7 @@ def test_the_real_request_reads_githubs_answer():
     try:
         data = github_latest(f"http://127.0.0.1:{server.server_address[1]}/repos/x/releases")
         assert data["tag_name"] == "v0.9.0"
-        assert seen[0][0] == "/repos/x/releases" and "github" in seen[0][1] and seen[0][2].startswith("Plip/")
+        assert seen[0][0] == "/repos/x/releases" and "github" in seen[0][1] and seen[0][2].startswith("Jade/")
     finally:
         server.shutdown()
         server.server_close()

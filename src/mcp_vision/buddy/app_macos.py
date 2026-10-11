@@ -1,4 +1,4 @@
-"""Plip on macOS: the notch island, Plip by your cursor, settings, and hold-to-talk.
+"""Jade on macOS: the notch island, Jade by your cursor, settings, and hold-to-talk.
 
 Threads:
 * main thread  - AppKit: island, mascot, settings window, hotkeys, menu bar.
@@ -30,9 +30,9 @@ def _menu_target_class():
         import Foundation
         import objc
 
-        class PlipMenuTarget(Foundation.NSObject):
+        class JadeMenuTarget(Foundation.NSObject):
             def initWithActions_(self, actions):
-                self = objc.super(PlipMenuTarget, self).init()
+                self = objc.super(JadeMenuTarget, self).init()
                 if self is None:
                     return None
                 self.actions = actions
@@ -48,36 +48,61 @@ def _menu_target_class():
                 if action:
                     action()
 
-        _CLASSES["target"] = PlipMenuTarget
+        _CLASSES["target"] = JadeMenuTarget
     return _CLASSES["target"]
 
 
-def _plip_icon():
-    """Menu bar glyph: the app icon's hood silhouette with its pill eye cut out (template image)."""
+def _jade_icon():
+    """Menu bar glyph: the app icon's round body with its pill eye cut out, under its cap (template image)."""
     import AppKit
 
     size = 18.0
     image = AppKit.NSImage.alloc().initWithSize_(AppKit.NSMakeSize(size, size))
     image.lockFocus()
-    # Same curves as the UI mascot (64-unit box, y down), scaled into 18 pt with y flipped.
+    # Same shapes as the UI mascot (64-unit box, y down), scaled into 18 pt with y flipped.
     scale = size / 64.0
+    clear, over = AppKit.NSCompositingOperationClear, AppKit.NSCompositingOperationSourceOver
+    context = AppKit.NSGraphicsContext.currentContext()
 
     def point(x, y):
         return AppKit.NSMakePoint(x * scale, size - y * scale)
 
-    hood = AppKit.NSBezierPath.bezierPath()
-    hood.moveToPoint_(point(15, 60))
-    for c1, c2, end in (((9, 57), (8, 52), (8.2, 46)), ((8.5, 30), (22, 4), (37, 4.1)),
-                        ((42, 4), (45.5, 6.5), (47.3, 9.4)), ((51, 14), (54.5, 21), (55.5, 27.1)),
-                        ((56.5, 34), (52, 40), (45.9, 43.5)), ((40, 47), (31, 48.5), (25.9, 50.6)),
-                        ((22, 53), (19, 61), (15, 60))):
-        hood.curveToPoint_controlPoint1_controlPoint2_(point(*end), point(*c1), point(*c2))
-    hood.closePath()
+    body = AppKit.NSBezierPath.bezierPath()
+    body.moveToPoint_(point(31, 14))
+    for c1, c2, end in (((45, 14), (54, 25), (54, 39)), ((54, 52), (44, 61), (31, 61)),
+                        ((18, 61), (9, 52), (9, 39)), ((9, 25), (17, 14), (31, 14))):
+        body.curveToPoint_controlPoint1_controlPoint2_(point(*end), point(*c1), point(*c2))
+    body.closePath()
     AppKit.NSColor.blackColor().setFill()
-    hood.fill()
-    AppKit.NSGraphicsContext.currentContext().setCompositingOperation_(AppKit.NSCompositingOperationClear)
-    eye = AppKit.NSMakeRect(40.0 * scale, size - 31.5 * scale, 6.6 * scale, 12.0 * scale)
-    AppKit.NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius_(eye, 3.3 * scale, 3.3 * scale).fill()
+    body.fill()
+    context.setCompositingOperation_(clear)
+    eye = AppKit.NSMakeRect(38.8 * scale, size - 41.6 * scale, 5.0 * scale, 8.6 * scale)
+    AppKit.NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius_(eye, 2.5 * scale, 2.5 * scale).fill()
+
+    # The cap's board, tilted like the icon's (-8° in y-down is +8° here), with a clear rim so it
+    # reads apart from the head it sits on.
+    tilt = AppKit.NSAffineTransform.transform()
+    pivot = point(34, 14)
+    tilt.translateXBy_yBy_(pivot.x, pivot.y)
+    tilt.rotateByDegrees_(8)
+    tilt.translateXBy_yBy_(-pivot.x, -pivot.y)
+    board = AppKit.NSBezierPath.bezierPath()
+    board.moveToPoint_(point(34, 3))
+    for x, y in ((55, 11), (34, 19), (13, 11)):
+        board.lineToPoint_(point(x, y))
+    board.closePath()
+    board.transformUsingAffineTransform_(tilt)
+    board.setLineWidth_(3.0 * scale)
+    AppKit.NSColor.blackColor().setStroke()
+    board.stroke()
+    context.setCompositingOperation_(over)
+    board.fill()
+    tassel = AppKit.NSBezierPath.bezierPath()
+    tassel.moveToPoint_(point(50, 13.4))
+    tassel.lineToPoint_(point(50, 24))
+    tassel.transformUsingAffineTransform_(tilt)
+    tassel.setLineWidth_(2.4 * scale)
+    tassel.stroke()
     image.unlockFocus()
     image.setTemplate_(True)
     return image
@@ -91,8 +116,8 @@ class StatusMenu:
         self.item = AppKit.NSStatusBar.systemStatusBar().statusItemWithLength_(AppKit.NSVariableStatusItemLength)
         button = self.item.button()
         if button is not None:
-            button.setImage_(_plip_icon())
-            button.setToolTip_("Plip - hold Control+Option and ask")
+            button.setImage_(_jade_icon())
+            button.setToolTip_("Jade - hold Control+Option and ask")
         menu = AppKit.NSMenu.alloc().init()
         menu.setAutoenablesItems_(False)
         self.status = self._add(menu, "Starting...", None)
@@ -104,15 +129,15 @@ class StatusMenu:
         self.resume_item = self._add(menu, "Keep going", "resume")
         self.resume_item.setHidden_(True)
         menu.addItem_(AppKit.NSMenuItem.separatorItem())
-        self._add(menu, "Open Plip...", "settings", ",")
-        self.update_item = self._add(menu, "Download the new Plip...", "update")
+        self._add(menu, "Open Jade...", "settings", ",")
+        self.update_item = self._add(menu, "Download the new Jade...", "update")
         self.update_item.setHidden_(True)
         self.brain_item = self._add(menu, "Brain: choosing...", "brain")
-        self.visible_item = self._add(menu, "Show Plip by my cursor", "toggle_visible")
+        self.visible_item = self._add(menu, "Show Jade by my cursor", "toggle_visible")
         self._add(menu, "Forget this conversation", "clear")
         self._add(menu, "Report a bug...", "report")
         menu.addItem_(AppKit.NSMenuItem.separatorItem())
-        self._add(menu, "Quit Plip", "quit", "q")
+        self._add(menu, "Quit Jade", "quit", "q")
         menu.setDelegate_(self.target)
         self.item.setMenu_(menu)
 
@@ -135,7 +160,7 @@ class StatusMenu:
         self.hint.setTitle_(f"Hold {chord.symbols} and ask anything")
         button = self.item.button()
         if button is not None:
-            button.setToolTip_(f"Plip - hold {chord.label} and ask")
+            button.setToolTip_(f"Jade - hold {chord.label} and ask")
 
     def set_activity(self, busy: bool, unfinished: str) -> None:
         """Stop while busy; Keep going for an unfinished task."""
@@ -148,9 +173,9 @@ class StatusMenu:
         self.brain_item.setTitle_(f"Brain: {text}"[:60])
 
     def set_update(self, version: str | None) -> None:
-        """A newer Plip is out: one click downloads it. Hidden when there's nothing new."""
+        """A newer Jade is out: one click downloads it. Hidden when there's nothing new."""
         if version:
-            self.update_item.setTitle_(f"Download Plip {version}...")
+            self.update_item.setTitle_(f"Download Jade {version}...")
         self.update_item.setHidden_(not version)
 
     def set_visible_checked(self, checked: bool) -> None:
@@ -165,9 +190,9 @@ def _install_main_menu() -> None:
 
     main = AppKit.NSMenu.alloc().init()
     app_item = AppKit.NSMenuItem.alloc().init()
-    app_menu = AppKit.NSMenu.alloc().initWithTitle_("Plip")
+    app_menu = AppKit.NSMenu.alloc().initWithTitle_("Jade")
     app_menu.addItemWithTitle_action_keyEquivalent_("Close Window", "performClose:", "w")
-    app_menu.addItemWithTitle_action_keyEquivalent_("Quit Plip", "terminate:", "q")
+    app_menu.addItemWithTitle_action_keyEquivalent_("Quit Jade", "terminate:", "q")
     app_item.setSubmenu_(app_menu)
     main.addItem_(app_item)
     edit_item = AppKit.NSMenuItem.alloc().init()
@@ -215,7 +240,7 @@ def _run_in_terminal(command: str) -> None:
 
 
 def _relaunch() -> bool:
-    """Quit and open Plip again (macOS only applies Screen Recording to a fresh process)."""
+    """Quit and open Jade again (macOS only applies Screen Recording to a fresh process)."""
     import shlex
 
     import AppKit
@@ -328,7 +353,7 @@ def run_buddy_app() -> None:
     from mcp_vision.buddy import workers
 
     workers.install(loop)                         # to_thread jobs drain their autorelease pools
-    threading.Thread(target=loop.run_forever, daemon=True, name="plip-loop").start()
+    threading.Thread(target=loop.run_forever, daemon=True, name="jade-loop").start()
     history = History()
     registry = EngineRegistry(lambda: state["settings"])
     from mcp_vision.buddy.memory.postgres import make_memory
@@ -399,7 +424,7 @@ def run_buddy_app() -> None:
         update_setup_error()                           # Accessibility on: the shortcut starts working
         service.push()
         if granted and state["settings_window"] is not None:
-            state["settings_window"].front()           # back to Plip, where you left off
+            state["settings_window"].front()           # back to Jade, where you left off
 
     def request_permission(name: str) -> None:
         if name in GUIDED or (name in {"microphone", "speech"} and _asked_before(name)):
@@ -413,7 +438,7 @@ def run_buddy_app() -> None:
         return {**native_permission_snapshot(), "restart": bool(state.get("restart_for_screen")),
                 "guiding": guide.active if guide is not None else ""}
 
-    # -- a newer Plip: the menu bar and Settings offer it, the notch says so once -----------------------
+    # -- a newer Jade: the menu bar and Settings offer it, the notch says so once -----------------------
     from mcp_vision.buddy.updates import Updates
 
     updates = Updates(enabled=lambda: Prefs.load().update_check,
@@ -434,7 +459,7 @@ def run_buddy_app() -> None:
                 AppHelper.callLater(20.0, lambda: ask_for_google(moment, tries + 1))
             return
         if moment == "first_task":
-            presenter("notice", {"text": "Nice one. Want to keep this Plip as yours? Settings → Account, when you like."})
+            presenter("notice", {"text": "Nice one. Want to keep this Jade as yours? Settings → Account, when you like."})
         else:
             open_settings("home")
 
@@ -443,12 +468,12 @@ def run_buddy_app() -> None:
             if tries < 30:
                 AppHelper.callLater(60.0, lambda: tell_update(release, tries + 1))
             return
-        presenter("notice", {"text": f"Plip {release['version']} is out. Download it from the menu bar "
+        presenter("notice", {"text": f"Jade {release['version']} is out. Download it from the menu bar "
                                      "or Settings → General."})
 
     def check_updates(force: bool = False) -> None:
         threading.Thread(target=lambda: AppHelper.callAfter(show_update, updates.check(force=force)),
-                         daemon=True, name="plip-update-check").start()
+                         daemon=True, name="jade-update-check").start()
 
     def watch_updates() -> None:
         from mcp_vision.analytics import ping
@@ -456,7 +481,7 @@ def run_buddy_app() -> None:
         while True:                                   # GitHub is asked at most once a day (Updates.check)
             AppHelper.callAfter(show_update, updates.check())
             time.sleep(6 * 60 * 60)
-            ping("app")                               # Plip stays open for days: still one anonymous ping a day
+            ping("app")                               # Jade stays open for days: still one anonymous ping a day
 
     # -- the account: Settings follows it; the hotkey never waits for it -----------------------------
     def account_changed() -> None:
@@ -476,7 +501,7 @@ def run_buddy_app() -> None:
 
     def restart() -> None:
         if not _relaunch():
-            menu.set_status("Quit Plip and start it again to finish turning on Screen Recording")
+            menu.set_status("Quit Jade and start it again to finish turning on Screen Recording")
 
     def post_settings(messages):
         if state["settings_window"] is not None:
@@ -489,7 +514,7 @@ def run_buddy_app() -> None:
         on_main=lambda fn, *args: AppHelper.callAfter(fn, *args),
         on_result=lambda transcript, result: record(transcript, result),
         on_setup_needed=lambda _message: None if state["building"] else setup_needed(),
-        setup_error="Plip is still waking up. Try again in a second.",
+        setup_error="Jade is still waking up. Try again in a second.",
         press_delay=BuddyController.PRESS_DELAY,
         sound=sounds.play,
     )
@@ -517,7 +542,7 @@ def run_buddy_app() -> None:
         post_shortcut()
 
     def post_shortcut() -> None:
-        """Send the island the shortcut, and whether macOS passes it to Plip."""
+        """Send the island the shortcut, and whether macOS passes it to Jade."""
         if island is not None:
             card = chord(Prefs.load().hotkey).card()
             island.post([{"type": "shortcut", "state": {**card, "works": hotkey_mode() != "none"}}])
@@ -552,7 +577,7 @@ def run_buddy_app() -> None:
         except SetupError as exc:
             error = str(exc)
         except Exception as exc:          # a broken optional piece must not kill the app
-            log.exception("could not build Plip's brain")
+            log.exception("could not build Jade's brain")
             error = f"Couldn't start the brain: {exc}"
         AppHelper.callAfter(install, settings, prefs, companion, error)
 
@@ -606,10 +631,10 @@ def run_buddy_app() -> None:
 
         def warmed(future):
             try:
-                log.info("plip brain ready: %s", future.result())
+                log.info("jade brain ready: %s", future.result())
             except Exception as exc:
-                log.warning("plip brain warm-up failed: %s", exc)
-                AppHelper.callAfter(menu.set_status, "Brain problem: check its key or sign-in in Plip's settings")
+                log.warning("jade brain warm-up failed: %s", exc)
+                AppHelper.callAfter(menu.set_status, "Brain problem: check its key or sign-in in Jade's settings")
         if hasattr(companion.brain, "prewarm"):
             companion.brain.prewarm = True          # the app lives on: keep the next brain process ready
             loop.call_soon_threadsafe(companion.warm_brain)
@@ -617,13 +642,13 @@ def run_buddy_app() -> None:
 
     def rebuild(probe: bool = False) -> None:
         state["building"] = True
-        threading.Thread(target=build, args=(probe,), daemon=True, name="plip-build").start()
+        threading.Thread(target=build, args=(probe,), daemon=True, name="jade-build").start()
 
     def refresh_engines() -> None:
         def work():
             registry.statuses(refresh=True)
             AppHelper.callAfter(refreshed)
-        threading.Thread(target=work, daemon=True, name="plip-probe").start()
+        threading.Thread(target=work, daemon=True, name="jade-probe").start()
 
     def refreshed() -> None:
         """"Check again" / back to Settings: menu bar, island and brain catch up."""
@@ -658,7 +683,7 @@ def run_buddy_app() -> None:
             except RuntimeError:
                 return                         # the account changed during the import
             AppHelper.callAfter(service.push)
-        threading.Thread(target=work, daemon=True, name=f"plip-import-{source}").start()
+        threading.Thread(target=work, daemon=True, name=f"jade-import-{source}").start()
 
     def test_voice(text: str) -> None:
         speaker = getattr(controller.companion, "speaker", None)
@@ -756,7 +781,7 @@ def run_buddy_app() -> None:
         except Exception:
             return
         if result is not None and result.did:
-            history.add("(confirmed)", result.spoken, engine="Plip")
+            history.add("(confirmed)", result.spoken, engine="Jade")
 
     # -- menu bar --------------------------------------------------------------------------
     def toggle_visible():
@@ -801,20 +826,20 @@ def run_buddy_app() -> None:
         account.refresh()                              # renew the sign-in once
         account.ensure_anonymous(retry_only=True)      # the walkthrough ended offline: the account it chose, now
 
-    threading.Thread(target=account_launch, daemon=True, name="plip-account").start()
-    threading.Thread(target=watch_updates, daemon=True, name="plip-updates").start()      # a newer Plip?
+    threading.Thread(target=account_launch, daemon=True, name="jade-account").start()
+    threading.Thread(target=watch_updates, daemon=True, name="jade-updates").start()      # a newer Jade?
 
     if not prefs.onboarded:
         # The welcome walkthrough, until it calls finish-onboarding. Sign-in comes after the first task.
         AppHelper.callLater(0.8, lambda: open_settings("home"))
 
-    log.info("plip running (hotkey=%s, web=%s)", controller.hotkey_mode, web)
+    log.info("jade running (hotkey=%s, web=%s)", controller.hotkey_mode, web)
     if controller.hotkey_mode == "none":
         owner = keyboard_owner()
-        print(f"Plip can't hear {controller.shortcut} yet: macOS isn't passing keystrokes to {owner}. Turn {owner} "
-              "on in System Settings > Privacy & Security > Accessibility, then start Plip again.", flush=True)
+        print(f"Jade can't hear {controller.shortcut} yet: macOS isn't passing keystrokes to {owner}. Turn {owner} "
+              "on in System Settings > Privacy & Security > Accessibility, then start Jade again.", flush=True)
     else:
-        print(f"Plip is in your menu bar and notch. Hold {controller.shortcut} and ask.", flush=True)
+        print(f"Jade is in your menu bar and notch. Hold {controller.shortcut} and ask.", flush=True)
     import atexit
 
     if hasattr(memory, "close"):

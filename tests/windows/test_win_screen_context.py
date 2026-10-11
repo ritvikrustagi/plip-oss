@@ -76,7 +76,7 @@ def test_a_typed_box_is_pointable_but_has_no_value():
     box = context.controls[0]
     assert box.role == "text box"
     assert box.value == "" and box.label == "", "what you type is never in the map"
-    assert 2 not in api.read_text_of, "Plip must not even ask Windows for an edit control's text"
+    assert 2 not in api.read_text_of, "Jade must not even ask Windows for an edit control's text"
 
 
 def test_a_password_box_is_dropped_entirely():
@@ -121,7 +121,7 @@ def test_enumeration_is_capped():
 # -- blindness is admitted, not guessed ------------------------------------------
 def test_browsers_report_blind_with_no_controls(monkeypatch):
     api = tree(FakeWindow(2, cls="Button", text="Reload", box=(10, 10, 60, 24)),
-               title="Plip - Google Chrome")
+               title="Jade - Google Chrome")
     monkeypatch.setattr("mcp_vision.buddy.ui_context_windows._process_name", lambda api, handle: "chrome.exe")
     context = read(api)
     assert context.blind is True

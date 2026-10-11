@@ -26,7 +26,7 @@ SOURCE = Path(__file__).resolve().parents[2] / "apps" / "extension" / "tools" / 
 
 
 def load_proxy_module():
-    spec = importlib.util.spec_from_file_location("plip_dev_proxy", SOURCE)
+    spec = importlib.util.spec_from_file_location("jade_dev_proxy", SOURCE)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

@@ -1,4 +1,4 @@
-"""What Plip's requests cost, kept on this Mac.
+"""What Jade's requests cost, kept on this Mac.
 
 Every brain reports token counts at the end of a call (Claude Code also reports
 what that call would cost at API prices). ``Usage`` normalizes those reports;
@@ -131,7 +131,7 @@ def from_report(raw: dict[str, Any] | None, *, model: str = "", cost: float | No
 
 
 def estimate(input_tokens: int, reply: str, model: str = "") -> Usage:
-    """What a brain that reports nothing probably used: what Plip sent, and its reply at ~4 characters a token."""
+    """What a brain that reports nothing probably used: what Jade sent, and its reply at ~4 characters a token."""
     return Usage(input=max(0, int(input_tokens)), output=max(1, len(reply) // 4) if reply else 0, model=model,
                  estimated=True)
 
@@ -174,7 +174,7 @@ class Request:
     actions: list[str] = field(default_factory=list)      # names only, never what they were about
     outcome: str = "answered"   # one of OUTCOMES
     goal: bool = False          # a multi-step task (more than one model call)
-    ms: int = 0                 # start until Plip stopped talking
+    ms: int = 0                 # start until Jade stopped talking
     first_ms: int = 0           # start to first word (0: never spoke)
     model_ms: int = 0           # waiting on the brain, all turns (not mid-reply actions)
     act_ms: int = 0             # carrying out actions

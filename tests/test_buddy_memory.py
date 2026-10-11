@@ -1,4 +1,4 @@
-"""Plip's memory: the store, every importer (against real sqlite files), AI-memory paste, and use in turns."""
+"""Jade's memory: the store, every importer (against real sqlite files), AI-memory paste, and use in turns."""
 from __future__ import annotations
 
 import asyncio
@@ -58,7 +58,7 @@ def test_sensitive_facts_are_masked_and_kept_out_of_prompts(memory):
     assert "X1234567" not in summary and "(sensitive, ask before using) passport number" in summary
     assert "- name: Hussain Syed" in summary and "- prefers aisle seats" in summary
     card = next(fact.card() for fact in memory.facts if fact.sensitive)
-    assert card["value"] == mask("passport number: X1234567") == "•••• 4567" and card["sources"] == ["You told Plip"]
+    assert card["value"] == mask("passport number: X1234567") == "•••• 4567" and card["sources"] == ["You told Jade"]
 
 
 def test_sensitive_notes_reach_the_model_as_what_they_are_never_what_they_say(memory):
@@ -100,7 +100,7 @@ def test_merge_and_forget_a_source(memory):
 
 # -- Contacts & Mail ---------------------------------------------------------------------------
 
-CONTACTS_OUTPUT = ("name.first\tHussain\nname.last\tSyed\ncompany\tPlip Labs\ntitle\tFounder\n"
+CONTACTS_OUTPUT = ("name.first\tHussain\nname.last\tSyed\ncompany\tJade Labs\ntitle\tFounder\n"
                    "email\thussain@example.com\nphone\t+1 555 010 2000\naddress.street\t1 Main St\n"
                    "address.city\tBrooklyn\naddress.state\tNY\naddress.postal\t11201\naddress.country\tUSA\n"
                    "birthday\t1999-3-7\nsocial.LinkedIn\thussain-syed\nsocial.Mastodon\t@h@social\n"
@@ -113,7 +113,7 @@ def test_contacts_card_parses_every_field():
     assert ("note", "mastodon: @h@social") in facts and ("address.postal", "11201") in facts
     assert not any(value == "missing value" for _, value in facts)
     facts, error = import_contacts(FakeHost(osa_reply=CONTACTS_OUTPUT))
-    assert error == "" and ("company", "Plip Labs") in facts
+    assert error == "" and ("company", "Jade Labs") in facts
 
 
 def test_contacts_permission_errors_are_explained():
@@ -134,7 +134,7 @@ def make_web_data(path, *, modern=True):
             db.execute("CREATE TABLE address_type_tokens (guid TEXT, type INT, value TEXT, verification_status INT)")
             db.executemany("INSERT INTO address_type_tokens VALUES ('g', ?, ?, 0)", [
                 (3, "Hussain"), (5, "Syed"), (7, "Hussain Syed"), (9, "hussain@example.com"), (14, "+15550102000"),
-                (77, "1 Main St"), (33, "Brooklyn"), (34, "NY"), (35, "11201"), (36, "US"), (60, "Plip Labs"),
+                (77, "1 Main St"), (33, "Brooklyn"), (34, "NY"), (35, "11201"), (36, "US"), (60, "Jade Labs"),
                 (9, "not-an-email"), (999, "ignored")])
         else:
             db.execute("CREATE TABLE autofill_profiles (guid TEXT, company_name TEXT, street_address TEXT, city TEXT, "
@@ -162,7 +162,7 @@ def test_autofill_reads_modern_and_legacy_chrome_schemas(tmp_path):
     facts, error = import_autofill(str(home))
     assert error == ""
     for fact in [("name.full", "Hussain Syed"), ("email", "hussain@example.com"), ("phone", "+15550102000"),
-                 ("address.street", "1 Main St"), ("company", "Plip Labs"), ("name.full", "Ada Lovelace"),
+                 ("address.street", "1 Main St"), ("company", "Jade Labs"), ("name.full", "Ada Lovelace"),
                  ("address.city", "Austin"), ("email", "ada@example.com"), ("email", "typed@example.com"),
                  ("name.first", "Hussain"), ("address.postal", "11201")]:
         assert fact in facts, fact
@@ -184,7 +184,7 @@ CHATGPT_OUTPUT = """Here's what I know about you:
 - Location: Brooklyn
 - Home address: 1 Main St, Brooklyn, NY 11201, USA
 - Job title: Founder
-- Company: Plip Labs
+- Company: Jade Labs
 - Person: Sara, sister
 - Prefers aisle seats on flights
 - Diet: vegetarian
@@ -223,7 +223,7 @@ def test_remember_and_forget_actions(memory):
     assert json.loads(memory.path.read_text())["facts"]
 
 
-def test_companion_turns_carry_what_plip_knows(memory):
+def test_companion_turns_carry_what_jade_knows(memory):
     memory.add("name.full", "Hussain Syed", "contacts")
     memory.add("note", "vegetarian", "chatgpt")
     brain = ScriptedBrain("Hi Hussain.")
@@ -232,6 +232,6 @@ def test_companion_turns_carry_what_plip_knows(memory):
     asyncio.run(buddy.respond("what should I eat tonight"))
     system, text = brain.systems[0], brain.calls[0][-1].text
     assert "about the user" in system and "- name: Hussain Syed" in system and "- vegetarian" in system
-    assert system.index("you're plip") < system.index("about the user")
+    assert system.index("you're jade") < system.index("about the user")
     # notes ride in the cached prompt; the clock stays per turn
     assert "about the user" not in text and text.startswith("now: ") and text.endswith("what should I eat tonight")

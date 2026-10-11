@@ -1,15 +1,15 @@
-"""What Plip can honestly do on the machine it is running on.
+"""What Jade can honestly do on the machine it is running on.
 
-One table, two readers: ``plip doctor`` prints it and the desktop shells grey
+One table, two readers: ``jade doctor`` prints it and the desktop shells grey
 out what is missing with the reason next to it. Nothing here pretends: the
 macOS rows name AppleScript, Spotlight, the notch and Apple Speech, and the
-Windows rows name the native thing Plip uses instead (PowerShell, SendInput,
+Windows rows name the native thing Jade uses instead (PowerShell, SendInput,
 a top-centre strip window, a typed box) or say plainly that there is none.
 
 ``supported`` is the only field the UI should gate on. ``detail`` is what the
-person reads, ``instead`` is the native alternative Plip actually uses, and
+person reads, ``instead`` is the native alternative Jade actually uses, and
 ``evidence`` separates "we measured this" from "we assume this from the OS":
-"probed" means Plip asked the system this run, "platform" means it follows
+"probed" means Jade asked the system this run, "platform" means it follows
 from the OS alone.
 """
 from __future__ import annotations
@@ -39,7 +39,7 @@ class Capability:
     label: str                       # what the person calls it
     supported: bool
     detail: str = ""                 # why, in one sentence they can act on
-    instead: str = ""                # the native alternative Plip uses here
+    instead: str = ""                # the native alternative Jade uses here
     evidence: str = "platform"       # platform | probed
     group: str = "general"
 
@@ -52,7 +52,7 @@ class Capability:
 # One entry per capability per platform. Order is the order the UI shows them in.
 _MAC = (
     Capability("chat", "Chat", True, "Ask in the notch island or by voice.", group="core"),
-    Capability("walkthrough", "Walkthrough checklist", True, "Steps tick off as Plip works.", group="core"),
+    Capability("walkthrough", "Walkthrough checklist", True, "Steps tick off as Jade works.", group="core"),
     Capability("screen_capture", "Screen capture", True, "Needs Screen Recording in System Settings.", group="eyes"),
     Capability("screen_context", "Screen map (grounding)", True,
                "The Accessibility tree names buttons, fields and the page text.", group="eyes"),
@@ -62,7 +62,7 @@ _MAC = (
     Capability("speech_out", "Spoken answers", True, "macOS `say`, or ElevenLabs with a key.", group="voice"),
     Capability("typed_input", "Typed input", True, "Type into the island instead of holding the shortcut.",
                group="voice"),
-    Capability("pointing", "Pointing at things", True, "Plip flies to the spot and labels it.", group="hands"),
+    Capability("pointing", "Pointing at things", True, "Jade flies to the spot and labels it.", group="hands"),
     Capability("click", "Clicking and scrolling", True, "Quartz events; needs Accessibility.", group="hands"),
     Capability("type_text", "Typing for you", True, "Quartz events; needs Accessibility.", group="hands"),
     Capability("open_app", "Opening apps and links", True, "`open -a`.", group="hands"),
@@ -71,25 +71,25 @@ _MAC = (
     Capability("shortcuts", "Apple Shortcuts", True, "Runs the shortcuts you already have.", group="system"),
     Capability("notifications", "Notifications", True, "`display notification`.", group="system"),
     Capability("notch_island", "Notch island", True, "A transparent window around the notch.", group="shell"),
-    Capability("mascot", "Plip by your cursor", True, "A floating WebKit mascot.", group="shell"),
+    Capability("mascot", "Jade by your cursor", True, "A floating WebKit mascot.", group="shell"),
     Capability("web_settings", "Settings window", True, "The React dashboard in a WKWebView.", group="shell"),
-    Capability("local_memory", "Local memory", True, "What you tell Plip, on this machine only.", group="data"),
+    Capability("local_memory", "Local memory", True, "What you tell Jade, on this machine only.", group="data"),
     Capability("learning_events", "Learning-event export", True,
                "Opt-in session events as JSON Lines you can read, export or delete.", group="data"),
 )
 
 _WINDOWS = (
     Capability("chat", "Chat", True, "Ask in the strip at the top of the screen.", group="core"),
-    Capability("walkthrough", "Walkthrough checklist", True, "Steps tick off as Plip works.", group="core"),
+    Capability("walkthrough", "Walkthrough checklist", True, "Steps tick off as Jade works.", group="core"),
     Capability("screen_capture", "Screen capture", True,
                "Off until you switch it on for the session; no screenshot leaves this machine unless you share it.",
                instead="mss (Desktop Duplication / GDI)", group="eyes"),
     Capability("screen_context", "Screen map (grounding)", True,
                "Window titles and visible Win32 controls only. Browser, Electron and UWP windows read as blind, "
-               "and Plip never reads the text inside a box you type in.",
+               "and Jade never reads the text inside a box you type in.",
                instead="user32 window enumeration (no UI Automation yet)", group="eyes"),
     Capability("push_to_talk", "Push-to-talk", True,
-               "Hold Ctrl+Alt. Plip polls the four modifier keys only, so it cannot see what you type.",
+               "Hold Ctrl+Alt. Jade polls the four modifier keys only, so it cannot see what you type.",
                instead="GetAsyncKeyState polling, no keyboard hook", group="voice"),
     Capability("speech_in", "Speech recognition", False,
                "No on-device engine ships for Windows yet. Add an AssemblyAI key to talk, or type instead.",
@@ -98,7 +98,7 @@ _WINDOWS = (
                instead="SAPI via System.Speech (PowerShell)", group="voice"),
     Capability("typed_input", "Typed input", True, "The supported way in until speech is set up.", group="voice"),
     Capability("pointing", "Pointing at things", False,
-               "The click-through mascot overlay is macOS-only for now; Plip tells you the spot instead.",
+               "The click-through mascot overlay is macOS-only for now; Jade tells you the spot instead.",
                instead="the strip names the target and its coordinates", group="hands"),
     Capability("click", "Clicking and scrolling", True, "Risky clicks still ask first.",
                instead="user32 SendInput", group="hands"),
@@ -110,21 +110,21 @@ _WINDOWS = (
                "Walks your user folders. Slower than Spotlight and it does not search inside files.",
                instead="filename walk of Desktop/Documents/Downloads/Pictures/Videos/Music", group="hands"),
     Capability("applescript", "AppleScript", False,
-               "AppleScript does not exist on Windows. Plip runs PowerShell for the few things it needs.",
+               "AppleScript does not exist on Windows. Jade runs PowerShell for the few things it needs.",
                instead="PowerShell (dark mode, notifications, voice)", group="system"),
-    Capability("shortcuts", "Apple Shortcuts", False, "There is no Windows equivalent Plip can drive yet.",
+    Capability("shortcuts", "Apple Shortcuts", False, "There is no Windows equivalent Jade can drive yet.",
                group="system"),
     Capability("notifications", "Notifications", True, "A Windows toast.",
                instead="Windows.UI.Notifications via PowerShell", group="system"),
     Capability("notch_island", "Notch island", False,
-               "Windows laptops have no notch and no AppKit. Plip uses a strip pinned to the top of your screen.",
+               "Windows laptops have no notch and no AppKit. Jade uses a strip pinned to the top of your screen.",
                instead="a top-centre always-on-top window", group="shell"),
-    Capability("mascot", "Plip by your cursor", False, "The floating mascot needs AppKit and WebKit.",
+    Capability("mascot", "Jade by your cursor", False, "The floating mascot needs AppKit and WebKit.",
                group="shell"),
     Capability("web_settings", "Settings window", False,
                "The React dashboard needs WKWebView. The Windows shell shows the same controls in plain widgets.",
                instead="the shell's own panel", group="shell"),
-    Capability("local_memory", "Local memory", True, "What you tell Plip, on this machine only.", group="data"),
+    Capability("local_memory", "Local memory", True, "What you tell Jade, on this machine only.", group="data"),
     Capability("learning_events", "Learning-event export", True,
                "Opt-in session events as JSON Lines you can read, export or delete.", group="data"),
 )
@@ -134,12 +134,12 @@ _UNSUPPORTED_ELSEWHERE = {"push_to_talk", "speech_in", "pointing", "click", "typ
 
 
 def _other_table() -> tuple[Capability, ...]:
-    """Linux and anything else: the headless surface (`plip ask`) plus the data tools."""
+    """Linux and anything else: the headless surface (`jade ask`) plus the data tools."""
     rows = []
     for cap in _MAC:
         if cap.id in _UNSUPPORTED_ELSEWHERE:
             rows.append(replace(cap, supported=False, instead="",
-                                detail="Desktop control is macOS and Windows only; `plip ask --image` works here."))
+                                detail="Desktop control is macOS and Windows only; `jade ask --image` works here."))
         else:
             rows.append(replace(cap, instead="", detail=""))
     return tuple(rows)
@@ -173,7 +173,7 @@ class Capabilities:
         """The sentence to show beside a greyed-out control ("" when it works)."""
         row = self.get(cap_id)
         if row is None:
-            return f"Plip doesn't know about {cap_id} on {self.platform}."
+            return f"Jade doesn't know about {cap_id} on {self.platform}."
         return "" if row.supported else (row.detail or f"{row.label} isn't available on {self.platform}.")
 
     def groups(self) -> list[tuple[str, list[Capability]]]:
@@ -200,7 +200,7 @@ def capabilities(platform: str | None = None, *, probe: bool = False) -> Capabil
 
 
 def _probed(cap: Capability, platform: str) -> Capability:
-    """Replace a platform assumption with something Plip actually checked."""
+    """Replace a platform assumption with something Jade actually checked."""
     if cap.id == "speech_in" and platform == WINDOWS:
         import os
 
@@ -212,13 +212,13 @@ def _probed(cap: Capability, platform: str) -> Capability:
     if cap.id == "speech_out" and platform == WINDOWS:
         if _powershell() is None:
             return replace(cap, supported=False, evidence="probed",
-                           detail="PowerShell isn't on PATH, so Plip can't reach the Windows voice. "
+                           detail="PowerShell isn't on PATH, so Jade can't reach the Windows voice. "
                                   "Answers stay on screen.", instead="")
         return replace(cap, evidence="probed")
     if cap.id in {"push_to_talk", "click", "type_text", "screen_context"} and platform == WINDOWS:
         if not _has_user32():
             return replace(cap, supported=False, evidence="probed",
-                           detail="user32 isn't reachable from this Python, so Plip can't send input.", instead="")
+                           detail="user32 isn't reachable from this Python, so Jade can't send input.", instead="")
         return replace(cap, evidence="probed")
     if cap.id == "speech_out" and platform == MACOS:
         return replace(cap, evidence="probed", supported=bool(shutil.which("say")) or cap.supported)
@@ -226,7 +226,7 @@ def _probed(cap: Capability, platform: str) -> Capability:
         return replace(cap, evidence="probed", supported=bool(shutil.which("osascript")))
     if cap.id == "file_search" and platform == MACOS:
         return replace(cap, evidence="probed", supported=True,
-                       detail=cap.detail if shutil.which("mdfind") else "Spotlight is off; Plip walks your folders.")
+                       detail=cap.detail if shutil.which("mdfind") else "Spotlight is off; Jade walks your folders.")
     return cap
 
 
@@ -250,13 +250,13 @@ def _has_user32() -> bool:
 _WINDOWS_BLOCKED = {
     "system": "Dark mode, volume and display sleep go through AppleScript, which Windows doesn't have. "
               "Use Windows Settings or the tray.",
-    "run_shortcut": "Apple Shortcuts are macOS-only; there's no Windows equivalent Plip can run.",
-    "list_shortcuts": "Apple Shortcuts are macOS-only; there's no Windows equivalent Plip can run.",
-    "create_note": "Plip writes to Apple Notes, which Windows doesn't have.",
-    "create_reminder": "Plip writes to Apple Reminders, which Windows doesn't have.",
-    "read_page": "Reading the whole page needs the macOS Accessibility API. Plip can still look at the screen "
+    "run_shortcut": "Apple Shortcuts are macOS-only; there's no Windows equivalent Jade can run.",
+    "list_shortcuts": "Apple Shortcuts are macOS-only; there's no Windows equivalent Jade can run.",
+    "create_note": "Jade writes to Apple Notes, which Windows doesn't have.",
+    "create_reminder": "Jade writes to Apple Reminders, which Windows doesn't have.",
+    "read_page": "Reading the whole page needs the macOS Accessibility API. Jade can still look at the screen "
                  "if you switch screenshots on.",
-    "scroll_to": "Scrolling something into view needs the macOS Accessibility API. Ask Plip to scroll instead.",
+    "scroll_to": "Scrolling something into view needs the macOS Accessibility API. Ask Jade to scroll instead.",
 }
 
 

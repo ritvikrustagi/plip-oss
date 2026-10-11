@@ -1,4 +1,4 @@
-"""Plip's learning layer: opt-in sessions, contract-v1 events, teacher summaries.
+"""Jade's learning layer: opt-in sessions, contract-v1 events, teacher summaries.
 
 Shared with the web/PWA and the browser extension through the event contract,
 so one dashboard reads all three. Nothing here runs without an explicit

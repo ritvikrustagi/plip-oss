@@ -548,7 +548,7 @@ class MacHost(PortableHost):
 
 
 def theirs(AX, element):
-    """``element``, or None if it's Plip's own."""
+    """``element``, or None if it's Jade's own."""
     if element is None:
         return None
     try:

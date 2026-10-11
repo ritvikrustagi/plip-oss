@@ -31,6 +31,6 @@ class PooledExecutor(concurrent.futures.ThreadPoolExecutor):
 
 def install(loop) -> PooledExecutor:
     """Make ``loop``'s default executor (what ``asyncio.to_thread`` uses) a pooled one."""
-    executor = PooledExecutor(thread_name_prefix="plip-work")
+    executor = PooledExecutor(thread_name_prefix="jade-work")
     loop.set_default_executor(executor)
     return executor

@@ -11,7 +11,7 @@ import { Showcase } from './views/Showcase'
 
 type Surface = 'island' | 'mascot' | 'settings' | 'showcase' | 'guide'
 
-const surface = (window.__PLIP_SURFACE__ || location.hash.slice(1).split('?')[0] || (isNative() ? 'island' : 'showcase')) as Surface
+const surface = (window.__JADE_SURFACE__ || location.hash.slice(1).split('?')[0] || (isNative() ? 'island' : 'showcase')) as Surface
 document.body.dataset.surface = surface
 
 if (!isNative()) {
@@ -21,7 +21,7 @@ if (!isNative()) {
   if (new URLSearchParams(location.hash.split('?')[1]).has('signin'))
     settings.set((current) => ({ account: { ...current.account, identified: false, anonymous: true, prompt: true, user: DEMO_GUEST } }))
   onMockCommand((command) => {
-    console.debug('[plip] command', command)
+    console.debug('[jade] command', command)
     if (command.cmd === 'select-engine') {
       settings.set((current) => ({
         engines: current.engines.map((engine) => ({ ...engine, selected: engine.id === command.id })),

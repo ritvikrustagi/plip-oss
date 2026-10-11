@@ -1,4 +1,4 @@
-// Speaking to Plip: where the audio goes, and what happens when it cannot.
+// Speaking to Jade: where the audio goes, and what happens when it cannot.
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
@@ -15,8 +15,8 @@ test('voice is off until a student turns it on', () => {
 })
 
 test('the transcription URL follows the proxy unless it is set outright', () => {
-  assert.equal(transcribeUrlFor({ proxyUrl: 'https://p.school.example/plip/chat' }),
-    'https://p.school.example/plip/listen')
+  assert.equal(transcribeUrlFor({ proxyUrl: 'https://p.school.example/jade/chat' }),
+    'https://p.school.example/jade/listen')
   assert.equal(transcribeUrlFor({ proxyUrl: 'http://localhost:8787/chat' }), 'http://localhost:8787/listen')
   assert.equal(transcribeUrlFor({ proxyUrl: 'https://p.school.example/' }), 'https://p.school.example/listen')
   assert.equal(transcribeUrlFor({ proxyUrl: 'https://p.school.example/api/v1/chat?x=1' }),
@@ -42,13 +42,13 @@ test('audio is never posted straight to a speech company', () => {
 })
 
 test('a school server is fine, over https or localhost while developing', () => {
-  assert.equal(checkVoiceConfig({ voiceMode: 'proxy', transcribeUrl: 'https://plip.school.example/listen' }), '')
+  assert.equal(checkVoiceConfig({ voiceMode: 'proxy', transcribeUrl: 'https://jade.school.example/listen' }), '')
   assert.equal(checkVoiceConfig({ voiceMode: 'proxy', proxyUrl: 'http://localhost:8787/chat' }), '')
   assert.equal(checkVoiceConfig({ voiceMode: 'proxy', proxyUrl: 'http://127.0.0.1:8787/chat' }), '')
 })
 
 test('a student’s voice does not cross a network in the clear', () => {
-  const problem = checkVoiceConfig({ voiceMode: 'proxy', transcribeUrl: 'http://plip.school.example/listen' })
+  const problem = checkVoiceConfig({ voiceMode: 'proxy', transcribeUrl: 'http://jade.school.example/listen' })
   assert.match(problem, /must be https/)
 })
 
@@ -89,7 +89,7 @@ test('a clip is posted once, with the session token and nothing else', async () 
   let seen = null
   const text = await transcribe({
     blob: clip(),
-    url: 'https://plip.school.example/listen',
+    url: 'https://jade.school.example/listen',
     token: 'class-token',
     fetchImpl: async (url, options) => {
       seen = { url, options }
@@ -97,7 +97,7 @@ test('a clip is posted once, with the session token and nothing else', async () 
     },
   })
   assert.equal(text, 'how do I start')
-  assert.equal(seen.url, 'https://plip.school.example/listen')
+  assert.equal(seen.url, 'https://jade.school.example/listen')
   assert.equal(seen.options.method, 'POST')
   assert.equal(seen.options.headers.authorization, 'Bearer class-token')
   assert.equal(seen.options.headers['content-type'], 'audio/webm;codecs=opus')
@@ -109,7 +109,7 @@ test('an empty recording is caught before anything is sent', async () => {
   await assert.rejects(
     () => transcribe({
       blob: clip(0),
-      url: 'https://plip.school.example/listen',
+      url: 'https://jade.school.example/listen',
       fetchImpl: () => { throw new Error('must not be called') },
     }),
     VoiceError,
@@ -120,7 +120,7 @@ test('a failing server is explained in a sentence a student can act on', async (
   await assert.rejects(
     () => transcribe({
       blob: clip(),
-      url: 'https://plip.school.example/listen',
+      url: 'https://jade.school.example/listen',
       fetchImpl: async () => ({ ok: false, status: 503, text: async () => '{"error":"no speech key set"}' }),
     }),
     /503.*no speech key set/s,
@@ -131,7 +131,7 @@ test('a reply the panel cannot read is an error, not silence', async () => {
   await assert.rejects(
     () => transcribe({
       blob: clip(),
-      url: 'https://plip.school.example/listen',
+      url: 'https://jade.school.example/listen',
       fetchImpl: async () => ({ ok: true, json: async () => ({ unexpected: true }) }),
     }),
     /could not read/,

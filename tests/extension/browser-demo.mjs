@@ -71,18 +71,18 @@ async function ensureSessionOn(panel) {
 /** Type a message and wait for the reply, as a student would have to. */
 async function ask(panel, text) {
   await panel.waitFor("document.getElementById('send').disabled === false", { label: 'the composer to be ready' })
-  const before = await panel.eval("document.querySelectorAll('.msg.plip').length")
+  const before = await panel.eval("document.querySelectorAll('.msg.jade').length")
   await panel.eval(`(() => {
     document.getElementById('input').value = ${JSON.stringify(text)}
     document.getElementById('send').click()
   })()`)
   await panel.waitFor(
-    `document.querySelectorAll('.msg.plip').length > ${before}`,
+    `document.querySelectorAll('.msg.jade').length > ${before}`,
     { label: `a reply to ${JSON.stringify(text)}` },
   )
   // The reply streams in, so wait for the turn to finish before reading it.
   await panel.waitFor("document.getElementById('send').disabled === false", { label: 'the turn to finish' })
-  return panel.eval("[...document.querySelectorAll('.msg.plip')].at(-1).textContent")
+  return panel.eval("[...document.querySelectorAll('.msg.jade')].at(-1).textContent")
 }
 
 /**
@@ -128,11 +128,11 @@ async function main() {
     const { page: worksheet, served } = await openFixture(browser, origin)
     const outlineSource = readFileSync(join(extensionDir, 'src/content/outline.js'), 'utf8')
     await worksheet.inject(outlineSource)
-    await worksheet.eval(`PlipOutline.handle('configure', ${JSON.stringify(pageRules())})`)
+    await worksheet.eval(`JadeOutline.handle('configure', ${JSON.stringify(pageRules())})`)
     let outline
 
     await step('the outline lists the question and its fields', async () => {
-      outline = await worksheet.eval("PlipOutline.handle('outline', {})")
+      outline = await worksheet.eval("JadeOutline.handle('outline', {})")
       assert.equal(outline.host, served === 'http' ? 'localhost' : '')
       assert.match(outline.title, /Fractions worksheet/)
       const texts = outline.outline.map((item) => item.text)
@@ -166,7 +166,7 @@ async function main() {
     await step('pointing draws a box around the element the ref names', async () => {
       const stem = outline.outline.find((item) => item.text.includes('3/4 + 1/6'))
       const result = await worksheet.eval(
-        `PlipOutline.handle('highlight', { ref: '${stem.ref}', label: 'the question' })`,
+        `JadeOutline.handle('highlight', { ref: '${stem.ref}', label: 'the question' })`,
       )
       assert.equal(result.ok, true)
       // The box is drawn while a smooth scroll is still running, so check it
@@ -174,7 +174,7 @@ async function main() {
       // names, not over whatever slid into that place.
       await new Promise((done) => setTimeout(done, 900))
       const drawn = await worksheet.eval(`(() => {
-        const box = document.getElementById('__plip-study-highlight')
+        const box = document.getElementById('__jade-study-highlight')
         if (!box) return null
         const target = document.getElementById('stem').getBoundingClientRect()
         const here = box.getBoundingClientRect()
@@ -193,7 +193,7 @@ async function main() {
       await worksheet.eval('window.scrollBy(0, 300)')
       await new Promise((done) => setTimeout(done, 300))
       const offBy = await worksheet.eval(`(() => {
-        const box = document.getElementById('__plip-study-highlight').getBoundingClientRect()
+        const box = document.getElementById('__jade-study-highlight').getBoundingClientRect()
         const target = document.getElementById('stem').getBoundingClientRect()
         return Math.round(Math.abs(box.top + 4 - target.top) + Math.abs(box.left + 4 - target.left))
       })()`)
@@ -202,31 +202,31 @@ async function main() {
     })
 
     await step('pointing at text that is not there fails honestly', async () => {
-      const result = await worksheet.eval("PlipOutline.handle('highlight', { ref: 'text=quadratic formula' })")
+      const result = await worksheet.eval("JadeOutline.handle('highlight', { ref: 'text=quadratic formula' })")
       assert.equal(result.ok, false)
       assert.match(result.reason, /matches/)
     })
 
     await step('clearing the highlight removes it from the page', async () => {
-      await worksheet.eval("PlipOutline.handle('clear_highlight', {})")
-      assert.equal(await worksheet.eval("!!document.getElementById('__plip-study-highlight')"), false)
+      await worksheet.eval("JadeOutline.handle('clear_highlight', {})")
+      assert.equal(await worksheet.eval("!!document.getElementById('__jade-study-highlight')"), false)
     })
 
     await step('read_page returns visible text and no field values', async () => {
-      const result = await worksheet.eval("PlipOutline.handle('read_page', {})")
+      const result = await worksheet.eval("JadeOutline.handle('read_page', {})")
       assert.match(result.text, /3\/4 \+ 1\/6/)
       assert.equal(result.text.includes('hunter2'), false)
       assert.equal(result.text.includes('4111111111111111'), false)
     })
 
     await step('read_page with a find keeps only the lines about it', async () => {
-      const result = await worksheet.eval("PlipOutline.handle('read_page', { find: 'simplify' })")
+      const result = await worksheet.eval("JadeOutline.handle('read_page', { find: 'simplify' })")
       assert.match(result.text, /Simplify 8\/12/)
       assert.equal(result.text.includes('3/4 + 1/6'), false)
     })
 
     await step('read_selection returns what the student selected, and nothing when they have not', async () => {
-      assert.equal((await worksheet.eval("PlipOutline.handle('read_selection', {})")).text, '')
+      assert.equal((await worksheet.eval("JadeOutline.handle('read_selection', {})")).text, '')
       await worksheet.eval(`(() => {
         const range = document.createRange()
         range.selectNodeContents(document.getElementById('stem'))
@@ -234,13 +234,13 @@ async function main() {
         selection.removeAllRanges()
         selection.addRange(range)
       })()`)
-      const result = await worksheet.eval("PlipOutline.handle('read_selection', {})")
+      const result = await worksheet.eval("JadeOutline.handle('read_selection', {})")
       assert.match(result.text, /3\/4 \+ 1\/6/)
     })
 
     await step('scroll_to brings a later question into view', async () => {
       const before = await worksheet.eval('window.scrollY')
-      const result = await worksheet.eval("PlipOutline.handle('scroll_to', { text: 'Simplify 8/12' })")
+      const result = await worksheet.eval("JadeOutline.handle('scroll_to', { text: 'Simplify 8/12' })")
       assert.equal(result.ok, true)
       // smooth scrolling takes a moment, so wait for it rather than guessing
       await worksheet.waitFor(`window.scrollY > ${before}`, { label: 'the page to scroll' })
@@ -248,7 +248,7 @@ async function main() {
     })
 
     await step('the submit button is refused in the page, not just in the panel', async () => {
-      const result = await worksheet.eval("PlipOutline.handle('click', { ref: 'text=Submit answers' })")
+      const result = await worksheet.eval("JadeOutline.handle('click', { ref: 'text=Submit answers' })")
       assert.equal(result.ok, false)
       assert.match(result.reason, /form|not click/i)
       assert.equal(await worksheet.eval("document.getElementById('answer').value"), '',
@@ -256,18 +256,18 @@ async function main() {
     })
 
     await step('a pay button is refused even though it is not a submit', async () => {
-      const result = await worksheet.eval("PlipOutline.handle('click', { ref: 'text=Pay now' })")
+      const result = await worksheet.eval("JadeOutline.handle('click', { ref: 'text=Pay now' })")
       assert.equal(result.ok, false)
     })
 
     await step('an ordinary next-question link is clickable', async () => {
-      const result = await worksheet.eval("PlipOutline.handle('click', { ref: 'text=Next question' })")
+      const result = await worksheet.eval("JadeOutline.handle('click', { ref: 'text=Next question' })")
       assert.equal(result.ok, true, result.reason)
     })
 
     if (shotsAt) {
       await worksheet.eval('window.scrollTo(0, 0)')
-      await worksheet.eval(`PlipOutline.handle('highlight', { ref: 'text=3/4 + 1/6', label: 'the question' })`)
+      await worksheet.eval(`JadeOutline.handle('highlight', { ref: 'text=3/4 + 1/6', label: 'the question' })`)
       await new Promise((done) => setTimeout(done, 400))
       await worksheet.screenshot(join(shotsAt, 'extension-worksheet.png'))
     }
@@ -292,7 +292,7 @@ async function main() {
       assert.deepEqual(stored.events, [], 'a message before the session started something')
       const last = await panel.eval("[...document.querySelectorAll('.msg.system')].at(-1).textContent")
       assert.match(last, /Start a session first/)
-      assert.equal(await panel.eval("document.querySelectorAll('.msg.plip').length"), 0,
+      assert.equal(await panel.eval("document.querySelectorAll('.msg.jade').length"), 0,
         'the tutor must not answer before a session exists')
     })
 
@@ -456,7 +456,7 @@ async function main() {
         return true
       })()`)
       await panel.eval(`chrome.storage.local.set({
-        voiceMode: 'proxy', transcribeUrl: 'https://plip.school.example/listen', proxyToken: 'class-token',
+        voiceMode: 'proxy', transcribeUrl: 'https://jade.school.example/listen', proxyToken: 'class-token',
       })`)
       await panel.waitFor("document.getElementById('mic').click() === undefined")
       await panel.waitFor("document.getElementById('mic').dataset.on === '1'", { label: 'recording to start' })
@@ -468,7 +468,7 @@ async function main() {
       const sent = await panel.waitFor('globalThis.__sent.length ? globalThis.__sent : null',
         { label: 'the clip to be posted' })
       assert.equal(sent.length, 1, 'the clip is posted once, not streamed continuously')
-      assert.equal(sent[0].url, 'https://plip.school.example/listen')
+      assert.equal(sent[0].url, 'https://jade.school.example/listen')
       assert.match(sent[0].type, /^audio\//)
       assert.ok(sent[0].size > 0, 'an empty clip was recorded')
       const said = await panel.waitFor(

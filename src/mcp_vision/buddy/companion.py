@@ -1,4 +1,4 @@
-"""Plip's turn loop: hear -> look -> think -> talk and point -> (guide).
+"""Jade's turn loop: hear -> look -> think -> talk and point -> (guide).
 
 Everything platform-specific (overlay windows, microphones, speakers, the
 model provider) is injected through small ports, so this module runs and is
@@ -6,7 +6,7 @@ tested without a display or network.
 
 A turn: route (Jev/rules), screenshots, and screen context run in parallel;
 the brain streams a reply that becomes speech per sentence and pointer
-flights per tag. If the reply opens a walkthrough (``[STEPS:n]``), Plip
+flights per tag. If the reply opens a walkthrough (``[STEPS:n]``), Jade
 waits for the screen to change after each step, looks again, and continues
 until ``[DONE]``, a timeout, or the user presses the shortcut.
 
@@ -98,7 +98,7 @@ class Router(Protocol):
 
 @dataclass(frozen=True)
 class Target:
-    """Where Plip should land, in global top-left points."""
+    """Where Jade should land, in global top-left points."""
 
     x: float
     y: float
@@ -138,7 +138,7 @@ class TurnResult:
     goal: str = ""                   # the multi-step task ([GOAL: ...])
     acted: list[str] = field(default_factory=list)        # this turn's action results, failures too
     settle: float | None = None      # max wait for the screen to settle after an action
-    hands: bool = False              # Plip clicked, scrolled or typed on screen
+    hands: bool = False              # Jade clicked, scrolled or typed on screen
     opened: str = ""                 # what the last action opened (a link, a page)
     verified: bool | None = None     # [DONE] after acting: did the screen confirm it?
     hushed: bool = False             # a step failed: the rest assumed it worked
@@ -247,9 +247,9 @@ class Companion:
         self._hiccups = 0                             # steps that failed or went nowhere this task
         self._screens_seen: dict[str, int] = {}       # screen visits this task, to spot circling
         self._leaks = 0                               # tool calls written out as text this request
-        self._asked = ""                              # the question Plip's last reply ended on
+        self._asked = ""                              # the question Jade's last reply ended on
         self._consent = None                          # this request's yes: the step it names won't ask
-        self._authored = False                        # Plip typed something they haven't seen yet
+        self._authored = False                        # Jade typed something they haven't seen yet
         self.settle_interval = settle_interval
         self.usage = usage                      # buddy.usage.UsageLog, or None to keep no record
         self.usage_kind = usage_kind
@@ -438,7 +438,7 @@ class Companion:
             else:
                 self.actions.cancel_pending()          # they moved on to something else
                 self.emit("confirm", cleared=True)
-        # a "yes" to Plip's question confirms the step it named
+        # a "yes" to Jade's question confirms the step it named
         self._consent = Consent.given(transcript, asked)
         if self.actions is not None:
             self.actions.ctx.state["said"] = transcript    # only their words can save or forget a fact
@@ -587,8 +587,8 @@ class Companion:
                         self._hiccups <= 1 and not any(sign in line for line in lines for sign in _STUCK):
                     limit += 5                        # progressing: a few more steps, not a pause
                 else:
-                    lines.append("note: this is your last step before plip pauses for them. finish the goal if this "
-                                 "step does it; otherwise say in a few words where you got to (plip tells them how to "
+                    lines.append("note: this is your last step before jade pauses for them. finish the goal if this "
+                                 "step does it; otherwise say in a few words where you got to (jade tells them how to "
                                  "carry on). never hand them the remaining steps to do.")
             if any(sign in line for line in lines for sign in _STUCK):
                 self._hiccups += 1
@@ -1264,18 +1264,18 @@ class Companion:
 # the whole utterance is "keep going" (plus an ok or please)
 CONTINUE_RE = re.compile(r"^\W*((ok(ay)?|yes|yeah|sure|alright)\W+)?((you can|please)\s+)?(keep going|continue|go on|"
                          r"carry on|keep at it|resume|don't stop|finish (it|up|the job)|go ahead and finish)"
-                         r"(\W+(please|then|now|plip))?\W*$", re.IGNORECASE)
+                         r"(\W+(please|then|now|jade))?\W*$", re.IGNORECASE)
 # The whole utterance closes the session: "thanks", "ok bye", "that's all for now", "never mind".
 FAREWELL_RE = re.compile(
     r"^\W*((ok(ay)?|alright|cool|great|perfect|awesome|nice|got it|no)\W+)*"
     r"(thanks?( you)?( so much| a lot)?|thank you( so much| very much)?|ty|cheers|bye( bye)?|goodbye|good ?night|"
     r"see (you|ya)( later)?|later|that'?s (all|it|everything)( for now)?|that'?ll be all|we'?re (done|good)|"
     r"all done|i'?m (done|good|all set)|nothing else|never ?mind)"
-    r"(\W+(plip|bye|thanks?|thank you|that'?s all|for now|buddy|man))*\W*$", re.IGNORECASE)
+    r"(\W+(jade|bye|thanks?|thank you|that'?s all|for now|buddy|man))*\W*$", re.IGNORECASE)
 SPEECH_BUDGET = 900          # chars read aloud per reply (~a minute)
 # these act on the current screen, so they wait for loads first
 _ON_SCREEN = {"type_text", "replace_selection", "read_page"}
-_AUTHORING = {"type_text", "replace_selection"}         # Plip's text in a field isn't the page moving
+_AUTHORING = {"type_text", "replace_selection"}         # Jade's text in a field isn't the page moving
 # results the next step must read and judge
 _READING = {"read_page", "search_files", "look", "find_flights", "list_shortcuts", "run_shortcut", "web_search"}
 # result lines meaning a step got nowhere

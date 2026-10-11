@@ -10,12 +10,12 @@ export const REPO_URL = 'https://github.com/ritvikrustagi/plip-oss'
 export type Composer = 'bug' | 'feature' | null
 
 const LIVES: Record<SettingsState['companion'], string> = {
-  notch: 'Plip drips out of the notch only to point at something, then floats back.',
+  notch: 'Jade drips out of the notch only to point at something, then floats back.',
   cursor: 'A small droplet trails your cursor and flies off to point.',
   hidden: 'No floating droplet. Answers and checklists stay in the notch.',
 }
 
-/** Everything that isn't a feature: how Plip behaves, the tour, support, and about. */
+/** Everything that isn't a feature: how Jade behaves, the tour, support, and about. */
 export function GeneralTab({ state, composer: initial = null }: { state: SettingsState; composer?: Composer }) {
   const [composer, setComposer] = useState<Composer>(initial)
   const toggle = (next: Exclude<Composer, null>) => {
@@ -27,13 +27,13 @@ export function GeneralTab({ state, composer: initial = null }: { state: Setting
   }, [])
   return (
     <div>
-      <Header eyebrow="General" title="How Plip behaves on your Mac" />
+      <Header eyebrow="General" title="How Jade behaves on your Mac" />
 
       <Section title="Behavior">
         <Rows>
           <ShortcutRow state={state} />
           <Row
-            title="Where Plip lives"
+            title="Where Jade lives"
             detail={LIVES[state.companion]}
             action={<Segmented value={state.companion}
               options={[{ value: 'notch', label: 'Notch' }, { value: 'cursor', label: 'Cursor' }, { value: 'hidden', label: 'Hidden' }]}
@@ -41,12 +41,12 @@ export function GeneralTab({ state, composer: initial = null }: { state: Setting
           />
           <Row
             title="Guided walkthroughs"
-            detail="A checklist in the notch. Plip waits for you and re-checks each step."
+            detail="A checklist in the notch. Jade waits for you and re-checks each step."
             action={<Toggle label="Guided walkthroughs" checked={state.walkthroughs} onChange={(enabled) => send('set-walkthroughs', { enabled })} />}
           />
           <Row
             title="Sounds"
-            detail="A soft plip when the notch opens or you let go of ⌃⌥, a little bounce when a task is done."
+            detail="A soft pop when the notch opens or you let go of ⌃⌥, a little bounce when a task is done."
             action={<Toggle label="Sounds" checked={state.sounds} onChange={(enabled) => send('set-sounds', { enabled })} />}
           />
         </Rows>
@@ -65,7 +65,7 @@ export function GeneralTab({ state, composer: initial = null }: { state: Setting
 
       <Section title="Support">
         <Rows>
-          <Row title="Request a feature" detail="Tell us what Plip should do for you next." onClick={() => toggle('feature')} open={composer === 'feature'}
+          <Row title="Request a feature" detail="Tell us what Jade should do for you next." onClick={() => toggle('feature')} open={composer === 'feature'}
             action={<Chevron open={composer === 'feature'} />} />
           <Expand open={composer === 'feature'}><Feedback kind="feature" state={state} /></Expand>
           <Row title="Report a bug" detail="Tell us what went wrong. It sends only what you write." onClick={() => toggle('bug')}
@@ -77,9 +77,9 @@ export function GeneralTab({ state, composer: initial = null }: { state: Setting
       <Section title="About">
         <Rows>
           <Row
-            title={<>Plip <span className="font-mono text-[12px] font-normal text-white/40">v{state.version}</span></>}
+            title={<>Jade <span className="font-mono text-[12px] font-normal text-white/40">v{state.version}</span></>}
             detail={state.update.available
-              ? `Version ${state.update.available.version} is out. Download it, quit Plip, then drag the new one into Applications.`
+              ? `Version ${state.update.available.version} is out. Download it, quit Jade, then drag the new one into Applications.`
               : state.memory?.sync?.enabled
                 ? 'Open source. Saved facts sync with your account; history and keys stay on this device.'
                 : 'Open source and private by default. Your memory, history and keys never leave this Mac.'}
@@ -89,10 +89,10 @@ export function GeneralTab({ state, composer: initial = null }: { state: Setting
           />
           <Row
             title="Tell me about new versions"
-            detail="Once a day Plip asks GitHub whether a newer version is out. Nothing about you is sent."
+            detail="Once a day Jade asks GitHub whether a newer version is out. Nothing about you is sent."
             action={<Toggle label="Tell me about new versions" checked={state.update.enabled} onChange={(enabled) => send('set-update-check', { enabled })} />}
           />
-          <Row title="Quit Plip" detail="Plip stops listening until you open it again." action={<Button variant="ghost" onClick={() => send('quit')}>Quit</Button>} />
+          <Row title="Quit Jade" detail="Jade stops listening until you open it again." action={<Button variant="ghost" onClick={() => send('quit')}>Quit</Button>} />
         </Rows>
       </Section>
     </div>
@@ -116,7 +116,7 @@ function ShortcutRow({ state }: { state: SettingsState }) {
           <TriangleAlert className="size-4 shrink-0" />
           <div className="flex-1">
             macOS isn’t passing your keys to {hotkey.owner}, so {hotkey.keys.join('')} does nothing yet.
-            Turn {hotkey.owner} on in Accessibility{hotkey.owner === 'Plip' ? '' : ', then start Plip again'}.
+            Turn {hotkey.owner} on in Accessibility{hotkey.owner === 'Jade' ? '' : ', then start Jade again'}.
           </div>
           <Button size="sm" variant="ghost" onClick={() => send('grant', { permission: 'accessibility' })}>Open Accessibility</Button>
         </div>
@@ -164,10 +164,10 @@ function Feedback({ kind, state }: { kind: 'bug' | 'feature'; state: SettingsSta
   return (
     <div className="px-5 pb-4">
       <textarea
-        aria-label={bug ? 'What went wrong' : 'What should Plip do'}
+        aria-label={bug ? 'What went wrong' : 'What should Jade do'}
         value={message}
         onChange={(event) => setMessage(event.target.value)}
-        placeholder={bug ? 'What did you ask, what did Plip do, and what did you expect?' : 'What do you wish Plip could do? An example helps.'}
+        placeholder={bug ? 'What did you ask, what did Jade do, and what did you expect?' : 'What do you wish Jade could do? An example helps.'}
         className="h-20 w-full resize-none rounded-xl bg-black/40 p-3 text-[12.5px] leading-relaxed text-white outline-none hairline placeholder:text-white/25 focus:shadow-[inset_0_0_0_1px_rgba(156,194,250,0.6)]"
       />
       <div className="mt-3 flex items-center gap-2">

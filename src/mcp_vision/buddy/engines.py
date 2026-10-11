@@ -1,4 +1,4 @@
-"""Brains Plip can think with.
+"""Brains Jade can think with.
 
 Subscription engines drive a CLI the user is already signed in to (Claude
 Code with a Claude Pro/Max plan, Codex with ChatGPT Plus/Pro, Cursor's
@@ -6,7 +6,7 @@ agent, Gemini on a Google AI plan via Antigravity), so their plan pays for the
 reasoning and no API key is needed. API engines use a key instead.
 
 Each CLI runs once per turn in an empty temporary directory with its tools
-turned off: Plip only wants words and ``[POINT]`` tags back, never edits.
+turned off: Jade only wants words and ``[POINT]`` tags back, never edits.
 """
 from __future__ import annotations
 
@@ -39,14 +39,14 @@ class EngineError(RuntimeError):
     """The engine ran but couldn't answer (signed out, rate limited, crashed)."""
 
 
-RAN_TOOLS = "tried to run a command on your Mac, which Plip doesn't allow"
+RAN_TOOLS = "tried to run a command on your Mac, which Jade doesn't allow"
 
 
 @dataclass(frozen=True)
 class EngineSpec:
     id: str
     label: str                      # what the user calls it: "Claude", "ChatGPT"
-    via: str                        # how Plip reaches it
+    via: str                        # how Jade reaches it
     kind: str                       # "subscription" | "api"
     vision: bool                    # accepts screenshots
     binaries: tuple[str, ...] = ()
@@ -67,10 +67,10 @@ SPECS: tuple[EngineSpec, ...] = (
     EngineSpec("cursor", "Cursor", "Your Cursor plan via Cursor CLI", "subscription", False,
                binaries=("cursor-agent", "agent"), login="agent login",
                install="curl https://cursor.com/install -fsS | bash",
-               blurb="Text only: Plip reads the screen's controls out to it."),
+               blurb="Text only: Jade reads the screen's controls out to it."),
     EngineSpec("antigravity", "Gemini", "Google AI Pro / Ultra via Antigravity", "subscription", False,
                binaries=("agy",), login="agy", install="https://antigravity.google",
-               blurb="Your Google AI plan through Antigravity's CLI, its tools off. Text only: Plip reads it the screen."),
+               blurb="Your Google AI plan through Antigravity's CLI, its tools off. Text only: Jade reads it the screen."),
     EngineSpec("anthropic", "Claude API", "Anthropic API key", "api", True, key_name="ANTHROPIC_API_KEY",
                install="https://console.anthropic.com/settings/keys",
                blurb="Fastest first word: streamed with prompt caching and adaptive effort."),
@@ -372,7 +372,7 @@ def transcript_prompt(turns: list[Turn], image_paths: list[str] | None = None,
     if system:
         parts.append(f"<instructions>\n{system}\n</instructions>")
     if history:
-        lines = [f"{'user' if turn.role == 'user' else 'you (plip)'}: {turn.text}" for turn in history]
+        lines = [f"{'user' if turn.role == 'user' else 'you (jade)'}: {turn.text}" for turn in history]
         parts.append("<earlier_conversation>\n" + "\n".join(lines) + "\n</earlier_conversation>")
     if current.images and image_paths:
         labels = [f"{path}: {screen_label(shot, len(current.images))}"
@@ -390,7 +390,7 @@ def history_blocks(history: list[Turn]) -> list[dict[str, Any]]:
     As one block, any growth was a new block and the whole conversation was written to the cache again.
     """
     blocks = [{"type": "text", "text": ("<earlier_conversation>\n" if index == 0 else "") +
-               f"{'user' if turn.role == 'user' else 'you (plip)'}: {turn.text}\n"}
+               f"{'user' if turn.role == 'user' else 'you (jade)'}: {turn.text}\n"}
               for index, turn in enumerate(history)]
     if blocks:
         blocks[-1]["cache_control"] = {"type": "ephemeral"}
@@ -512,7 +512,7 @@ class CLIBrain:
 
     async def stream(self, *, system: str, turns: list[Turn], detailed: bool = False,
                      effort: str | None = None) -> AsyncIterator[str]:
-        workdir = tempfile.mkdtemp(prefix="plip-")
+        workdir = tempfile.mkdtemp(prefix="jade-")
         process = None
         errors: asyncio.Future | None = None
         self.last_usage = None
@@ -672,7 +672,7 @@ class ClaudeCodeBrain(CLIBrain):
         # from the prompt cache (history_blocks). On a subscription it caches for an hour, and hour-long
         # writes cost twice the input price (five-minute ones 1.25x). Five minutes is about 30% cheaper.
         # No nonessential traffic: the CLI otherwise spends ~0.45 s after every answer flushing its own
-        # telemetry before it exits (and ~0.25 s more starting up), right where Plip waits for the next step.
+        # telemetry before it exits (and ~0.25 s more starting up), right where Jade waits for the next step.
         env = {"DISABLE_AUTOUPDATER": "1", "CLAUDE_CODE_PROMPT_CACHE_TTL": "5m",
                "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"}
         return Invocation(argv, stdin=(json.dumps(message) + "\n").encode(), env=env)
@@ -681,7 +681,7 @@ class ClaudeCodeBrain(CLIBrain):
         return ClaudeCodeParser()
 
     # question comes on stdin, so a spare can start early (~0.3 s saved; ~100 MB, reaped when idle)
-    # Only the long-running app turns this on; one-shot runs (plip ask, tests) would leave it waiting.
+    # Only the long-running app turns this on; one-shot runs (jade ask, tests) would leave it waiting.
     prewarm = False
     idle_ttl = 120.0
     max_spares = 2
@@ -722,7 +722,7 @@ class ClaudeCodeBrain(CLIBrain):
         if key in pending or held is not None and held[0].returncode is None:
             return
         pending.add(key)
-        folder = tempfile.mkdtemp(prefix="plip-")
+        folder = tempfile.mkdtemp(prefix="jade-")
         try:
             process = await self._launch(call, folder)
         except Exception:

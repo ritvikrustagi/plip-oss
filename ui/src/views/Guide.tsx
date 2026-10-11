@@ -24,7 +24,7 @@ export function Guide() {
         className="absolute overflow-hidden rounded-[22px] bg-[#0b0f1c] text-white hairline shadow-[0_22px_50px_-14px_rgba(0,0,0,0.8),0_0_0_1px_rgba(111,158,245,0.12)]"
         style={CARD}
       >
-        <div className="pointer-events-none absolute -right-16 -top-20 size-48 rounded-full bg-plip-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 -top-20 size-48 rounded-full bg-jade-400/15 blur-3xl" />
         <AnimatePresence mode="wait" initial={false}>
           {state.granted ? (
             <motion.div
@@ -48,7 +48,7 @@ export function Guide() {
                 <motion.span
                   animate={{ y: [0, -4, 0] }}
                   transition={{ repeat: Infinity, duration: 1.3, ease: 'easeInOut' }}
-                  className="grid size-6 place-items-center rounded-full bg-plip-400/15 text-plip-300"
+                  className="grid size-6 place-items-center rounded-full bg-jade-400/15 text-jade-300"
                 >
                   <ArrowUp className="size-4" strokeWidth={3} />
                 </motion.span>

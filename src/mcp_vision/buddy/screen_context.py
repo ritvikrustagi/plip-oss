@@ -157,7 +157,7 @@ class ScreenContext:
                         label += f' = "{shown}"'
                     lines.append(f"{'' if single else '    '}[{number}] {label} | {control.role} | {x},{y}")
         if self.blind:
-            lines.append("note: this app isn't showing its page to plip's controls list yet, so the page itself isn't "
+            lines.append("note: this app isn't showing its page to jade's controls list yet, so the page itself isn't "
                          "listed: work from the screenshot (x,y) and read_page")
         menus = _map_controls(bar, shots, limit=20)
         if menus:

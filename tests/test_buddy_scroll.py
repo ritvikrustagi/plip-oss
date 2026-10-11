@@ -129,7 +129,7 @@ def test_click_by_number_after_a_scroll_finds_the_button_where_it_is_now():
     assert host.calls[-1] == ("click", 700, 500)
 
 
-def test_without_scroll_areas_plip_scrolls_the_front_window_not_the_middle_of_the_screen():
+def test_without_scroll_areas_jade_scrolls_the_front_window_not_the_middle_of_the_screen():
     engine, host = hands(cart_page(areas=False, frame=Rect(0, 0, 800, 600)), observe=lambda: None)
     run(engine.handle("scroll", {}))
     assert host.calls[0][:3] == ("scroll", 400, 360)
@@ -208,7 +208,7 @@ def test_without_a_click_the_focused_panel_then_the_pointer_they_moved_beat_the_
     run(engine.handle("scroll", {}))
     host.focused_area = None
     run(engine.handle("scroll", {}))                                         # they moved it there: a hint
-    run(engine.handle("scroll", {}))                                         # now it's where plip left it: not one
+    run(engine.handle("scroll", {}))                                         # now it's where jade left it: not one
     host.mouse = (3000, 500)                                                 # outside their window: not one either
     run(engine.handle("scroll", {}))
     assert wheel(host) == [("scroll", 1300, 520, 8, 0), ("scroll", 100, 500, 8, 0), ("scroll", 756, 520, 8, 0),
@@ -241,7 +241,7 @@ def test_the_last_click_stops_counting_once_they_move_the_pointer_or_leave_that_
         run(engine.handle("scroll", {"direction": "up"}))
         return wheel(host)[0][1:3]
     assert first_wheel(mail(url=inbox + "/FMfcg123")) == (1300, 520)        # opened from the list: still there
-    assert first_wheel(mail(url=inbox), mouse=(1300, 200)) == (1300, 520)   # the pointer's where plip left it
+    assert first_wheel(mail(url=inbox), mouse=(1300, 200)) == (1300, 520)   # the pointer's where jade left it
     assert first_wheel(mail(url=inbox), mouse=(600, 700)) == (600, 700)     # they moved it: that's the hint now
     assert first_wheel(mail(url="https://mail.example.com/#sent")) == (756, 520)      # another folder
     assert first_wheel(mail(url="https://news.example.com/")) == (756, 520)           # another site

@@ -1,7 +1,7 @@
 """Hold Control+Option (or the Settings shortcut) to talk; a regular key during the chord cancels.
 
 ``ChordDetector`` is the OS-neutral rule; macOS feeds it from a Quartz tap (NSEvent monitors as fallback).
-Keys only arrive with Accessibility / Input Monitoring: Plip's, or the launching terminal's.
+Keys only arrive with Accessibility / Input Monitoring: Jade's, or the launching terminal's.
 """
 from __future__ import annotations
 
@@ -69,12 +69,12 @@ def can_listen() -> bool:
 
 
 def keyboard_owner() -> str:
-    """App whose permission macOS checks: Plip, or the terminal that launched it."""
+    """App whose permission macOS checks: Jade, or the terminal that launched it."""
     if ".app/Contents/" in sys.prefix + "/":
-        return "Plip"
+        return "Jade"
     terminals = {"Apple_Terminal": "Terminal", "iTerm.app": "iTerm", "vscode": "your code editor",
                  "WarpTerminal": "Warp", "ghostty": "Ghostty"}
-    return terminals.get(os.environ.get("TERM_PROGRAM", ""), "the app you started Plip from")
+    return terminals.get(os.environ.get("TERM_PROGRAM", ""), "the app you started Jade from")
 
 
 class ChordDetector:

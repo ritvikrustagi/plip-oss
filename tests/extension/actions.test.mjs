@@ -61,7 +61,7 @@ test('an ordinary click asks first', () => {
   assert.equal(plan.preview.confirm, 'Click it')
 })
 
-test('opening a link asks first and refuses a page Plip may not open', () => {
+test('opening a link asks first and refuses a page Jade may not open', () => {
   const ok = planAction('open_url', { url: 'https://khan.example.org/fractions' }, granted)
   assert.equal(ok.outcome, 'confirm')
   assert.match(ok.preview.title, /khan\.example\.org/)

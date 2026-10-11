@@ -1,4 +1,4 @@
-"""Backs Plip's Settings window: builds its snapshot and handles its commands.
+"""Backs Jade's Settings window: builds its snapshot and handles its commands.
 
 Platform-neutral. Everything that touches macOS (clipboard, Terminal,
 permission prompts, quitting) arrives through ``Platform`` so the logic is
@@ -21,12 +21,12 @@ from mcp_vision.buddy.store import History, Prefs, config_dir
 KEY_NAMES = {"ANTHROPIC_API_KEY", "GEMINI_API_KEY", "TYPESAFE_API_KEY", "ELEVENLABS_API_KEY", "ASSEMBLYAI_API_KEY"}
 DEPTHS = {"fast", "balanced", "deep"}
 TOUR_STEPS = ("welcome", "permissions", "brain", "try", "done")
-ASK_AFTER_TASKS = (1, 3)      # the finished tasks after which Plip asks for Google (plus once when an update is out)
-MAX_ASKS = 3                  # Laters before Plip stops asking (the Account tab still offers it)
+ASK_AFTER_TASKS = (1, 3)      # the finished tasks after which Jade asks for Google (plus once when an update is out)
+MAX_ASKS = 3                  # Laters before Jade stops asking (the Account tab still offers it)
 
 
 def _in_background(work: Callable[[], None]) -> None:
-    threading.Thread(target=work, daemon=True, name="plip-settings-work").start()
+    threading.Thread(target=work, daemon=True, name="jade-settings-work").start()
 IMPORT_SOURCES = {"contacts", "autofill", "mail"}
 AI_SOURCES = {"chatgpt", "claude", "gemini", "ai"}
 # pasted key shapes: Google AI Studio, Anthropic
@@ -53,7 +53,7 @@ class Platform:
     say: Callable[[str], None] = lambda text: None
     quit: Callable[[], None] = lambda: None
     open_settings: Callable[[str], None] = lambda tab: None
-    restart: Callable[[], None] = lambda: None             # quit and open Plip again
+    restart: Callable[[], None] = lambda: None             # quit and open Jade again
     clipboard: Callable[[], str] = lambda: ""                # read only on Paste key
 
 
@@ -76,7 +76,7 @@ class SettingsService:
     account: Any = None                                    # buddy.account.Account (a guest first, Google later)
     background: Callable[[Callable[[], None]], None] = _in_background   # network work, off the UI thread
     on_ask: Callable[[str], None] = lambda moment: None    # a moment to ask for Google: the app shows it, when idle
-    updates: Any = None                                    # buddy.updates.Updates (a newer Plip is out)
+    updates: Any = None                                    # buddy.updates.Updates (a newer Jade is out)
     check_updates: Callable[[], None] = lambda: None       # ask GitHub now, in the background
     connector: Any = None                                  # buddy.connect.Connector (one-click Connect)
     live: Callable[[], dict | None] = lambda: None         # last request, live (tour's "try it" step)
@@ -86,7 +86,7 @@ class SettingsService:
     background: Callable[[Callable[[], None]], None] = lambda job: threading.Thread(target=job, daemon=True).start()
     connect_note: str = ""                                 # what "Connect AI" just did, shown under the button
     report_note: str = ""                                  # "sent" | "failed" after a bug report or feature request
-    hotkey_works: Callable[[], bool] = lambda: True        # macOS passes Plip the keys (see hotkey.can_listen)
+    hotkey_works: Callable[[], bool] = lambda: True        # macOS passes Jade the keys (see hotkey.can_listen)
     apply_hotkey: Callable[[str], None] = lambda name: None   # switch the talk shortcut now
 
     @property
@@ -295,7 +295,7 @@ class SettingsService:
             self.push()
 
     def _cmd_finish_onboarding(self, command):
-        """Start using Plip, or Skip setup: either way they get an account (a guest, like Quiet Nomad) right now."""
+        """Start using Jade, or Skip setup: either way they get an account (a guest, like Quiet Nomad) right now."""
         self._milestone("onboarding:" + ("skipped" if command.get("skipped") else "done"), "onboarding_step",
                         step="skipped" if command.get("skipped") else "done")
         self._save_onboarded(True)
@@ -343,7 +343,7 @@ class SettingsService:
 
     def _cmd_account_sign_out(self, _command):
         if self.account is not None:
-            self.account.sign_out()                    # Plip keeps working; a new guest account follows
+            self.account.sign_out()                    # Jade keeps working; a new guest account follows
             self.push()
 
     def _cmd_account_later(self, _command):
@@ -382,7 +382,7 @@ class SettingsService:
         if engine and engine.get("status") == "ready":
             self._milestone("engine", "engine_connected", prefs, engine=str(engine.get("id", "")))
 
-    # -- the moments Plip asks for Google: never before the first finished task --------------------------
+    # -- the moments Jade asks for Google: never before the first finished task --------------------------
     def task_done(self) -> None:
         """A task finished (the app calls this): count it, and on the 1st and 3rd ask for Google."""
         prefs = self.prefs
@@ -394,7 +394,7 @@ class SettingsService:
             self.ask_sign_in("first_task" if prefs.tasks_done == 1 else "third_task")
 
     def update_found(self) -> None:
-        """A newer Plip is out (the app calls this): the one update moment to ask for Google."""
+        """A newer Jade is out (the app calls this): the one update moment to ask for Google."""
         prefs = self.prefs
         if prefs.asked_on_update:
             self.push()
@@ -428,7 +428,7 @@ class SettingsService:
         self._track("signin_done", tasks=self.prefs.tasks_done)
         self.push()
 
-    # -- a newer Plip: download it, or stop asking ----------------------------------------------
+    # -- a newer Jade: download it, or stop asking ----------------------------------------------
     def _cmd_update_download(self, _command):
         from mcp_vision.buddy.updates import RELEASES
 
@@ -529,7 +529,7 @@ class SettingsService:
 
     def _cmd_test_voice(self, _command):
         talk = chord(self.prefs.hotkey).label.lower().replace(" + ", " and ")
-        self.platform.say(f"Hey, I'm Plip. Hold {talk}, and ask me anything.")
+        self.platform.say(f"Hey, I'm Jade. Hold {talk}, and ask me anything.")
 
     def _cmd_clear_usage(self, _command):
         if self.usage is not None:

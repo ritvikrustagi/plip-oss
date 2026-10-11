@@ -33,7 +33,7 @@ class Conversation:
         return list(self.turns)
 
     def record(self, user_text: str, assistant_text: str, *, step: bool = False) -> None:
-        """One exchange. ``step``: Plip's own follow-up during a request (action results, a walkthrough check-in)."""
+        """One exchange. ``step``: Jade's own follow-up during a request (action results, a walkthrough check-in)."""
         if not user_text.strip() or not assistant_text.strip():
             return
         if not step or not self.requests:
@@ -52,7 +52,7 @@ class Conversation:
     def fold(self) -> None:
         """The latest request is done: its steps become one exchange.
 
-        What they asked stays, and so does everything Plip said along the way (with what it did and
+        What they asked stays, and so does everything Jade said along the way (with what it did and
         where it pointed); the step-by-step results it was handed (search hits, page text) go.
         """
         mine = [turn for turn in self.turns if turn.request == self.requests]

@@ -1,6 +1,6 @@
 {
-  "name": "Plip for school (demo)",
-  "short_name": "Plip study",
+  "name": "Jade for school (demo)",
+  "short_name": "Jade study",
   "description": "A practice session you start on purpose, with hints you ask for and a summary you choose to share.",
   "id": "/plip-education-demo",
   "start_url": "./index.html",

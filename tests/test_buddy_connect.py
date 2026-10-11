@@ -243,7 +243,7 @@ def test_a_failed_sign_in_keeps_its_link_so_they_can_finish_in_any_browser(tmp_p
     assert failed.card()["url"] == failed.url
 
 
-def test_a_browser_the_sign_in_app_couldnt_open_gets_opened_by_plip(tmp_path):
+def test_a_browser_the_sign_in_app_couldnt_open_gets_opened_by_jade(tmp_path):
     login = FakeLogin(["Otherwise navigate to: https://claude.com/cai/oauth/authorize?x=1",
                        "Failed to open browser with error: spawn open ENOENT", ""])
     opened = []

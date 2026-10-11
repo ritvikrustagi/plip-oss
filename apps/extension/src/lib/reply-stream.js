@@ -1,7 +1,7 @@
 // Parse the tutor model's tags out of a streamed reply.
 //
-// A JavaScript port of src/mcp_vision/buddy/pointing.py (Plip's macOS reply
-// parser), with one adaptation: Plip points at screen pixels, so its tag
+// A JavaScript port of src/mcp_vision/buddy/pointing.py (Jade's macOS reply
+// parser), with one adaptation: Jade points at screen pixels, so its tag
 // carries x,y coordinates. A page has no stable pixels, so the extension
 // points at DOM elements instead and the tag carries a reference from the
 // page outline the content script built:
@@ -10,7 +10,7 @@
 //     [POINT:text=Check answer:here]   -> first match for that text
 //     [POINT:none]                     -> nothing to point at
 //
-// Everything else keeps Plip's shape, so the prompt rules transfer:
+// Everything else keeps Jade's shape, so the prompt rules transfer:
 //
 //     [PLAN: read the question | find the unit | set up the ratio]
 //     [STEPS:3] ... [DONE]

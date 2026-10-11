@@ -90,7 +90,7 @@ export function StepChips({ steps, max = 4 }: { steps: Step[]; max?: number }) {
               step.status === 'error' ? 'bg-coral/15 text-rose-200' : 'bg-white/[0.07] text-white/75',
             )}
           >
-            {step.status === 'active' && <CircleDashed className="size-3 animate-spin-slow text-plip-300" />}
+            {step.status === 'active' && <CircleDashed className="size-3 animate-spin-slow text-jade-300" />}
             {step.status === 'done' && <Check className="size-3 text-mint" strokeWidth={3} />}
             {step.status === 'skipped' && <span className="size-1.5 rounded-full bg-white/30" />}
             {step.status === 'error' && <X className="size-3 text-red-300" strokeWidth={3} />}
@@ -110,7 +110,7 @@ export function EngineBadge({ engine, latencyMs }: { engine: Badge | null; laten
       <span
         className={cn(
           'size-1.5 rounded-full',
-          engine.kind === 'subscription' ? 'bg-dew' : engine.kind === 'local' ? 'bg-mint' : 'bg-plip-400',
+          engine.kind === 'subscription' ? 'bg-dew' : engine.kind === 'local' ? 'bg-mint' : 'bg-jade-400',
         )}
       />
       {engine.label}

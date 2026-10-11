@@ -114,14 +114,14 @@ def test_what_a_reply_does_after_a_card_or_a_failed_click_isnt_run():
         def snapshot(self):
             return page
 
-    def plip(reply):
+    def jade(reply):
         brain = ScriptedBrain(reply, "okay.")
         return Companion(brain=brain, capturer=Capturer(), context=Map(), speaker=Speaker(),
                          actions=ActionEngine(ActionContext(host=host)), settle_interval=0.01)
 
-    result = run(plip('placing it. [DO:click {"id": 1}] [DO:press {"keys": "return"}]').respond("buy it"))
+    result = run(jade('placing it. [DO:click {"id": 1}] [DO:press {"keys": "return"}]').respond("buy it"))
     assert result.pending == "Click “Place your order”" and host.calls == []          # nothing ran behind the card
-    result = run(plip('replying. [DO:click {"id": 9}] [DO:type_text {"text": "yes"}]').respond("reply yes"))
+    result = run(jade('replying. [DO:click {"id": 9}] [DO:type_text {"text": "yes"}]').respond("reply yes"))
     assert ("type", "yes") not in host.calls                                          # the click failed: no typing
 
 

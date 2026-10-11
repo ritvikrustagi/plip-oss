@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * Plip's palette and surface language, from ui/src/styles.css, with the two
+ * Jade's palette and surface language, from ui/src/styles.css, with the two
  * changes a web page needs that a floating macOS panel does not: the page
  * scrolls, and text is selectable (a student copying a hint into their notes is
  * a feature). Geist is not bundled - a managed Chromebook should not wait on a
@@ -15,12 +15,12 @@
   --color-panel: #0b0d12;
   --color-surface: #10131a;
   --color-raised: #161a23;
-  --color-plip-100: #dbe7fe;
-  --color-plip-200: #bcd2fd;
-  --color-plip-300: #8fb3fa;
-  --color-plip-400: #5f8ef4;
-  --color-plip-500: #3e6ef0;
-  --color-plip-600: #2c58e6;
+  --color-jade-100: #dbe7fe;
+  --color-jade-200: #bcd2fd;
+  --color-jade-300: #8fb3fa;
+  --color-jade-400: #5f8ef4;
+  --color-jade-500: #3e6ef0;
+  --color-jade-600: #2c58e6;
   --color-dew: #5eead4;
   --color-sun: #fbbf24;
   --color-coral: #fb7185;
@@ -49,7 +49,7 @@
       var(--color-ink);
   }
   ::selection { background: rgb(95 142 244 / 0.35); }
-  :focus-visible { outline: 2px solid var(--color-plip-300); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--color-jade-300); outline-offset: 2px; }
   button { font: inherit; }
 }
 

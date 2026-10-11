@@ -1,10 +1,10 @@
-"""Parakeet: NVIDIA's Parakeet Unified 0.6B as Plip's ear, on your Mac.
+"""Parakeet: NVIDIA's Parakeet Unified 0.6B as Jade's ear, on your Mac.
 
 An opt-in alternative to Apple's on-device recognition. ``nvidia/parakeet-unified-en-0.6b`` is an
 English FastConformer-RNNT that writes punctuation and capitals, and nothing you say leaves the
 Mac. It's big, so nothing is downloaded until you pick it: the int8 ONNX export by sherpa-onnx's
 author (about 663 MB), pinned to one revision and checked against its SHA-256 file by file,
-resumable, into Plip's own folder.
+resumable, into Jade's own folder.
 
 sherpa-onnx runs it on the CPU. Push-to-talk works like the other listeners: the microphone is
 buffered while you hold Control + Option, the live transcript comes from re-reading what's there
@@ -106,7 +106,7 @@ def runtime_available() -> bool:
 def unavailable(spec: ModelSpec = MODEL, directory: Path | None = None) -> str:
     """Why Parakeet can't listen right now, or "" when it can."""
     if not runtime_available():
-        return "Parakeet needs sherpa-onnx: reinstall Plip"
+        return "Parakeet needs sherpa-onnx: reinstall Jade"
     if not installed(spec, directory):
         return "Parakeet isn't downloaded yet"
     return ""
@@ -159,7 +159,7 @@ def _fetch(url: str, part: Path, size: int, progress: Callable[[int], None], can
         have = 0
     if have == size:
         return
-    request = urllib.request.Request(url, headers={"User-Agent": "plip", **({"Range": f"bytes={have}-"} if have else {})})
+    request = urllib.request.Request(url, headers={"User-Agent": "jade", **({"Range": f"bytes={have}-"} if have else {})})
     try:
         response = opener(request, timeout=30)
     except Exception as exc:
@@ -246,7 +246,7 @@ class ParakeetModel:
                 return
             self._cancel.clear()
             self._error, self._done = "", 0
-            worker = self._worker = threading.Thread(target=self._run, daemon=True, name="plip-parakeet-download")
+            worker = self._worker = threading.Thread(target=self._run, daemon=True, name="jade-parakeet-download")
             worker.start()
         self.on_change()
         if wait:
@@ -427,8 +427,8 @@ class ParakeetListener:
         except Exception as exc:
             self.callbacks.error(f"microphone unavailable: {exc}")
             return
-        threading.Thread(target=self._load, daemon=True, name="plip-parakeet-load").start()
-        threading.Thread(target=self._live, args=(generation,), daemon=True, name="plip-parakeet-live").start()
+        threading.Thread(target=self._load, daemon=True, name="jade-parakeet-load").start()
+        threading.Thread(target=self._live, args=(generation,), daemon=True, name="jade-parakeet-live").start()
 
     def _load(self) -> None:
         """Load the model while they talk (about a second), so letting go doesn't wait for it."""
@@ -493,7 +493,7 @@ class ParakeetListener:
         with self._lock:
             audio, texts = bytes(self._audio), self._texts
         threading.Thread(target=self._final, args=(generation, audio, texts), daemon=True,
-                         name="plip-parakeet-final").start()
+                         name="jade-parakeet-final").start()
 
     def _final(self, generation: int, audio: bytes, texts: dict[tuple[int, int], str]) -> None:
         # Its own stream, next to a live read still finishing (sherpa-onnx reads streams side by side):

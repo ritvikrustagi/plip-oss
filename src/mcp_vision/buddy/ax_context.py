@@ -63,7 +63,7 @@ class MacAXContext:
             pass
         app = _copy(AX, system, "AXFocusedApplication")
         if app is None or _pid(AX, app) == os.getpid():
-            return ScreenContext()            # nothing in front, or Plip's own windows
+            return ScreenContext()            # nothing in front, or Jade's own windows
         return self._snapshot(AX, system, app)
 
     def _snapshot(self, AX: Any, system: Any, app: Any) -> ScreenContext:

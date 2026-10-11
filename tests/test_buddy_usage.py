@@ -125,10 +125,10 @@ def test_how_it_ended_failed_waiting_and_stopped(tmp_path):
             yield "about it."
 
     async def stop_it():
-        plip = buddy(Slow(), log)
-        task = asyncio.ensure_future(plip.respond("explain quantum physics"))
+        jade = buddy(Slow(), log)
+        task = asyncio.ensure_future(jade.respond("explain quantum physics"))
         await asyncio.sleep(0.2)
-        plip.interrupt()
+        jade.interrupt()
         return await task
 
     assert asyncio.run(stop_it()).outcome == "stopped"

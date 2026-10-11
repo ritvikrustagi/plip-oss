@@ -175,7 +175,7 @@ def test_routine_steps_think_less_and_anything_that_went_wrong_keeps_their_depth
     assert brain.efforts == [None, "low", None] and result.finished and host.playing
 
 
-def test_a_yes_to_plips_own_question_is_the_confirmation_but_never_for_money():
+def test_a_yes_to_jades_own_question_is_the_confirmation_but_never_for_money():
     from mcp_vision.buddy.actions import Consent, Preview
 
     asked = "I drafted your reply to Sara. Want me to send it?"
@@ -274,7 +274,7 @@ def test_the_speech_limit_stops_for_good_and_long_thinking_is_never_read():
     assert ReplyStream().feed("[ GOAL : buy it ] ok. ")[0] == GoalTag("buy it")
 
 
-def test_a_ticking_clock_doesnt_make_plip_refuse_its_own_next_click():
+def test_a_ticking_clock_doesnt_make_jade_refuse_its_own_next_click():
     ticks = iter(range(1000))
     host = Spotify()
     host.open_now = True
@@ -365,7 +365,7 @@ def test_thanks_or_bye_wraps_the_session_up_without_the_model_and_keeps_the_conv
     assert companion._goal == "" and not companion._paused and companion.unfinished == ""
     assert ("finished", {"outcome": "bye"}) in events                               # the island tucks away
     assert any(turn.text == "ok thanks, that's all" for turn in companion.conversation.turns)   # memory stays
-    for said in ("bye", "thanks plip", "that's it for now", "never mind", "ok bye", "no thanks"):
+    for said in ("bye", "thanks jade", "that's it for now", "never mind", "ok bye", "no thanks"):
         assert FAREWELL_RE.match(said), said
     for said in ("thanks, now open spotify", "bye the way where is export", "that's it, send it", "later today remind me"):
         assert not FAREWELL_RE.match(said), said

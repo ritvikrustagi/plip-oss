@@ -1,8 +1,8 @@
-# The `plip` command on Windows, for people who'd rather not touch a terminal twice:
+# The `jade` command on Windows, for people who'd rather not touch a terminal twice:
 #   irm https://raw.githubusercontent.com/ritvikrustagi/plip-oss/main/scripts/install.ps1 | iex
 #
 # There is no signed Windows installer yet (see docs/WINDOWS.md); this is the supported way in.
-# It installs uv, pins Python 3.12, and puts `plip` on PATH as a tool.
+# It installs uv, pins Python 3.12, and puts `jade` on PATH as a tool.
 $ErrorActionPreference = 'Stop'
 
 $repo   = if ($env:PLIP_REPO)   { $env:PLIP_REPO }   else { 'https://github.com/ritvikrustagi/plip-oss.git' }   # the Windows port lives on this fork
@@ -27,18 +27,18 @@ if (-not (Have 'uv')) {
 
 Write-Host "==> Python $python"
 uv python install $python | Out-Null
-Write-Host '==> installing plip'
+Write-Host '==> installing jade'
 uv tool install --force --python $python "git+$repo"
 
 Write-Host ''
 Write-Host 'Done.'
-if (-not (Have 'plip')) {
+if (-not (Have 'jade')) {
     Write-Host 'Open a new terminal, or add this to PATH:'
     Write-Host "  $local"
 }
-Write-Host '  plip                 # the strip appears at the top of your screen'
-Write-Host '  plip doctor          # checks the brain, the voice and the window'
-Write-Host '  plip capabilities    # what this machine can and cannot do, and why'
+Write-Host '  jade                 # the strip appears at the top of your screen'
+Write-Host '  jade doctor          # checks the brain, the voice and the window'
+Write-Host '  jade capabilities    # what this machine can and cannot do, and why'
 Write-Host ''
 Write-Host 'Then hold Ctrl+Alt and talk, or just type in the box.'
 Write-Host 'Tkinter missing? Reinstall Python from python.org with the tcl/tk option ticked.'

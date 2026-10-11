@@ -69,7 +69,7 @@ export class Browser {
   static async launch({ extension, headless = true, fakeMedia = false, timeoutMs = 20000 }) {
     const chrome = findChrome()
     if (!chrome) throw new Error('no Chrome found; set CHROME_PATH')
-    const profile = mkdtempSync(join(tmpdir(), 'plip-cdp-'))
+    const profile = mkdtempSync(join(tmpdir(), 'jade-cdp-'))
     const args = [
       `--user-data-dir=${profile}`,
       '--remote-debugging-port=0',

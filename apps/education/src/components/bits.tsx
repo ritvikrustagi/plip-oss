@@ -1,4 +1,4 @@
-/** Small shared pieces, in Plip's surface language (see ui/src/components/bits.tsx). */
+/** Small shared pieces, in Jade's surface language (see ui/src/components/bits.tsx). */
 import { clsx } from 'clsx'
 import { AlertTriangle, Check, CircleHelp, Loader2, Ruler, Sparkles, X } from 'lucide-react'
 import { twMerge } from 'tailwind-merge'
@@ -116,7 +116,7 @@ export function Button({ children, onClick, tone = 'quiet', disabled, className,
       disabled={disabled}
       className={cn(
         'inline-flex items-center justify-center gap-1.5 rounded-xl px-3.5 py-2 text-[13px] font-semibold transition disabled:opacity-40',
-        tone === 'primary' && 'bg-plip-500 text-white hover:bg-plip-400',
+        tone === 'primary' && 'bg-jade-500 text-white hover:bg-jade-400',
         tone === 'quiet' && 'bg-white/[0.07] text-white/85 hover:bg-white/[0.12]',
         tone === 'danger' && 'bg-coral/15 text-rose-200 hover:bg-coral/25',
         className,
@@ -137,7 +137,7 @@ export interface Confirm {
 }
 
 /**
- * Plip asks before it does anything consequential (see Preview in
+ * Jade asks before it does anything consequential (see Preview in
  * src/mcp_vision/buddy/actions/base.py and the island's confirm card). The same
  * rule holds here: turning sharing on or off, ending a session and deleting
  * everything all say what will happen before it happens.

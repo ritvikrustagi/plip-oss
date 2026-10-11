@@ -1,4 +1,4 @@
-"""Plip's hands: click, scroll, press keys and drag, aimed by the numbered screen map."""
+"""Jade's hands: click, scroll, press keys and drag, aimed by the numbered screen map."""
 from __future__ import annotations
 
 import asyncio
@@ -87,10 +87,10 @@ class Map:
 def test_a_turn_clicks_play_when_asked():
     host = FakeHost()
     brain = ScriptedBrain('Playing it. [DO:click {"id": 2}]', "It's playing.")
-    plip = Companion(brain=brain, capturer=Capturer(), speaker=Speaker(), pointer=Pointer(), walkthroughs=False,
+    jade = Companion(brain=brain, capturer=Capturer(), speaker=Speaker(), pointer=Pointer(), walkthroughs=False,
                      context=Map(ScreenContext(app="Spotify", controls=list(SPOTIFY))),
                      actions=ActionEngine(ActionContext(host=host, state={})), settle_interval=0.01)
-    result = run(plip.respond("click play and start the music"))
+    result = run(jade.respond("click play and start the music"))
     assert result.state == "done" and result.did == ["Clicking"]
     assert ("click", 610, 420) in host.calls
     assert "[2] Play | AXButton" in brain.calls[0][-1].text           # the model saw the numbered map

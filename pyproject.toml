@@ -1,7 +1,7 @@
 [project]
 name = "mcp-vision-runtime"
-version = "0.10.0"
-description = "Plip: an AI buddy in your MacBook's notch, or a strip at the top of your Windows screen. Talk, it sees your screen, answers aloud and points, on your Claude, ChatGPT, Cursor or Gemini plan."
+version = "0.11.0"
+description = "Jade: an AI buddy in your MacBook's notch, or a strip at the top of your Windows screen. Talk, it sees your screen, answers aloud and points, on your Claude, ChatGPT, Cursor or Gemini plan."
 authors = [{name = "Hussain"}]
 license = "MIT"
 readme = "README.md"
@@ -12,7 +12,7 @@ dependencies = [
     "Pillow>=10.0.0",
     "pydantic>=2.0.0",
     "pydantic-settings>=2.0.0",
-    # cursor position where there's no native call for it (headless `plip ask` on Linux);
+    # cursor position where there's no native call for it (headless `jade ask` on Linux);
     # macOS uses Quartz and Windows uses user32 directly, so neither needs it.
     "pyautogui>=0.9.54; sys_platform != 'darwin' and sys_platform != 'win32'",
     "click>=8.1.0",
@@ -33,7 +33,7 @@ dependencies = [
 dev = ["pytest>=8.0.0", "ruff>=0.14,<1"]
 
 [project.scripts]
-plip = "mcp_vision.buddy.cli:buddy"
+jade = "mcp_vision.buddy.cli:buddy"
 
 [project.urls]
 Homepage = "https://github.com/ritvikrustagi/plip-oss"

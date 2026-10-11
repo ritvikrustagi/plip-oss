@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# The `plip` command from source, for people who'd rather not use the app:
+# The `jade` command from source, for people who'd rather not use the app:
 #   curl -fsSL https://raw.githubusercontent.com/ritvikrustagi/plip-oss/main/scripts/install.sh | bash
 # Most people want the DMG instead (Releases on GitHub). Uses Python 3.12 (macOS's own python3 is too old).
 set -euo pipefail
@@ -22,16 +22,16 @@ fi
 
 echo "==> Python ${PY}"
 uv python install "$PY" >/dev/null
-echo "==> installing plip"
+echo "==> installing jade"
 uv tool install --force --python "$PY" "git+${REPO}"
 hash -r 2>/dev/null || true
 
 echo
 echo "Done."
-if ! command -v plip >/dev/null 2>&1; then
+if ! command -v jade >/dev/null 2>&1; then
   echo "Add this to your shell config, then reopen the terminal:"
   echo "  export PATH=\"\$HOME/.local/bin:\$PATH\""
 fi
-echo "  plip          # opens Settings on first run; pick the Claude / ChatGPT / Cursor / Gemini plan you have"
-echo "  plip doctor   # checks brains, keys and permissions"
+echo "  jade          # opens Settings on first run; pick the Claude / ChatGPT / Cursor / Gemini plan you have"
+echo "  jade doctor   # checks brains, keys and permissions"
 echo "Then hold Control+Option and talk."

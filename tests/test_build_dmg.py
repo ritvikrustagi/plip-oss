@@ -10,17 +10,17 @@ build_dmg = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(build_dmg)
 
 
-def test_the_app_is_plip_with_the_one_bundle_id():
+def test_the_app_is_jade_with_the_one_bundle_id():
     from mcp_vision.identity import BUNDLE_ID
 
     info = build_dmg.info_plist("1.2.3")
-    assert info["CFBundleIdentifier"] == BUNDLE_ID and info["CFBundleExecutable"] == "Plip"
+    assert info["CFBundleIdentifier"] == BUNDLE_ID and info["CFBundleExecutable"] == "Jade"
     assert info["CFBundleShortVersionString"] == "1.2.3" and info["LSUIElement"] is True
     for key in ("NSMicrophoneUsageDescription", "NSSpeechRecognitionUsageDescription", "NSAppleEventsUsageDescription"):
         assert info[key]                         # macOS kills an app that asks without saying why
 
 
-def test_launcher_runs_plip_from_the_bundled_python():
+def test_launcher_runs_jade_from_the_bundled_python():
     source = build_dmg.LAUNCHER.replace("PYVERSION", build_dmg.PY)
     assert '"mcp_vision.cli", "buddy", "run"' in source and "PYTHONHOME" in source
     assert "lib/libpython3.12.dylib" in source and "PYVERSION" not in source
@@ -34,13 +34,13 @@ def test_every_build_is_hardened_and_only_ad_hoc_pins_the_bundle_id():
     assert build_dmg.app_requirement(release) == []       # Apple's default: tied to the team, can't be copied
 
 
-def test_dmg_window_is_a_bare_icon_view_with_plip_left_of_applications():
+def test_dmg_window_is_a_bare_icon_view_with_jade_left_of_applications():
     settings: dict = {}
-    exec(build_dmg.dmg_settings(Path("/tmp/Plip.app"), Path("/tmp/Plip.icns"), Path("/tmp/bg.tiff")), settings)
+    exec(build_dmg.dmg_settings(Path("/tmp/Jade.app"), Path("/tmp/Jade.icns"), Path("/tmp/bg.tiff")), settings)
     assert settings["window_rect"][1] == (660, 468) and settings["default_view"] == "icon-view"
     assert not any(settings[key] for key in ("show_toolbar", "show_sidebar", "show_status_bar", "show_pathbar"))
     assert settings["icon_size"] == 112
-    assert settings["icon_locations"]["Plip.app"] == (180, 232)
+    assert settings["icon_locations"]["Jade.app"] == (180, 232)
     assert settings["icon_locations"]["Applications"] == (480, 232)
     assert settings["symlinks"] == {"Applications": "/Applications"}
 
@@ -89,11 +89,11 @@ def test_a_release_carries_the_sign_in_project_but_never_a_secret_key(monkeypatc
     assert build_dmg.configured_sign_in() == ("https://abc.supabase.co", "sb_publishable_x")
 
 
-def test_only_the_app_bundle_reads_its_plip_env(monkeypatch, tmp_path):
+def test_only_the_app_bundle_reads_its_jade_env(monkeypatch, tmp_path):
     from mcp_vision.buddy import settings as settings_module
 
-    bundled = tmp_path / "Plip.app" / "Contents" / "Resources" / "python"
+    bundled = tmp_path / "Jade.app" / "Contents" / "Resources" / "python"
     monkeypatch.setattr(settings_module.sys, "prefix", str(bundled))
-    assert settings_module.release_env() == bundled.parent / "plip.env"
+    assert settings_module.release_env() == bundled.parent / "jade.env"
     monkeypatch.setattr(settings_module.sys, "prefix", str(tmp_path / ".venv"))
     assert settings_module.release_env() is None

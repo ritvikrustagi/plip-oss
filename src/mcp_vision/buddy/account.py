@@ -1,27 +1,27 @@
-"""Plip accounts: sign in with Google when you're ready; Plip works either way.
+"""Jade accounts: sign in with Google when you're ready; Jade works either way.
 
 Sign-in never stands between a person and their first task. Someone who skips it still gets an account: a
 guest one (Supabase's anonymous sign-in), named like ``Quiet Nomad``, so they count and so their tasks stay
 theirs. Later, Continue with Google links Google to that same account (same id, now with an email), so nobody
 is counted twice.
 
-Sign-in goes through Supabase Auth with PKCE, the way a desktop app should (RFC 8252): Plip opens the
+Sign-in goes through Supabase Auth with PKCE, the way a desktop app should (RFC 8252): Jade opens the
 browser at Supabase's authorize page, Google sends the person back to Supabase, and Supabase sends them to a
-one-shot page Plip serves on 127.0.0.1 with a code. Plip swaps that code (plus the secret only it holds)
+one-shot page Jade serves on 127.0.0.1 with a code. Jade swaps that code (plus the secret only it holds)
 for a session. Supabase keeps the list of accounts: Authentication → Users in its dashboard.
 
 On this Mac, ``~/.config/mcp-vision/account.json`` (readable only by you) keeps who you are, your Google picture
-(fetched once, for Settings) and the session. When Plip starts it renews the session once, so an account
+(fetched once, for Settings) and the session. When Jade starts it renews the session once, so an account
 removed in Supabase signs out here.
 
 What leaves the Mac: the sign-in itself (Google tells Supabase your name, email and picture), that one
 renewal per launch, fetching the picture from Google when it's new, and the setup funnel in
 ``mcp_vision.analytics`` (which step of setup was reached, never what you asked) with the account id along.
-Nothing about what you ask Plip. Optional memory sync (buddy.memory.postgres) separately sends
+Nothing about what you ask Jade. Optional memory sync (buddy.memory.postgres) separately sends
 saved non-sensitive facts using this account's JWT when PLIP_MEMORY_SYNC is enabled.
 
 No config (``PLIP_SUPABASE_URL`` + ``PLIP_SUPABASE_KEY``: the environment, ``~/.config/mcp-vision/.env``,
-or baked into a release build) means no account at all, and Plip works the same (running from source).
+or baked into a release build) means no account at all, and Jade works the same (running from source).
 """
 from __future__ import annotations
 
@@ -72,7 +72,7 @@ def urllib_transport(method: str, url: str, headers: dict[str, str], body: dict[
                      ) -> tuple[int, dict[str, Any]]:
     data = json.dumps(body).encode() if body is not None else None
     request = urllib.request.Request(url, data=data, method=method, headers={
-        "Content-Type": "application/json", "User-Agent": f"Plip/{__version__}", **headers})
+        "Content-Type": "application/json", "User-Agent": f"Jade/{__version__}", **headers})
     try:
         with urllib.request.urlopen(request, timeout=15) as response:
             status, raw = int(response.status), response.read()
@@ -89,7 +89,7 @@ def fetch_picture(url: str) -> bytes | None:
     """The picture's bytes, or None (https only, capped)."""
     if not url.startswith("https://"):
         return None
-    request = urllib.request.Request(url, headers={"User-Agent": f"Plip/{__version__}"})
+    request = urllib.request.Request(url, headers={"User-Agent": f"Jade/{__version__}"})
     try:
         with urllib.request.urlopen(request, timeout=10) as response:
             data = response.read(PICTURE_MAX + 1)
@@ -117,7 +117,7 @@ def guest_name() -> str:
 
 
 def _profile(user: dict[str, Any]) -> dict[str, Any]:
-    """What Plip shows and keeps about the person: name, email, picture link, how they signed in, since when.
+    """What Jade shows and keeps about the person: name, email, picture link, how they signed in, since when.
 
     A guest has no email; its provider says so, whatever Supabase lists (``providers`` keeps ``anonymous`` in
     the list after Google is linked, but the email settles it).
@@ -157,7 +157,7 @@ class Account:
         self.open_url = open_url
         self.transport = transport
         self.on_change = on_change                 # status moved (the Settings window shows it)
-        self.on_signed_in = on_signed_in           # signed in: Plip starts working
+        self.on_signed_in = on_signed_in           # signed in: Jade starts working
         self.fetch = fetch
         self.ports = ports
         self.wait = wait
@@ -191,7 +191,7 @@ class Account:
 
     @property
     def identified(self) -> bool:
-        """Signed in with Google: Plip knows an email."""
+        """Signed in with Google: Jade knows an email."""
         user = self.user
         return bool(user and user.get("email"))
 
@@ -242,7 +242,7 @@ class Account:
         if not profile["email"]:
             if not user.get("is_anonymous"):
                 return False
-            # the guest name Plip chose (it was sent along as user_metadata.name; keep it if it got lost)
+            # the guest name Jade chose (it was sent along as user_metadata.name; keep it if it got lost)
             profile["name"] = profile["name"] or str((self.user or {}).get("name") or guest_name())
         with self._writing:
             old = self._session()
@@ -253,7 +253,7 @@ class Account:
                         "picture": picture})
         if profile["picture_url"] and not picture:
             threading.Thread(target=self._get_picture, args=(profile["picture_url"],), daemon=True,
-                             name="plip-picture").start()
+                             name="jade-picture").start()
         return True
 
     def _get_picture(self, url: str) -> None:
@@ -335,7 +335,7 @@ class Account:
         self.cancel(quiet=True)
         server = self._listen()
         if server is None:
-            self._set("failed", "Something else on this Mac is using Plip's sign-in ports. Quit it and try again.")
+            self._set("failed", "Something else on this Mac is using Jade's sign-in ports. Quit it and try again.")
             return False
         self._verifier, challenge = pkce_pair()
         redirect = f"http://127.0.0.1:{server.server_address[1]}{CALLBACK}"
@@ -344,7 +344,7 @@ class Account:
         plain = f"{self.base}/auth/v1/authorize?" + urlencode(query)
         with self._lock:
             self._server = server
-        threading.Thread(target=server.serve_forever, daemon=True, name="plip-sign-in").start()
+        threading.Thread(target=server.serve_forever, daemon=True, name="jade-sign-in").start()
         timer = threading.Timer(self.wait, self._expire, args=(server,))
         timer.daemon = True
         timer.start()
@@ -388,7 +388,7 @@ class Account:
                     if server is not self._server:    # cancelled meanwhile: nothing to report
                         return
                 self.cancel(quiet=True)
-                self._set("failed", "Couldn't reach Plip's sign-in server. Check your connection and try again.")
+                self._set("failed", "Couldn't reach Jade's sign-in server. Check your connection and try again.")
                 return
             with self._lock:
                 if server is not self._server:    # cancelled or expired meanwhile
@@ -396,7 +396,7 @@ class Account:
                 self.link = url or plain
             self.on_change()
             self.open_url(self.link)
-        threading.Thread(target=link, daemon=True, name="plip-sign-in-link").start()
+        threading.Thread(target=link, daemon=True, name="jade-sign-in-link").start()
         return True
 
     def _listen(self) -> HTTPServer | None:
@@ -433,7 +433,7 @@ class Account:
             return False, ""
         with self._lock:
             if server is not self._server:
-                return False, "This sign-in page is out of date. Start again from Plip."
+                return False, "This sign-in page is out of date. Start again from Jade."
             self._server = None
         _close(server)
         if query.get("error_code") == "identity_already_exists" and self.anonymous:
@@ -441,7 +441,7 @@ class Account:
             log.info("account: Google is already an account here, signing in to it instead of linking")
             self._forget()
             self.start()
-            return False, "You already have a Plip account with this Google. Signing you in to it: one more time in the browser."
+            return False, "You already have a Jade account with this Google. Signing you in to it: one more time in the browser."
         if query.get("error") or not query.get("code"):
             message = _error_text(query, "Google sign-in didn't finish.")
             self._set("failed", message)
@@ -451,7 +451,7 @@ class Account:
                                           {"auth_code": query["code"], "code_verifier": self._verifier})
         except Exception as exc:
             log.info("account: sign-in exchange failed (%s)", type(exc).__name__)
-            self._set("failed", "Couldn't reach Plip's sign-in server. Check your connection and try again.")
+            self._set("failed", "Couldn't reach Jade's sign-in server. Check your connection and try again.")
             return False, self.error
         if not (200 <= status < 300 and self._keep(body)):
             self._set("failed", _error_text(body, "Sign-in didn't go through. Try again."))
@@ -511,7 +511,7 @@ class Account:
     def sign_out(self) -> None:
         """Forget the account here right away, then tell Supabase (best effort, in the background).
 
-        Plip keeps working: a fresh guest account takes the Google one's place (also in the background).
+        Jade keeps working: a fresh guest account takes the Google one's place (also in the background).
         """
         session = self._session()
         self._forget()
@@ -528,7 +528,7 @@ class Account:
                 except Exception:
                     pass
             self.ensure_anonymous()
-        threading.Thread(target=tell, daemon=True, name="plip-sign-out").start()
+        threading.Thread(target=tell, daemon=True, name="jade-sign-out").start()
 
     def _forget(self) -> None:
         with self._writing:
@@ -543,12 +543,12 @@ def _close(server: HTTPServer) -> None:
     def stop() -> None:
         server.shutdown()
         server.server_close()
-    threading.Thread(target=stop, daemon=True, name="plip-sign-in-close").start()
+    threading.Thread(target=stop, daemon=True, name="jade-sign-in-close").start()
 
 
 # The tab the browser lands on, dressed like the welcome screen: ink, the mark's blue glow, the gradient title.
 try:
-    MARK = (Path(__file__).with_name("plip-mark.svg")).read_text()        # the Mascot's hood, face and eye
+    MARK = (Path(__file__).with_name("jade-mark.svg")).read_text()        # the Mascot's hood, face and eye
 except OSError:
     MARK = ""
 STYLE = """*{box-sizing:border-box}html,body{height:100%}
@@ -601,13 +601,13 @@ def _page(ok: bool, message: str, waiting: bool = False) -> str:
     if waiting:
         state, title, text = "waiting", "Finishing sign-in…", "One moment."
     elif ok:
-        state, title, text = "ok", "You’re signed in.", "Plip is ready. Head back to it."
+        state, title, text = "ok", "You’re signed in.", "Jade is ready. Head back to it."
         who = f'<div class="who">{escape(message)}</div>' if message else ""
     else:
         state, title, text = "failed", "Sign-in didn’t finish.", (message or "Something went wrong on the way back.")
     close = "" if waiting else '<p class="close">' + (
-        "You can close this tab." if ok else "Close this tab and try again from Plip.") + "</p>"
-    return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Plip</title>
+        "You can close this tab." if ok else "Close this tab and try again from Jade.") + "</p>"
+    return f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Jade</title>
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark">
 <style>{STYLE}</style></head><body class="{state}"><div class="glow one"></div><div class="glow two"></div>
 <main><div class="mark">{MARK}</div><h1>{escape(title)}</h1><p>{escape(text)}</p>{who}{close}</main>

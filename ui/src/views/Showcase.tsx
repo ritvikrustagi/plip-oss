@@ -12,7 +12,7 @@ const NOTCH = { width: 196, height: 34 }
 const CURSOR = { x: 930, y: 560 }
 
 /**
- * A pretend MacBook desktop that plays Plip's whole flow. Used for the
+ * A pretend MacBook desktop that plays Jade's whole flow. Used for the
  * browser preview, the README screenshots, and demos.
  * `#showcase?frame=listening` freezes on one frame.
  */
@@ -60,7 +60,7 @@ export function Showcase() {
     setTargets({ file: point(fileRef.current, 34, 30), export: point(exportRef.current, 170, 26) })
   }, [scale, showMenu])
 
-  // Plip lives in the notch: it only drips out to point, then floats back up.
+  // Jade lives in the notch: it only drips out to point, then floats back up.
   const home = { x: W / 2, y: NOTCH.height - 4 }
   const spot = at === 'notch' ? home : at === 'cursor' ? { x: CURSOR.x + 35, y: CURSOR.y + 25 } : targets[at] ?? home
 
@@ -72,20 +72,20 @@ export function Showcase() {
         <AppWindow />
         {showMenu && <FileMenu exportRef={exportRef} />}
 
-        {/* the physical notch, then Plip's island fused onto it */}
+        {/* the physical notch, then Jade's island fused onto it */}
         <div className="absolute left-1/2 top-0 z-40 -translate-x-1/2 rounded-b-[12px] bg-black" style={{ width: NOTCH.width, height: NOTCH.height }} />
         <div className="absolute inset-x-0 top-0 z-50">
           <Island />
         </div>
 
         <SystemCursor x={CURSOR.x} y={CURSOR.y} />
-        <FlyingPlip x={spot.x} y={spot.y} docked={at === 'notch'} />
+        <FlyingJade x={spot.x} y={spot.y} docked={at === 'notch'} />
       </div>
     </div>
   )
 }
 
-function FlyingPlip({ x, y, docked }: { x: number; y: number; docked: boolean }) {
+function FlyingJade({ x, y, docked }: { x: number; y: number; docked: boolean }) {
   const state = useStore(mascot)
   return (
     <motion.div

@@ -1,4 +1,4 @@
-// Plip's UI sounds, synthesized from scratch (no samples), so they can be tuned here and re-rendered.
+// Jade's UI sounds, synthesized from scratch (no samples), so they can be tuned here and re-rendered.
 // They share the promo film's sonic logo: F major, a glassy FM bell, the wake chime's rising C6 -> F6.
 //   node ui/scripts/sounds.mjs [out dir] [--alts]  -> src/mcp_vision/buddy/sounds/*.wav (48 kHz, stereo, 16-bit)
 //
@@ -181,7 +181,7 @@ function sent() {
 const fall = (land, { glide = 0.05, a = 0.004, tau = 0.032 } = {}) => drop({ f0: land * 1.5, f1: land, glide, a, tau })
 
 // done: the tossed ball comes back. Close's drop lands, then bounces, each bounce quicker, quieter and higher,
-// climbing F major (F5 A5 C6 F6) until it settles on F6, where every Plip sound comes home.
+// climbing F major (F5 A5 C6 F6) until it settles on F6, where every Jade sound comes home.
 function done() {
   const out = buf(0.9)
   const bounces = [[0, F5, 1, 0.05, 0.034], [0.112, mtof(81), 0.62, 0.04, 0.03], [0.181, C6, 0.42, 0.032, 0.026],

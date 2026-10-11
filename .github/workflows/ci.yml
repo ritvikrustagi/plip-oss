@@ -104,7 +104,7 @@ jobs:
           python -m venv "$RUNNER_TEMP/wheel-env"
           "$RUNNER_TEMP/wheel-env/bin/pip" install dist/*.whl
           cd "$RUNNER_TEMP"
-          "$RUNNER_TEMP/wheel-env/bin/plip" --help
+          "$RUNNER_TEMP/wheel-env/bin/jade" --help
           "$RUNNER_TEMP/wheel-env/bin/python" -c "from importlib.resources import files; \
             import mcp_vision.buddy.companion, mcp_vision.analytics; \
             assert (files('mcp_vision.buddy') / 'web' / 'index.html').is_file()"
@@ -118,12 +118,12 @@ jobs:
           $venv = "$env:RUNNER_TEMP/wheel-env/Scripts"
           & "$venv/pip" install (Get-ChildItem dist/*.whl).FullName
           Push-Location $env:RUNNER_TEMP
-          & "$venv/plip" --help
+          & "$venv/jade" --help
           & "$venv/python" -c "from importlib.resources import files; import mcp_vision.buddy.companion, mcp_vision.analytics; assert (files('mcp_vision.buddy') / 'web' / 'index.html').is_file()"
-          & "$venv/plip" capabilities
-          & "$venv/plip" learn contract
-          & "$venv/plip" learn status
-          & "$venv/plip" windows --once --no-probe
+          & "$venv/jade" capabilities
+          & "$venv/jade" learn contract
+          & "$venv/jade" learn status
+          & "$venv/jade" windows --once --no-probe
           Pop-Location
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       # So a Windows tester can grab a build from any run, without waiting for a tagged
@@ -131,7 +131,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: runner.os == 'Windows'
         with:
-          name: plip-windows-wheel
+          name: jade-windows-wheel
           path: dist/*.whl
           if-no-files-found: error
 

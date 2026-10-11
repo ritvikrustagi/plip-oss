@@ -16,7 +16,7 @@ export class Conversation {
     return [...this.turns]
   }
 
-  /** One exchange. `step`: Plip's own follow-up within a request (an action result, a check-in). */
+  /** One exchange. `step`: Jade's own follow-up within a request (an action result, a check-in). */
   record(userText, assistantText, { step = false } = {}) {
     if (!userText.trim() || !assistantText.trim()) return
     if (!step || !this.requests) this.requests += 1

@@ -1,6 +1,6 @@
 # Account memory in Postgres
 
-Plip can sync explicit saved facts and preferences through the existing Supabase project. The desktop app's
+Jade can sync explicit saved facts and preferences through the existing Supabase project. The desktop app's
 remember/forget actions, Memory settings panel, and CLI use the same store. Retrieved facts feed the existing
 bounded prompt summary. Sync is off by default; without it the existing local memory behavior is unchanged.
 
@@ -8,7 +8,7 @@ bounded prompt summary. Sync is off by default; without it the existing local me
 
 1. Apply `supabase/migrations/20261010000000_student_memory.sql` to your Supabase project using its SQL editor
    or your migration deployment workflow. This requires the existing Supabase Auth setup in CONTRIBUTING.md.
-2. Add these settings to your local Plip `.env` and restart the app:
+2. Add these settings to your local Jade `.env` and restart the app:
 
    ```dotenv
    PLIP_SUPABASE_URL=https://<project>.supabase.co
@@ -20,7 +20,7 @@ bounded prompt summary. Sync is off by default; without it the existing local me
 3. Finish onboarding to create a guest account, or sign in with Google. Google sign-in on another device gives
    access to the same account's memory. A guest linked to Google retains its UUID and memory. Signing into an
    already existing Google account switches stores; it does not merge the old guest's data.
-4. Run `plip memory sync` to check the connection. Use `plip memory sync --import-local` to explicitly copy facts
+4. Run `jade memory sync` to check the connection. Use `jade memory sync --import-local` to explicitly copy facts
    from the old local `memory.json` into the current account. The original file is preserved. Detected sensitive
    facts are copied only to the local account cache. Imports are deduplicated by the existing memory logic.
 
@@ -65,7 +65,7 @@ the limit keeps changes local and reports a sync error rather than dropping data
 
 Deletion removes content from the cloud document on successful sync. Other devices learn of it on their next
 successful sync; an offline cache can retain a copy until then. Database backup retention is managed by the
-Supabase project. Run one Plip process per local cache; cross-process file locking is not implemented.
+Supabase project. Run one Jade process per local cache; cross-process file locking is not implemented.
 
 ## Checks and current scope
 

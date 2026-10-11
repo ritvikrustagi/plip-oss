@@ -1,4 +1,4 @@
-"""The Island: Plip's Dynamic-Island-style home in the MacBook notch.
+"""The Island: Jade's Dynamic-Island-style home in the MacBook notch.
 
 A borderless, non-activating panel spans the top-center of the notched
 display (or the main display on Macs without a notch, where it draws its own
@@ -17,7 +17,7 @@ from typing import Any
 from mcp_vision.buddy.web_host import WebSurface
 
 WIDTH, HEIGHT = 760.0, 420.0
-YIELD_SECONDS = 1.0                            # Plip's click/scroll/drag owns the screen this long
+YIELD_SECONDS = 1.0                            # Jade's click/scroll/drag owns the screen this long
 PARK_SLOP = 3.0                                # points a parked cursor drifts before it's the user's
 HOVER_MARGIN = 6.0
 _CLASSES: dict[str, type] = {}
@@ -95,13 +95,13 @@ def _ticker_class():
 
 
 class HoverGate:
-    """Whether the island takes the mouse: not while Plip uses it, nor until the user moves it after."""
+    """Whether the island takes the mouse: not while Jade uses it, nor until the user moves it after."""
 
     def __init__(self) -> None:
         self.parked: tuple[float, float] | None = None
         self.until = 0.0
 
-    def plip_moved(self, point: tuple[float, float], now: float, hold: float = YIELD_SECONDS) -> None:
+    def jade_moved(self, point: tuple[float, float], now: float, hold: float = YIELD_SECONDS) -> None:
         self.parked = point
         self.until = max(self.until, now + hold)
 
@@ -151,7 +151,7 @@ class IslandWindow:
         AppKit.NSRunLoop.mainRunLoop().addTimer_forMode_(self._timer, AppKit.NSRunLoopCommonModes)
         from mcp_vision.buddy.clear_path import on_clear
 
-        self._stop_clearing = on_clear(self._clear)      # Plip's clicks pass through to the app below
+        self._stop_clearing = on_clear(self._clear)      # Jade's clicks pass through to the app below
         center = AppKit.NSNotificationCenter.defaultCenter()
         self._screens_changed = center.addObserverForName_object_queue_usingBlock_(
             AppKit.NSApplicationDidChangeScreenParametersNotification, None, None,
@@ -179,7 +179,7 @@ class IslandWindow:
             self.surface.post([{"type": "island", "state": {"notch": self.geometry}}])
         self.on_command(command)
 
-    # -- Plip's own clicks (clear_path) --------------------------------------------------------
+    # -- Jade's own clicks (clear_path) --------------------------------------------------------
     def _clear(self, points: list[tuple[float, float]], act: bool) -> None:
         """Any thread; returns once the island is out of the next click's way."""
         if not act or not points:
@@ -200,12 +200,12 @@ class IslandWindow:
         done.wait(0.3)
 
     def make_way(self, points: list[tuple[float, float]]) -> None:
-        """Main thread: click-through for Plip's mouse; its parked cursor isn't a hover."""
+        """Main thread: click-through for Jade's mouse; its parked cursor isn't a hover."""
         import AppKit
 
         primary = float(AppKit.NSScreen.screens()[0].frame().size.height)
         x, y = points[-1]
-        self.gate.plip_moved((x, primary - y), time.monotonic())        # global top-left -> AppKit
+        self.gate.jade_moved((x, primary - y), time.monotonic())        # global top-left -> AppKit
         if self._interactive:
             self._interactive = False
             self.panel.setIgnoresMouseEvents_(True)

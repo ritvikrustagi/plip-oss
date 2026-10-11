@@ -479,9 +479,9 @@ def test_the_listener_only_says_it_works_when_macos_passes_it_keys():
 def test_it_names_whose_accessibility_the_shortcut_needs(monkeypatch):
     from mcp_vision.buddy import hotkey
 
-    monkeypatch.setattr(hotkey.sys, "prefix", "/Applications/Plip.app/Contents/Resources/python")
-    assert hotkey.keyboard_owner() == "Plip"
-    monkeypatch.setattr(hotkey.sys, "prefix", "/Users/me/plip/.venv")
+    monkeypatch.setattr(hotkey.sys, "prefix", "/Applications/Jade.app/Contents/Resources/python")
+    assert hotkey.keyboard_owner() == "Jade"
+    monkeypatch.setattr(hotkey.sys, "prefix", "/Users/me/jade/.venv")
     monkeypatch.setenv("TERM_PROGRAM", "Apple_Terminal")
     assert hotkey.keyboard_owner() == "Terminal"
     monkeypatch.setenv("TERM_PROGRAM", "iTerm.app")

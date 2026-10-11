@@ -52,7 +52,7 @@ def test_an_unrecognised_granter_is_refused():
 
 
 def test_what_they_were_told_is_recorded():
-    consent = SessionConsent().start(note="Plip will see your screen while this session runs.")
+    consent = SessionConsent().start(note="Jade will see your screen while this session runs.")
     assert "see your screen" in consent.note
 
 

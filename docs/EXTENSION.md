@@ -1,4 +1,4 @@
-# Plip Study Buddy — the Chrome extension
+# Jade Study Buddy — the Chrome extension
 
 A Manifest V3 side-panel study buddy. It is the primary delivery path for
 students on a Chromebook, and it runs the same in desktop Chrome.
@@ -24,12 +24,12 @@ by anyone, **not verified on real Chromebook hardware** (see
 - [Permissions, and what they are not](#permissions-and-what-they-are-not)
 - [Pages it refuses](#pages-it-refuses)
 - [Browser actions, and the ones that do not exist](#browser-actions-and-the-ones-that-do-not-exist)
-- [Capability matrix against Plip on macOS](#capability-matrix-against-plip-on-macos)
+- [Capability matrix against Jade on macOS](#capability-matrix-against-jade-on-macos)
 - [The model: local tutor, or a school proxy](#the-model-local-tutor-or-a-school-proxy)
 - [The learning-event contract](#the-learning-event-contract)
 - [Privacy and data](#privacy-and-data)
 - [Voice](#voice)
-- [What is reused from Plip, and what had to change](#what-is-reused-from-plip-and-what-had-to-change)
+- [What is reused from Jade, and what had to change](#what-is-reused-from-jade-and-what-had-to-change)
 - [Tests](#tests)
 - [Packaging](#packaging)
 - [What is not verified](#what-is-not-verified)
@@ -42,9 +42,9 @@ No build step. No npm install. The directory on disk is the extension.
 1. Open `chrome://extensions`.
 2. Turn on **Developer mode** (top right).
 3. **Load unpacked**, and pick `apps/extension/`.
-4. Pin **Plip Study Buddy** to the toolbar.
-5. Open the tab you want help with and click the Plip button. The side panel
-   opens, and clicking the button is also what gives Plip a look at that one
+4. Pin **Jade Study Buddy** to the toolbar.
+5. Open the tab you want help with and click the Jade button. The side panel
+   opens, and clicking the button is also what gives Jade a look at that one
    tab (see below).
 
 Chrome 116 or newer (`chrome.sidePanel.open`). Icons are generated from the
@@ -57,18 +57,18 @@ Two minutes, no credentials, nothing shared:
 
 1. Open any page with a question on it. `tests/extension/fixtures/worksheet.html`
    is a synthetic one — open it with `open tests/extension/fixtures/worksheet.html`.
-2. Click the Plip button. The panel says **session off**, and the page strip
-   says Plip cannot see the page.
-3. Click **Start session**. Plip tells you whether anything is shared (off by
+2. Click the Jade button. The panel says **session off**, and the page strip
+   says Jade cannot see the page.
+3. Click **Start session**. Jade tells you whether anything is shared (off by
    default).
-4. Click **Let Plip see this page** and accept Chrome's prompt. It asks for
+4. Click **Let Jade see this page** and accept Chrome's prompt. It asks for
    that one site, not for "all sites".
 5. Type `Working on` → `Question 4` → **Set**.
 6. Ask it `what's the answer?` It refuses, and points at the question instead.
 7. Ask `I'm stuck`. A checklist appears in the panel and the first step is
    outlined on the page in purple.
 8. Click **Ask for a hint**. The hint is counted.
-9. Click **I tried something** → **Partly**. That is your own report; Plip does
+9. Click **I tried something** → **Partly**. That is your own report; Jade does
    not mark it.
 10. Click **Pause**. The page strip stops being read and nothing is recorded.
 11. **End**. The panel tells you exactly what it recorded, in counts.
@@ -122,8 +122,8 @@ It is built to help a student think, not to produce their work:
 | `storage` | settings and the event log, locally | nothing is uploaded by the extension |
 
 Host access is **entirely optional** — the manifest has no `host_permissions`
-at all, only `optional_host_permissions`. Plip can read a site only after you
-press **Let Plip see this page** and Chrome grants that one origin.
+at all, only `optional_host_permissions`. Jade can read a site only after you
+press **Let Jade see this page** and Chrome grants that one origin.
 
 It deliberately does **not** take `tabs`, `webNavigation`, `webRequest`,
 `history`, `cookies`, `downloads`, `debugger`, `management`, `clipboardRead`,
@@ -144,16 +144,16 @@ there is a per-site grant at all.
 Some of this is Chrome's rule, some is ours. Either way the panel says which,
 in a sentence, rather than failing quietly.
 
-Chrome will not let any extension touch these, so neither can Plip:
+Chrome will not let any extension touch these, so neither can Jade:
 
 - `chrome://` and `chrome-untrusted://` pages (settings, extensions, new tab)
 - other extensions' pages (`chrome-extension://`, `moz-extension://`)
 - the Chrome Web Store (`chromewebstore.google.com`, `chrome.google.com`)
 - `devtools://` pages and `view-source:`
 - `file://` pages, unless you turn on "Allow access to file URLs" for this
-  extension in `chrome://extensions` — and Plip still asks before reading one
+  extension in `chrome://extensions` — and Jade still asks before reading one
 
-Plip refuses these itself, grant or no grant:
+Jade refuses these itself, grant or no grant:
 
 - sign-in pages (`accounts.google.com`, `login.microsoftonline.com`,
   `appleid.apple.com`), and any URL whose path looks like `/login`, `/signin`,
@@ -202,14 +202,14 @@ does not try to talk its way around them:
 
 `type_text`, `fill_form`, `submit`, `press`, `screenshot`, `download`, `eval`.
 
-## Capability matrix against Plip on macOS
+## Capability matrix against Jade on macOS
 
-Plip on macOS lives in the notch, sees every display, and drives the whole
+Jade on macOS lives in the notch, sees every display, and drives the whole
 machine. A pure ChromeOS extension cannot do most of that, and **no native
 helper is used, required, or planned here** — the row that says "impossible"
 means impossible, not "not yet".
 
-| Feature | Plip on macOS | This extension |
+| Feature | Jade on macOS | This extension |
 | --- | --- | --- |
 | Chat with a tutor | yes, push-to-talk in the notch | yes, typed in the side panel; voice optional |
 | See what you are working on | yes, screenshots of every display | no screenshots at all. It reads the DOM of one tab you grant, nothing else |
@@ -321,7 +321,7 @@ task took, and whether the student confirmed the outcome themselves
 
 **Inferred, and never in an event:** anything the model believes. Concept ids
 are the clearest case — the model suggests them, and they only enter an event
-after the student taps a card that says, in as many words, that this is Plip's
+after the student taps a card that says, in as many words, that this is Jade's
 guess.
 
 **Never in an event, at all:** page text, URLs, selections, chat transcripts,
@@ -382,7 +382,7 @@ your voice goes under each.
 
 ### Through your school's server (recommended)
 
-Plip records a clip while the microphone button is on, posts it **once** to a
+Jade records a clip while the microphone button is on, posts it **once** to a
 URL the school configures, and puts the words in the composer. The school's
 server holds the speech provider's key; the extension never has one.
 
@@ -448,7 +448,7 @@ text comes back. Nothing is written to disk, nothing is queued, and the
 reference server does not log the clip. There is no text to speech: replies are
 read in the panel.
 
-## What is reused from Plip, and what had to change
+## What is reused from Jade, and what had to change
 
 | From the Mac app | Here | Change |
 | --- | --- | --- |
@@ -526,7 +526,7 @@ Node's built-in `WebSocket`, so the browser test has no npm dependency either.
 ## Packaging
 
 ```bash
-cd apps/extension && npm run pack     # -> dist/plip-study-buddy-0.1.0.zip
+cd apps/extension && npm run pack     # -> dist/jade-study-buddy-0.1.0.zip
 ```
 
 `manifest.json`, `icons/` and `src/` only; `tools/`, `dist/` and the tests stay

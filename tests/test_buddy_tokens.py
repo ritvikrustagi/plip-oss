@@ -10,7 +10,7 @@ from mcp_vision.buddy.companion import Companion
 from mcp_vision.buddy.conversation import Conversation
 
 
-def test_fold_keeps_the_request_and_what_plip_said_and_drops_the_steps():
+def test_fold_keeps_the_request_and_what_jade_said_and_drops_the_steps():
     talk = Conversation()
     talk.record("what's the time in tokyo", "It's 9pm there.")
     talk.record("find my lease", "Looking. (did: Searching files for lease)")
@@ -29,12 +29,12 @@ def test_a_finished_task_leaves_one_exchange_and_the_next_call_is_lighter(tmp_pa
     host = FakeHost(home=str(tmp_path))
     host.files = [FileHit(str(tmp_path / "Documents/Apartment/Lease-2026.pdf"), 1759370000.0)]
     brain = ScriptedBrain('Looking. [DO:search_files {"query": "lease"}]', "Found it in Apartment.", "You're welcome.")
-    plip = Companion(brain=brain, capturer=Capturer(), speaker=Speaker(), pointer=Pointer(), walkthroughs=False,
+    jade = Companion(brain=brain, capturer=Capturer(), speaker=Speaker(), pointer=Pointer(), walkthroughs=False,
                      actions=ActionEngine(ActionContext(host=host, state={})))
-    assert asyncio.run(plip.respond("find my lease")).turns == 2
-    history = plip.conversation.history()
+    assert asyncio.run(jade.respond("find my lease")).turns == 2
+    history = jade.conversation.history()
     assert [turn.role for turn in history] == ["user", "assistant"] and history[0].text == "find my lease"
     assert "Found it in Apartment." in history[1].text and "Lease-2026.pdf" not in history[1].text
-    asyncio.run(plip.respond("thanks"))
+    asyncio.run(jade.respond("thanks"))
     sent = brain.calls[-1]                             # the third model call: thanks, with the folded history
     assert not any("action results" in turn.text for turn in sent[:-1])

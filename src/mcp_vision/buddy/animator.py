@@ -55,7 +55,7 @@ class _Target:
 
 
 class BuddyAnimator:
-    """``home`` set: Plip rests there (e.g. under the notch) instead of trailing the cursor."""
+    """``home`` set: Jade rests there (e.g. under the notch) instead of trailing the cursor."""
 
     def __init__(self, screens: Callable[[], list[Rect]] | None = None,
                  home: Callable[[tuple[float, float]], tuple[float, float]] | None = None):
@@ -95,7 +95,7 @@ class BuddyAnimator:
 
     @property
     def label(self) -> str:
-        """Label of the target Plip is flying to or pointing at."""
+        """Label of the target Jade is flying to or pointing at."""
         return self._label if self.mode in {"fly_out", "pointing"} else ""
 
     @property

@@ -28,9 +28,9 @@ export function HomeTab({ state, go }: { state: SettingsState; go: (tab: Tab) =>
   const brainReady = engine?.status === 'ready'
   const known = (state.memory?.facts.length ?? 0) > 0
   const steps = [
-    { label: 'Let Plip see and hear', done: permsReady, tab: 'permissions' as Tab, detail: 'Screen, Accessibility, Microphone' },
+    { label: 'Let Jade see and hear', done: permsReady, tab: 'permissions' as Tab, detail: 'Screen, Accessibility, Microphone' },
     { label: 'Connect your AI', done: brainReady, tab: 'brain' as Tab, detail: brainReady && engine ? `${engine.label} · ${engine.via}` : 'Your Claude or ChatGPT plan, or free with Google' },
-    { label: 'Tell Plip about you', done: known, tab: 'memory' as Tab, detail: known ? `${state.memory!.facts.length} things saved` : 'Import from Contacts, your browser, or ChatGPT' },
+    { label: 'Tell Jade about you', done: known, tab: 'memory' as Tab, detail: known ? `${state.memory!.facts.length} things saved` : 'Import from Contacts, your browser, or ChatGPT' },
   ]
   const progress = steps.filter((step) => step.done).length / steps.length
   const first = state.memory?.profile['name.first']
@@ -44,8 +44,8 @@ export function HomeTab({ state, go }: { state: SettingsState; go: (tab: Tab) =>
         <Card className="mb-6 flex items-center gap-4 glow-ring">
           <span className="grid size-9 shrink-0 place-items-center rounded-xl brand-gradient text-slate-950"><ArrowDownToLine className="size-4" /></span>
           <div className="min-w-0 flex-1">
-            <div className="text-[13.5px] font-semibold tracking-tight">Plip {update.version} is out</div>
-            <div className="text-[12px] text-white/45">You have {state.update.current}. Download it, quit Plip, then drag the new one into Applications.</div>
+            <div className="text-[13.5px] font-semibold tracking-tight">Jade {update.version} is out</div>
+            <div className="text-[12px] text-white/45">You have {state.update.current}. Download it, quit Jade, then drag the new one into Applications.</div>
           </div>
           <Button variant="quiet" onClick={() => send('open-url', { url: update.page })}>What’s new</Button>
           <Button variant="brand" onClick={() => send('update-download')}>Download</Button>
@@ -53,14 +53,14 @@ export function HomeTab({ state, go }: { state: SettingsState; go: (tab: Tab) =>
       )}
       <div className="relative mb-7 flex items-center gap-6">
         <div className="relative">
-          <div className="absolute inset-0 -z-10 scale-[1.7] rounded-full bg-plip-400/25 blur-3xl" />
+          <div className="absolute inset-0 -z-10 scale-[1.7] rounded-full bg-jade-400/25 blur-3xl" />
           <Mascot size={92} mood={progress === 1 ? 'happy' : 'idle'} />
         </div>
         <div className="flex-1">
           <div className="mb-1 text-[13px] font-medium text-white/45">{greeting()}{first ? `, ${first}` : ''}</div>
           <h1 className="text-gradient text-[34px] font-semibold leading-[1.05] tracking-[-0.04em]">What should we get done?</h1>
           <div className="mt-3 flex items-center gap-2 text-[13px] text-white/50">
-            Hold <Chord /> and ask, or tell Plip to do it for you.
+            Hold <Chord /> and ask, or tell Jade to do it for you.
           </div>
         </div>
       </div>

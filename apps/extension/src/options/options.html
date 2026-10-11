@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Plip Study Buddy &mdash; settings and data</title>
+  <title>Jade Study Buddy &mdash; settings and data</title>
   <link rel="stylesheet" href="options.css">
 </head>
 <body>
 <main>
-  <h1>Plip Study Buddy</h1>
+  <h1>Jade Study Buddy</h1>
   <p class="lede">
     A study buddy for one browser tab at a time. It helps you reason through your own work. It cannot
     type into a page, fill a field, press a key or submit anything, by design.
@@ -16,7 +16,7 @@
   <section>
     <h2>Who you are here</h2>
     <p class="note">
-      Plip uses a random id, not your name or your email. Nothing here identifies you unless your school
+      Jade uses a random id, not your name or your email. Nothing here identifies you unless your school
       maps the id back to you on their own side.
     </p>
     <label>Your pseudonymous id <input id="studentId" type="text" readonly></label>
@@ -36,10 +36,10 @@
       below. Nothing is uploaded by this extension: you or your school move the file. What an event
       holds: counts (tasks, hints, attempts), an outcome you reported yourself, how long a task took, and
       concept ids you confirmed. What it never holds: page text, URLs, selections, what you typed to
-      Plip, or any screenshot.
+      Jade, or any screenshot.
     </p>
     <p class="note warn">
-      Plip cannot measure attention, effort, mastery or a grade, and nothing it exports should be read as
+      Jade cannot measure attention, effort, mastery or a grade, and nothing it exports should be read as
       any of those.
     </p>
   </section>
@@ -52,20 +52,20 @@
         <option value="proxy">School model proxy</option>
       </select>
     </label>
-    <label>Proxy URL <input id="proxyUrl" type="url" placeholder="https://plip-proxy.your-school.example/chat"></label>
+    <label>Proxy URL <input id="proxyUrl" type="url" placeholder="https://jade-proxy.your-school.example/chat"></label>
     <label>Session token from your school (not an API key)
       <input id="proxyToken" type="password" autocomplete="off" placeholder="optional">
     </label>
     <p class="note" id="proxy-note"></p>
     <p class="note">
       A model key never belongs in a browser. The proxy holds it, checks who is asking, and streams text
-      back. If you paste something starting with <code>sk-ant-</code> here, Plip refuses it.
+      back. If you paste something starting with <code>sk-ant-</code> here, Jade refuses it.
     </p>
   </section>
 
   <section>
     <h2>Voice</h2>
-    <label>Speaking to Plip
+    <label>Speaking to Jade
       <select id="voiceMode">
         <option value="off">Off &mdash; typing only</option>
         <option value="proxy">Through my school&rsquo;s server</option>
@@ -73,14 +73,14 @@
       </select>
     </label>
     <label>Transcription URL (optional &mdash; otherwise derived from the proxy URL above)
-      <input id="transcribeUrl" type="url" placeholder="https://plip-proxy.your-school.example/listen">
+      <input id="transcribeUrl" type="url" placeholder="https://jade-proxy.your-school.example/listen">
     </label>
     <p class="note" id="voice-note"></p>
     <p class="note">
       Off by default, and never required: typing works for everything and never sends audio anywhere.
     </p>
     <ul class="note">
-      <li><strong>Through your school&rsquo;s server</strong>: Plip records a clip while you hold the
+      <li><strong>Through your school&rsquo;s server</strong>: Jade records a clip while you hold the
         microphone, posts it once to the URL above, and shows you the words. Your school&rsquo;s server
         holds the speech provider&rsquo;s key (the reference server uses Deepgram); this extension never
         has one and will refuse to post audio straight to a speech company.</li>
@@ -106,7 +106,7 @@
         <option value="30">30 days</option>
       </select>
     </label>
-    <p class="note">Anything older is dropped automatically, every time Plip reads or writes.</p>
+    <p class="note">Anything older is dropped automatically, every time Jade reads or writes.</p>
     <p id="tally" class="tally"></p>
     <div class="row">
       <button id="export">Export shareable events&hellip;</button>
@@ -116,19 +116,19 @@
   </section>
 
   <section>
-    <h2>Sites Plip may read</h2>
+    <h2>Sites Jade may read</h2>
     <ul id="origins"></ul>
     <p class="note">
-      One site at a time, granted by you from the panel. Plip asks Chrome for that one origin and nothing
+      One site at a time, granted by you from the panel. Jade asks Chrome for that one origin and nothing
       else; it never asks for all sites. Chrome&rsquo;s own pages, the Web Store, and sign-in, payment and
       password pages are refused even if a grant exists.
     </p>
   </section>
 
   <section>
-    <h2>What Plip cannot do here</h2>
+    <h2>What Jade cannot do here</h2>
     <p class="note">
-      This is a browser extension, so most of what Plip does on a Mac is simply not possible. No native
+      This is a browser extension, so most of what Jade does on a Mac is simply not possible. No native
       helper changes that, and this extension does not have one.
     </p>
     <table id="capabilities"></table>

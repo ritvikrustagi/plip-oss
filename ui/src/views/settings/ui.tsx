@@ -8,7 +8,7 @@ export function Header({ title, subtitle, eyebrow, action }: { title: string; su
   return (
     <div className="mb-6 flex items-end justify-between gap-6">
       <div>
-        {eyebrow && <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-plip-300">{eyebrow}</div>}
+        {eyebrow && <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-jade-300">{eyebrow}</div>}
         <h1 className="text-[24px] font-semibold tracking-[-0.03em] text-white">{title}</h1>
         {subtitle && <p className="mt-1.5 max-w-[560px] text-[13.5px] leading-relaxed text-white/50">{subtitle}</p>}
       </div>
@@ -52,7 +52,7 @@ export function Button({ children, onClick, variant = 'primary', className, disa
       className={cn(
         'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full font-semibold tracking-tight transition active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40',
         size === 'md' ? 'px-3.5 py-1.5 text-[12.5px]' : 'px-2.5 py-1 text-[11.5px]',
-        variant === 'primary' && 'bg-white text-slate-950 shadow-[0_6px_20px_-8px_rgba(255,255,255,0.45)] hover:bg-plip-50',
+        variant === 'primary' && 'bg-white text-slate-950 shadow-[0_6px_20px_-8px_rgba(255,255,255,0.45)] hover:bg-jade-50',
         variant === 'brand' && 'brand-gradient text-slate-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_8px_22px_-8px_rgba(95,142,244,0.75)] hover:brightness-110',
         variant === 'ghost' && 'bg-white/[0.07] text-white/85 hairline hover:bg-white/[0.11]',
         variant === 'quiet' && 'text-white/50 hover:text-white',
@@ -125,11 +125,11 @@ export function Pill({ tone, children, dot = true }: { tone: Tone; children: Rea
         tone === 'warn' && 'bg-sun/12 text-amber-200',
         tone === 'bad' && 'bg-coral/12 text-rose-300',
         tone === 'muted' && 'bg-white/[0.06] text-white/45',
-        tone === 'info' && 'bg-plip-400/12 text-plip-200',
+        tone === 'info' && 'bg-jade-400/12 text-jade-200',
       )}
     >
       {dot && (
-        <span className={cn('size-1.5 rounded-full', tone === 'good' ? 'bg-mint' : tone === 'warn' ? 'bg-sun' : tone === 'bad' ? 'bg-coral' : tone === 'info' ? 'bg-plip-300' : 'bg-white/30')} />
+        <span className={cn('size-1.5 rounded-full', tone === 'good' ? 'bg-mint' : tone === 'warn' ? 'bg-sun' : tone === 'bad' ? 'bg-coral' : tone === 'info' ? 'bg-jade-300' : 'bg-white/30')} />
       )}
       {children}
     </span>
@@ -168,7 +168,7 @@ export function Toggle({ checked, onChange, label }: { checked: boolean; onChang
         event.stopPropagation()
         onChange(!checked)
       }}
-      className={cn('relative h-[22px] w-[38px] shrink-0 rounded-full transition', checked ? 'bg-plip-500 shadow-[0_0_14px_rgba(6,182,212,0.45)]' : 'bg-white/[0.12]')}
+      className={cn('relative h-[22px] w-[38px] shrink-0 rounded-full transition', checked ? 'bg-jade-500 shadow-[0_0_14px_rgba(6,182,212,0.45)]' : 'bg-white/[0.12]')}
     >
       <motion.span
         layout
@@ -241,7 +241,7 @@ export function IconTile({ icon: Icon, gradient, size = 36 }: { icon: React.Comp
   )
 }
 
-export function Stat({ icon: Icon, value, label, tone = 'text-plip-300' }: { icon: React.ComponentType<{ className?: string }>; value: string; label: string; tone?: string }) {
+export function Stat({ icon: Icon, value, label, tone = 'text-jade-300' }: { icon: React.ComponentType<{ className?: string }>; value: string; label: string; tone?: string }) {
   return (
     <Card className="p-4">
       <Icon className={cn('mb-3 size-4', tone)} />

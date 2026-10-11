@@ -26,7 +26,7 @@ export function ConnectAI({ state, compact = false }: { state: SettingsState; co
       <Card className="flex items-center gap-4">
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-mint/10 text-emerald-300 hairline"><Check className="size-4" strokeWidth={3} /></span>
         <div className="min-w-0 flex-1">
-          <div className="text-[14px] font-semibold tracking-tight">Plip thinks with {engine!.label}</div>
+          <div className="text-[14px] font-semibold tracking-tight">Jade thinks with {engine!.label}</div>
           <div className="truncate text-[12px] text-white/45">{engine!.detail || engine!.via}</div>
         </div>
         <Button variant="quiet" onClick={() => setChoosing(true)}>Change</Button>
@@ -41,7 +41,7 @@ export function ConnectAI({ state, compact = false }: { state: SettingsState; co
       {!compact && (
         <div>
           <div className="text-[14px] font-semibold tracking-tight">Connect an AI</div>
-          <div className="mt-0.5 text-[12.5px] text-white/45">Plip needs an AI to think with. Use one you already pay for, or a free one from Google.</div>
+          <div className="mt-0.5 text-[12.5px] text-white/45">Jade needs an AI to think with. Use one you already pay for, or a free one from Google.</div>
         </div>
       )}
       <Card className="divide-y divide-white/[0.05] p-0">
@@ -147,14 +147,14 @@ export function FreeGoogleKey({ state }: { state: SettingsState }) {
       )}
       {check && (
         <div className={cn('mt-3 flex items-center gap-2 text-[12px]', check.state === 'bad' ? 'text-rose-200/90' : check.state === 'ok' ? 'text-emerald-300' : 'text-white/60')}>
-          {check.state === 'checking' && <LoaderCircle className="size-3.5 animate-spin text-plip-300" />}
+          {check.state === 'checking' && <LoaderCircle className="size-3.5 animate-spin text-jade-300" />}
           {check.state === 'ok' && <Check className="size-3.5" strokeWidth={3} />}
           <span>{check.state === 'ok' ? 'Google took the key. You’re connected.' : check.message}</span>
         </div>
       )}
       <div className="mt-3 text-[11.5px] leading-relaxed text-white/35">
         {ready ? 'The free version has limits (a few questions a minute, more each day), plenty for everyday use. ' : ''}
-        On the free version, Google may use what Plip sends it (screenshots included) to improve its products, and its
+        On the free version, Google may use what Jade sends it (screenshots included) to improve its products, and its
         reviewers may read it. For private work, use a paid plan above.
       </div>
     </Card>
@@ -173,7 +173,7 @@ function LinkActions({ url, className, muted = false }: { url: string; className
     setCopied(true)
     window.setTimeout(() => setCopied(false), 1600)
   }
-  const tone = muted ? 'text-rose-100/80 hover:text-white' : 'font-semibold text-plip-200 hover:text-plip-100'
+  const tone = muted ? 'text-rose-100/80 hover:text-white' : 'font-semibold text-jade-200 hover:text-jade-100'
   return (
     <div className={cn('flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px]', className)}>
       <button className={tone} onClick={() => send('open-url', { url })}>Open the sign-in page</button>
@@ -198,7 +198,7 @@ export function Connecting({ id, progress }: { id: string; progress: ConnectProg
   return (
     <div className="rounded-xl bg-white/[0.04] px-3 py-2.5 hairline">
       <div className="flex items-center gap-2 text-[12.5px] text-white/80">
-        <LoaderCircle className="size-3.5 shrink-0 animate-spin text-plip-300" />
+        <LoaderCircle className="size-3.5 shrink-0 animate-spin text-jade-300" />
         <span className="flex-1">{progress.message}</span>
         <Button variant="quiet" size="sm" onClick={() => send('engine-connect-cancel', { id })}>Cancel</Button>
       </div>

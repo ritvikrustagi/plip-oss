@@ -370,7 +370,7 @@ await test('a student can export and then delete everything about them', async (
   const download = page.waitForEvent('download')
   await id(page, 'export').click()
   const file = await download
-  assert.match(file.suggestedFilename(), /^plip-stu_j9k0-export\.json$/)
+  assert.match(file.suggestedFilename(), /^jade-stu_j9k0-export\.json$/)
 
   await id(page, 'delete-data').click()
   await id(page, 'confirm-card').waitFor()
@@ -388,7 +388,7 @@ await test('the app is installable as a PWA', async ({ open }) => {
     return href ? await (await fetch(href)).json() : null
   })
   assert.equal(manifest.display, 'standalone')
-  assert.equal(manifest.name, 'Plip for school (demo)')
+  assert.equal(manifest.name, 'Jade for school (demo)')
   assert.ok(manifest.icons.some((/** @type {any} */ icon) => icon.purpose === 'maskable'))
   assert.ok(manifest.icons.some((/** @type {any} */ icon) => icon.sizes === '512x512'))
 

@@ -1,9 +1,9 @@
-"""Notice when the user has done the step Plip asked for.
+"""Notice when the user has done the step Jade asked for.
 
-During a walkthrough Plip takes a tiny grayscale fingerprint of the cursor
+During a walkthrough Jade takes a tiny grayscale fingerprint of the cursor
 screen every ~0.7 s. When it differs enough from the starting view and then
 holds still (menus finished animating, the page finished loading), the step
-is considered done and Plip looks again properly.
+is considered done and Jade looks again properly.
 """
 from __future__ import annotations
 

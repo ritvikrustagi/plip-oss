@@ -1,4 +1,4 @@
-"""Assemble Plip from settings + preferences. Platform pieces are chosen at runtime."""
+"""Assemble Jade from settings + preferences. Platform pieces are chosen at runtime."""
 from __future__ import annotations
 
 import sys
@@ -39,7 +39,7 @@ def make_brain(settings: BuddySettings, engines: list | None = None) -> Any:
 
     engine = choose_engine(settings, engines)
     if engine is None:
-        raise SetupError("Pick a brain: sign in to Claude Code, Codex, or Cursor, or add an API key in Plip's settings.")
+        raise SetupError("Pick a brain: sign in to Claude Code, Codex, or Cursor, or add an API key in Jade's settings.")
     return make_engine_brain(engine, settings)
 
 
@@ -75,7 +75,7 @@ def make_snapper(settings: BuddySettings, jev=None) -> Snapper | None:
 
 
 def make_context(settings: BuddySettings):
-    """The screen map for this OS, or ``None`` where Plip has no reader."""
+    """The screen map for this OS, or ``None`` where Jade has no reader."""
     from mcp_vision.platforms import MACOS, WINDOWS, current_platform
 
     platform = current_platform()
@@ -150,7 +150,7 @@ def make_companion(settings: BuddySettings, *, pointer: Pointer | None = None,
 
 
 def make_notes(memory=None):
-    """What Plip knows about the user, added to the system prompt."""
+    """What Jade knows about the user, added to the system prompt."""
     if memory is None:
         return None
     return memory.summary

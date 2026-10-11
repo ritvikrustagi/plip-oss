@@ -3,7 +3,7 @@
 // The secret-label test is ported from src/mcp_vision/buddy/screen_context.py
 // (`SECRET` / `looks_secret`) and the risky-label test from
 // src/mcp_vision/buddy/actions/control.py (`RISKY`). The browser adds two
-// rules Plip's macOS host does not need: pages the extension refuses to touch
+// rules Jade's macOS host does not need: pages the extension refuses to touch
 // at all, and a hard refusal to type into or submit anything.
 
 // Labels whose values never reach the model (ported from screen_context.py).
@@ -26,7 +26,7 @@ export function secretField({ type = '', autocomplete = '', name = '', label = '
   return looksSecret(name) || looksSecret(label)
 }
 
-// Clicks Plip asks about before taking (ported from control.py), kept here as
+// Clicks Jade asks about before taking (ported from control.py), kept here as
 // an outright refusal instead: a study buddy never finishes an action that
 // sends, pays or submits work.
 const RISKY = /\b(buy|purchase|pay|place (your |an? )?(order|bid)|order now|complete (your )?(order|purchase)|(continue|proceed) to (payment|checkout|pay)|make (a )?payment|checkout|check out|delete|remove|erase|send|submit|hand in|turn in|transfer|withdraw|donate|subscribe|authori[sz]e|grant access|allow access|sign out|log ?out|unsubscribe|book|reserve|publish|post|deploy|trash|discard|wipe|format|apply(?!\s+(filters?|changes|settings|coupon|code|promo|discount|theme|style|formatting)\b))\b/i
@@ -46,23 +46,23 @@ const BLOCKED_SCHEMES = [
   ['view-source:', 'Chrome does not let extensions run on view-source pages.'],
   ['about:', 'There is no page here to look at.'],
   ['edge:', 'Browser pages are closed to every extension.'],
-  ['data:', 'Plip does not read data: URLs.'],
-  ['file:', 'Local files are off by default. Chrome needs "Allow access to file URLs" for this extension, and Plip still asks before reading.'],
+  ['data:', 'Jade does not read data: URLs.'],
+  ['file:', 'Local files are off by default. Chrome needs "Allow access to file URLs" for this extension, and Jade still asks before reading.'],
 ]
 
 const BLOCKED_HOSTS = [
   ['chromewebstore.google.com', 'Chrome blocks every extension on the Web Store.'],
   ['chrome.google.com', 'Chrome blocks every extension on the Web Store.'],
-  ['accounts.google.com', 'Sign-in pages are off limits: Plip never reads a page where you type a password.'],
-  ['login.microsoftonline.com', 'Sign-in pages are off limits: Plip never reads a page where you type a password.'],
-  ['appleid.apple.com', 'Sign-in pages are off limits: Plip never reads a page where you type a password.'],
+  ['accounts.google.com', 'Sign-in pages are off limits: Jade never reads a page where you type a password.'],
+  ['login.microsoftonline.com', 'Sign-in pages are off limits: Jade never reads a page where you type a password.'],
+  ['appleid.apple.com', 'Sign-in pages are off limits: Jade never reads a page where you type a password.'],
   ['paypal.com', 'Payment pages are off limits.'],
 ]
 
 const BLOCKED_PATHS = /(^|\/)(login|signin|sign-in|log-in|checkout|payment|billing|password)(\/|$|\?)/i
 
 /**
- * Why Plip refuses this page, or "" when it may ask the student for access.
+ * Why Jade refuses this page, or "" when it may ask the student for access.
  * Takes a URL string so it can run in the panel, the worker and the tests.
  */
 export function blockedReason(url) {
@@ -74,16 +74,16 @@ export function blockedReason(url) {
   try {
     parsed = new URL(raw)
   } catch {
-    return 'That does not look like a page Plip can open.'
+    return 'That does not look like a page Jade can open.'
   }
   if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-    return 'Plip only works on http and https pages.'
+    return 'Jade only works on http and https pages.'
   }
   const host = parsed.hostname.toLowerCase()
   const blocked = BLOCKED_HOSTS.find(([name]) => host === name || host.endsWith(`.${name}`))
   if (blocked) return blocked[1]
   if (BLOCKED_PATHS.test(parsed.pathname)) {
-    return 'This looks like a sign-in, payment or password page, so Plip stays out of it.'
+    return 'This looks like a sign-in, payment or password page, so Jade stays out of it.'
   }
   return ''
 }

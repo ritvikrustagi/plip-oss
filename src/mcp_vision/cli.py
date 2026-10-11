@@ -1,4 +1,4 @@
-"""`python -m mcp_vision.cli buddy run` is what Plip.app starts; `plip` is the same commands."""
+"""`python -m mcp_vision.cli buddy run` is what Jade.app starts; `jade` is the same commands."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from mcp_vision.log import configure
 
 @click.group()
 def cli() -> None:
-    """Plip: hold Control+Option and ask."""
+    """Jade: hold Control+Option and ask."""
     configure()
 
 

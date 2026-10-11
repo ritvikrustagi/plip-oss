@@ -1,4 +1,4 @@
--- Plip for school: the production schema.
+-- Jade for school: the production schema.
 --
 -- Two rules are enforced here rather than only in code:
 --   * an event's student is a pseudonymous user id. Names and email addresses

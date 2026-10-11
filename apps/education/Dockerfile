@@ -1,12 +1,12 @@
-# Plip for school.
+# Jade for school.
 #
 # Build from the REPOSITORY ROOT, not from this directory: the learning event
 # contract lives at contracts/learning-event.schema.json and both the bundle
 # and the server import it, so it has to be in the build context.
 #
-#   docker build -t plip-school -f apps/education/Dockerfile .
+#   docker build -t jade-school -f apps/education/Dockerfile .
 #   docker run --env-file apps/education/.env -p 8080:8080 \
-#     -v plip-data:/var/lib/plip -v /etc/plip:/etc/plip:ro plip-school
+#     -v plip-data:/var/lib/plip -v /etc/plip:/etc/plip:ro jade-school
 #
 # The image mirrors the repository layout (/srv/apps/education, /srv/contracts)
 # so the relative import of the contract resolves exactly as it does in a

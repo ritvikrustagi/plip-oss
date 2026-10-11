@@ -1,8 +1,8 @@
-"""Host Plip's web UI (``web/index.html``) inside native macOS windows.
+"""Host Jade's web UI (``web/index.html``) inside native macOS windows.
 
 Each surface (island, mascot, settings) is a transparent WKWebView loaded from
-the single-file bundle. Python -> UI: ``window.__plip([...messages])``.
-UI -> Python: ``webkit.messageHandlers.plip.postMessage(JSON string)``.
+the single-file bundle. Python -> UI: ``window.__jade([...messages])``.
+UI -> Python: ``webkit.messageHandlers.jade.postMessage(JSON string)``.
 All methods run on the main thread.
 """
 from __future__ import annotations
@@ -34,7 +34,7 @@ def parse_command(body: Any) -> dict[str, Any] | None:
 
 
 def script_for(messages: list[dict[str, Any]]) -> str:
-    return f"window.__plip && window.__plip({json.dumps(messages, ensure_ascii=False)})"
+    return f"window.__jade && window.__jade({json.dumps(messages, ensure_ascii=False)})"
 
 
 def _handler_class():
@@ -43,9 +43,9 @@ def _handler_class():
         import objc
         import WebKit  # noqa: F401  (registers the protocol)
 
-        class PlipScriptHandler(Foundation.NSObject, protocols=[objc.protocolNamed("WKScriptMessageHandler")]):
+        class JadeScriptHandler(Foundation.NSObject, protocols=[objc.protocolNamed("WKScriptMessageHandler")]):
             def initWithCallback_(self, callback):
-                self = objc.super(PlipScriptHandler, self).init()
+                self = objc.super(JadeScriptHandler, self).init()
                 if self is None:
                     return None
                 self.callback = callback
@@ -59,7 +59,7 @@ def _handler_class():
                     except Exception:
                         traceback.print_exc()
 
-        _CLASSES["handler"] = PlipScriptHandler
+        _CLASSES["handler"] = JadeScriptHandler
     return _CLASSES["handler"]
 
 
@@ -77,9 +77,9 @@ class WebSurface:
         config = WebKit.WKWebViewConfiguration.alloc().init()
         controller = config.userContentController()
         self._handler = _handler_class().alloc().initWithCallback_(self._received)
-        controller.addScriptMessageHandler_name_(self._handler, "plip")
+        controller.addScriptMessageHandler_name_(self._handler, "jade")
         preset = WebKit.WKUserScript.alloc().initWithSource_injectionTime_forMainFrameOnly_(
-            f"window.__PLIP_SURFACE__ = {json.dumps(surface)};",
+            f"window.__JADE_SURFACE__ = {json.dumps(surface)};",
             WebKit.WKUserScriptInjectionTimeAtDocumentStart, True)
         controller.addUserScript_(preset)
         view = WebKit.WKWebView.alloc().initWithFrame_configuration_(frame, config)

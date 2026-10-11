@@ -1,4 +1,4 @@
-"""Dependency guards: nothing Plip ships may import a Mac framework on Windows.
+"""Dependency guards: nothing Jade ships may import a Mac framework on Windows.
 
 A Windows machine has no ``AppKit``, ``Quartz``, ``objc``, ``WebKit``,
 ``AVFoundation``, ``Speech`` or ``ApplicationServices``. These tests make the
@@ -105,11 +105,11 @@ def no_pyobjc(monkeypatch):
 def on_windows(monkeypatch, no_pyobjc):
     """As above, plus every platform decision answering "windows".
 
-    Plip reads the platform through ``platforms.current_platform`` rather than
+    Jade reads the platform through ``platforms.current_platform`` rather than
     ``sys.platform`` directly, which is what makes this possible: patching
     ``sys.platform`` globally would also send the standard library down its
     Windows paths (``sysconfig``, ``asyncio``, ``shutil``) and fail on a Mac
-    for reasons that have nothing to do with Plip.
+    for reasons that have nothing to do with Jade.
     """
     import mcp_vision.platforms as platforms
 
@@ -142,7 +142,7 @@ def test_every_module_in_the_package_imports_with_no_pyobjc():
 
 def test_the_macos_hosts_reach_for_pyobjc_only_when_called():
     # They import fine without it (every `import AppKit` is inside a function), which is
-    # what keeps `plip --help`, `plip learn` and the Windows shell working on a machine
+    # what keeps `jade --help`, `jade learn` and the Windows shell working on a machine
     # that has no pyobjc at all. Calling into them is a different matter - see below.
     assert import_in_a_fresh_interpreter(names=sorted(MAC_MODULES)) == {}
 
@@ -184,7 +184,7 @@ def test_every_command_group_can_be_asked_for_help(no_pyobjc, args):
 def test_capabilities_prints_the_windows_table(on_windows):
     result = runner_invoke(["capabilities", "--no-probe"])
     assert result.exit_code == 0
-    assert "Plip on windows" in result.output
+    assert "Jade on windows" in result.output
     assert "AppleScript" in result.output and "PowerShell" in result.output
 
 
@@ -214,7 +214,7 @@ def test_run_on_an_unsupported_platform_says_what_to_do(no_pyobjc, monkeypatch):
 
     monkeypatch.setattr(platforms, "current_platform", lambda platform=None: platforms.OTHER)
     result = runner_invoke(["run"])
-    assert result.exit_code != 0 and "plip ask --image" in result.output
+    assert result.exit_code != 0 and "jade ask --image" in result.output
 
 
 def test_run_on_windows_reaches_the_windows_shell(on_windows, monkeypatch):

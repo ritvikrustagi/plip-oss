@@ -1,4 +1,4 @@
-"""Plip end to end: the real ``plip`` CLI in a subprocess, with a fake ``claude`` on PATH.
+"""Jade end to end: the real ``jade`` CLI in a subprocess, with a fake ``claude`` on PATH.
 
 Everything between the command line and the model is real: settings and
 prefs, engine discovery and the sign-in probe, the Claude Code subprocess
@@ -59,7 +59,7 @@ else:
 
 
 @pytest.fixture
-def plip(tmp_path):
+def jade(tmp_path):
     home = tmp_path / "home"
     (home / "Documents" / "Apartment").mkdir(parents=True)
     (home / "Documents" / "Apartment" / "Lease-2026.pdf").write_bytes(b"%PDF-1.7")
@@ -90,7 +90,7 @@ def plip(tmp_path):
             except subprocess.TimeoutExpired:
                 proc.send_signal(signal.SIGABRT)            # faulthandler prints every thread's stack
                 out, err = proc.communicate()
-                pytest.fail(f"plip {' '.join(args)} hung\n{out}\n{err[-6000:]}")
+                pytest.fail(f"jade {' '.join(args)} hung\n{out}\n{err[-6000:]}")
         done = subprocess.CompletedProcess(command, proc.returncode, out, err)
         if check:
             assert done.returncode == 0, done.stdout + done.stderr
@@ -106,43 +106,43 @@ def plip(tmp_path):
     return run
 
 
-def test_doctor_finds_the_signed_in_claude_plan(plip):
-    out = plip("doctor", check=False).stdout
-    assert "brain claude-code: ready: Signed in as e2e@example.com · max <- Plip thinks with this" in out
+def test_doctor_finds_the_signed_in_claude_plan(jade):
+    out = jade("doctor", check=False).stdout
+    assert "brain claude-code: ready: Signed in as e2e@example.com · max <- Jade thinks with this" in out
 
 
-def test_ask_searches_files_then_answers_from_the_results(plip):
-    result = json.loads(plip("ask", "--json", "--image", plip.screenshot, "find my lease").stdout)
+def test_ask_searches_files_then_answers_from_the_results(jade):
+    result = json.loads(jade("ask", "--json", "--image", jade.screenshot, "find my lease").stdout)
     assert result["engine"] == "Claude" and result["state"] == "done" and result["turns"] == 2
     assert result["did"] == ["Searching files for lease"]
     assert result["spoken"] == "Found it: Lease-2026.pdf. It's in ~/Documents/Apartment."
-    first, second = plip.calls()
+    first, second = jade.calls()
     assert first["images"] == 1 and "the user said: find my lease" in first["text"]
-    assert first["system"].startswith("you're plip")
+    assert first["system"].startswith("you're jade")
     assert second["images"] == 0 and "1. Lease-2026.pdf in ~/Documents/Apartment" in second["text"]
 
 
-def test_memory_import_then_personal_answer(plip, tmp_path):
+def test_memory_import_then_personal_answer(jade, tmp_path):
     memory_file = tmp_path / "chatgpt.txt"
     memory_file.write_text("Here's what I know:\n- Name: Ada Lovelace\n- Email: ada@example.com\n- Loves tea\n")
-    assert "Imported 3 from chatgpt (3 new)." in plip("memory", "import", "chatgpt", "--file", str(memory_file)).stdout
-    shown = plip("memory", "show").stdout
+    assert "Imported 3 from chatgpt (3 new)." in jade("memory", "import", "chatgpt", "--file", str(memory_file)).stdout
+    shown = jade("memory", "show").stdout
     assert "ada@example.com" in shown and "(ChatGPT)" in shown
-    assert plip("ask", "what's my email").stdout.splitlines()[0] == "Your email is ada@example.com."
-    assert plip.calls()[-1]["knows"] == ["ada@example.com"] and "- email:" not in plip.calls()[-1]["text"]
-    assert "key: value" in plip("memory", "prompt").stdout
+    assert jade("ask", "what's my email").stdout.splitlines()[0] == "Your email is ada@example.com."
+    assert jade.calls()[-1]["knows"] == ["ada@example.com"] and "- email:" not in jade.calls()[-1]["text"]
+    assert "key: value" in jade("memory", "prompt").stdout
 
 
-def test_how_to_questions_get_a_plan_and_a_point(plip):
-    result = json.loads(plip("ask", "--json", "--image", plip.screenshot, "how do I turn on two factor").stdout)
+def test_how_to_questions_get_a_plan_and_a_point(jade):
+    result = json.loads(jade("ask", "--json", "--image", jade.screenshot, "how do I turn on two factor").stdout)
     assert result["plan"] == ["open settings", "security", "turn on two factor"]
     assert result["spoken"] == "First, open your profile menu up top."
     assert result["targets"][0]["label"] == "profile menu"
 
 
-def test_ask_logs_one_usage_row_and_reports_it(plip):
-    result = json.loads(plip("ask", "--json", "--image", plip.screenshot, "find my lease").stdout)
+def test_ask_logs_one_usage_row_and_reports_it(jade):
+    result = json.loads(jade("ask", "--json", "--image", jade.screenshot, "find my lease").stdout)
     assert result["outcome"] == "done" and result["usage"]["estimated"] is True   # the fake reports no tokens
-    rows = [json.loads(line) for line in (plip.state / "usage.jsonl").read_text().splitlines()]
+    rows = [json.loads(line) for line in (jade.state / "usage.jsonl").read_text().splitlines()]
     assert len(rows) == 1 and rows[0]["kind"] == "cli" and rows[0]["turns"] == 2
     assert rows[0]["engine"] == "claude-code" and rows[0]["actions"] == ["search_files"]

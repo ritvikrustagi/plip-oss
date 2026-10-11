@@ -1,4 +1,4 @@
-// Speaking to Plip, and where the audio goes.
+// Speaking to Jade, and where the audio goes.
 //
 // Two backends, both optional and both off by default:
 //
@@ -75,7 +75,7 @@ export function transcribeUrlFor({ proxyUrl = '', transcribeUrl = '' } = {}) {
 /** Why this voice setting cannot be used, or '' when it is fine. */
 export function checkVoiceConfig(settings = {}) {
   const mode = settings.voiceMode || 'off'
-  if (!VOICE_MODES.includes(mode)) return 'That is not a voice setting Plip knows.'
+  if (!VOICE_MODES.includes(mode)) return 'That is not a voice setting Jade knows.'
   if (mode === 'off') return ''
   if (mode === 'chrome') return ''
   const url = transcribeUrlFor(settings)
@@ -91,7 +91,7 @@ export function checkVoiceConfig(settings = {}) {
   }
   const host = parsed.hostname.toLowerCase()
   if (VENDOR_HOSTS.some((vendor) => host === vendor || host.endsWith(`.${vendor}`))) {
-    return `Plip will not send audio straight to ${host}. Doing that needs that company’s key in your `
+    return `Jade will not send audio straight to ${host}. Doing that needs that company’s key in your `
       + 'browser, which is exactly what the proxy exists to avoid. Point this at your school’s server.'
   }
   if (parsed.protocol !== 'https:' && host !== 'localhost' && host !== '127.0.0.1') {
@@ -125,7 +125,7 @@ export async function transcribe({ blob, url, token = '', fetchImpl = fetch, sig
   }
   const body = await response.json().catch(() => null)
   const text = readTranscript(body)
-  if (text === null) throw new VoiceError('The server sent back something Plip could not read.')
+  if (text === null) throw new VoiceError('The server sent back something Jade could not read.')
   return text
 }
 
@@ -158,11 +158,11 @@ async function safeText(response) {
 export function micProblem(error) {
   const name = error?.name || ''
   if (name === 'NotAllowedError' || name === 'SecurityError') {
-    return 'Chrome blocked the microphone. Open Plip’s settings (the gear) and use "Check microphone" '
+    return 'Chrome blocked the microphone. Open Jade’s settings (the gear) and use "Check microphone" '
       + 'there to allow it, or carry on typing — typing works just as well.'
   }
   if (name === 'NotFoundError' || name === 'OverconstrainedError') {
-    return 'Plip could not find a microphone on this machine, so typing is the way here.'
+    return 'Jade could not find a microphone on this machine, so typing is the way here.'
   }
   if (name === 'NotReadableError') {
     return 'Something else is using the microphone. Close it and try again, or carry on typing.'

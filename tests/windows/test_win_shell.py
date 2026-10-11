@@ -155,7 +155,7 @@ def test_clearing_forgets_the_conversation(shell):
 
 
 # -- the walkthrough checklist ------------------------------------------------------
-def test_the_checklist_fills_in_as_plip_works(shell):
+def test_the_checklist_fills_in_as_jade_works(shell):
     companion(shell, "Here we go.")
     shell.presenter("plan", {"steps": ["Open Word", "Click Insert", "Pick Table"]})
     shell.presenter("step", {"id": "look", "label": "Looked at 1 screen", "status": "done"})

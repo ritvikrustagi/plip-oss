@@ -31,7 +31,7 @@ def cursor_position() -> tuple[float, float] | None:
         except Exception:
             return None
     if platform == WINDOWS:
-        # Straight to user32: no pyautogui, so a headless or service-run Plip can't trip over
+        # Straight to user32: no pyautogui, so a headless or service-run Jade can't trip over
         # its tkinter/pyscreeze imports.
         try:
             from mcp_vision.buddy.win32 import Win32Input
@@ -87,7 +87,7 @@ def _mss_grab(monitor: dict[str, int]) -> Image.Image:
 
 
 def _screen_grab(monitor: dict[str, int]) -> Image.Image:
-    """The screen as the user sees it, minus Plip's own floating windows (macOS)."""
+    """The screen as the user sees it, minus Jade's own floating windows (macOS)."""
     if sys.platform == "darwin":
         try:
             image = _mac_grab(monitor)
@@ -99,7 +99,7 @@ def _screen_grab(monitor: dict[str, int]) -> Image.Image:
 
 
 def _mac_grab(monitor: dict[str, int]) -> Image.Image | None:
-    """Every on-screen window but Plip's island, mascot and guide (they stay visible to recordings)."""
+    """Every on-screen window but Jade's island, mascot and guide (they stay visible to recordings)."""
     import os
 
     import Quartz
@@ -108,7 +108,7 @@ def _mac_grab(monitor: dict[str, int]) -> Image.Image | None:
     pid, ids, own = os.getpid(), [], False
     for info in infos:
         if int(info.get(Quartz.kCGWindowOwnerPID, -1)) == pid and int(info.get(Quartz.kCGWindowLayer, 0)) != 0:
-            own = True                                # a floating Plip window: leave it out
+            own = True                                # a floating Jade window: leave it out
         else:
             ids.append(int(info[Quartz.kCGWindowNumber]))
     if not own:
