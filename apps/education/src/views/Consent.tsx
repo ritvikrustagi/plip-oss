@@ -103,9 +103,9 @@ export function Consent() {
               className="mt-1 size-4 shrink-0 accent-jade-500"
             />
             <span className="text-[13.5px] leading-relaxed text-white/85">
-              Share this session’s counts with my teacher.
+              Also share this session’s counts with my teacher.
               <span className="mt-1 block text-[12px] text-white/45">
-                Separate from the line above: you can record a session for yourself and share nothing. Off by default.
+                Optional. Leave it off to practise on your own: the session is just for you and needs no class code.
               </span>
             </span>
           </label>
@@ -140,7 +140,7 @@ export function Consent() {
           disabled={!optIn || busy || (share && !joinCode.trim())}
           onClick={() => actions.start(share, joinCode)}
         >
-          {busy ? <Spinner /> : <Play className="size-3.5" />} Start recording this session
+          {busy ? <Spinner /> : <Play className="size-3.5" />} {share ? 'Start and share with my teacher' : 'Start a session just for me'}
         </Button>
         <p className="mt-2 text-center text-[11.5px] text-white/35">
           Nothing has been recorded yet. This button is the first thing that writes anything down.

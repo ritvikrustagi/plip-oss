@@ -38,7 +38,7 @@ Free and open source, on both platforms. Both builds come from
 
 | | |
 |---|---|
-| **[⬇ Jade for Mac (.dmg)](https://github.com/ritvikrustagi/plip-oss/releases/download/v0.11.0/Jade-0.11.0.dmg)** | macOS 13+, Apple Silicon. Signed and notarised. Lives in the notch. |
+| **[⬇ Jade for Mac (.dmg)](https://github.com/ritvikrustagi/plip-oss/releases/download/v0.11.0/Jade-0.11.0.dmg)** | macOS 13+, Apple Silicon. Not notarised yet (see step 2). Lives in the notch. |
 | **[⬇ Jade for Windows (.zip)](https://github.com/ritvikrustagi/plip-oss/releases/download/v0.11.0/Jade-0.11.0-windows.zip)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
 
 ### Mac
