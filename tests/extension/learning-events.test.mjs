@@ -5,10 +5,11 @@ import {
   EVENT_TYPES, SCHEMA_VERSION, buildEvent, shareableBundle, summarise, validateEvent,
 } from '../../apps/extension/src/lib/learning-events.js'
 
-const base = { type: 'task_started', sessionId: 'session-1', studentId: 'anon-abc', classId: 'maths-9b' }
+// A task event must name its task (contract v1), so the shared fixture does.
+const base = { type: 'task_started', sessionId: 'session-1', studentId: 'anon-abc', classId: 'maths-9b', taskId: 'task-4' }
 
 test('a built event carries exactly the contract v1 fields', () => {
-  const event = buildEvent({ ...base, taskId: 'task-4', conceptIds: ['fractions.lcd'] })
+  const event = buildEvent({ ...base, conceptIds: ['fractions.lcd'] })
   assert.deepEqual(Object.keys(event).sort(), [
     'classId', 'conceptIds', 'eventId', 'platform', 'schemaVersion', 'sessionId', 'shareWithTeacher',
     'studentId', 'taskId', 'timestamp', 'type',

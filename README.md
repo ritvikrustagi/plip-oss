@@ -33,13 +33,14 @@ happens until you say yes.
 
 ## Download
 
-Free and open source, on both platforms. Everything is on the
-**[Releases page](https://github.com/hussainn7/plip-oss/releases/latest)**.
+Free and open source, on both platforms. The signed Mac build comes from
+**[Plip's releases](https://github.com/hussainn7/plip-oss/releases/latest)**; the Windows build comes from
+**[this fork's releases](https://github.com/ritvikrustagi/plip-oss/releases/latest)**, where the Windows port lives.
 
 | | |
 |---|---|
 | **[⬇ Plip for Mac (.dmg)](https://github.com/hussainn7/plip-oss/releases/latest)** | macOS 13+, Apple Silicon. Signed and notarised. Lives in the notch. |
-| **[⬇ Plip for Windows (.zip)](https://github.com/hussainn7/plip-oss/releases/latest)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
+| **[⬇ Plip for Windows (.zip)](https://github.com/ritvikrustagi/plip-oss/releases/latest)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
 
 ### Mac
 
@@ -56,13 +57,13 @@ Free and open source, on both platforms. Everything is on the
 
 The Windows port is new and **has not been run on a real Windows machine yet** — it was built and
 tested on a Mac against the Win32 API. Expect rough edges and please
-[report them](https://github.com/hussainn7/plip-oss/issues). [docs/WINDOWS.md](docs/WINDOWS.md)
+[report them](https://github.com/ritvikrustagi/plip-oss/issues). [docs/WINDOWS.md](docs/WINDOWS.md)
 says exactly what works, what doesn't, and why.
 
 One line in PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/ritvikrustagi/plip-oss/main/scripts/install.ps1 | iex
 ```
 
 Or from the zip: install **Python 3.12** from [python.org](https://www.python.org/downloads/) — keep the
@@ -97,7 +98,7 @@ plip                 # Plip moves into your notch; the dashboard opens on first 
 
 ```powershell
 # Windows
-irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/ritvikrustagi/plip-oss/main/scripts/install.ps1 | iex
 plip                 # the strip appears at the top of your screen
 ```
 
@@ -245,11 +246,29 @@ npm run e2e                                # clicks through the island and dashb
 
 More in [CONTRIBUTING.md](CONTRIBUTING.md).
 
-### Plip Study Buddy for the browser
+## Plip for school
 
-`apps/extension/` is a Manifest V3 Chrome side-panel study buddy for students
-(the primary path on a Chromebook, and the same in desktop Chrome). It helps a
-student reason through their own work and deliberately cannot type into a page
+Two browser surfaces for classrooms, sharing one learning-event contract
+([`contracts/learning-event.schema.json`](contracts/learning-event.schema.json)): opt-in,
+pseudonymous, and carrying counts rather than screens, transcripts or browsing.
+
+**[`apps/education/`](apps/education) — the student app and the teacher dashboard.** A study
+companion that installs as a PWA, plus the dashboard that summarises what a student did from the
+events they chose to share. This is the one that needs no admin: a student opens a URL. `demo` is
+a fixture sign-in with invented students and says so on every screen; `production` is OpenID
+Connect with your school's identity provider, SQLite, an imported roster, cookie sessions with
+CSRF, rate limiting and an audit trail, and it refuses to start if anything needed to protect
+real data is missing.
+
+```bash
+cd apps/education && npm install && npm run dev    # demo API + app on http://localhost:5273
+npm run check                                      # typecheck, tests, build, browser flows
+
+cp .env.example .env && npm start                  # the production path
+```
+
+**[`apps/extension/`](apps/extension) — a Manifest V3 Chrome side panel.** It sits beside work
+happening on a page, helps a student reason through it, and deliberately cannot type into a page
 or submit anything. No build step, no dependencies:
 
 ```bash
@@ -259,10 +278,15 @@ node tests/extension/browser-demo.mjs         # 39 steps in a real browser
 cd apps/extension && npm run pack             # -> dist/*.zip (does not publish)
 ```
 
-It is a preview: not on the Chrome Web Store, not verified on Chromebook
-hardware. Setup, the permission model, the capability matrix against Plip on
-macOS, and the opt-in learning-event contract are in
-[docs/EXTENSION.md](docs/EXTENSION.md).
+Loading unpacked is for development. On a *managed* Chromebook an extension has to be
+force-installed by an administrator (and `ExtensionDeveloperModeSettings` may forbid loading
+unpacked at all), which is why the web app is the surface a school can try without a change
+request. Both are previews: neither is on the Chrome Web Store and neither has been verified on
+Chromebook hardware.
+
+Setup, managed-school constraints and what a school still has to provide for itself:
+[docs/CHROMEBOOK.md](docs/CHROMEBOOK.md) (web app, install routes, the contract) and
+[docs/EXTENSION.md](docs/EXTENSION.md) (the extension's permission model and capability matrix).
 
 ## License
 

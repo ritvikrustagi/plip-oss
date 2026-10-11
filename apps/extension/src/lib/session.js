@@ -102,8 +102,12 @@ export class LearningSession {
     })
   }
 
-  /** The student says they tried something. `outcome` is their own report. */
-  attemptSubmitted({ outcome = 'unknown', conceptIds = [], studentConfirmed = true } = {}) {
+  /**
+   * The student says they tried something. `outcome` is their own report, and
+   * is left off the event entirely when they did not give one - an absent
+   * outcome says "not reported" without claiming anything.
+   */
+  attemptSubmitted({ outcome, conceptIds = [], studentConfirmed = true } = {}) {
     if (!this.mayWork) return null
     if (this.task) this.task.attempts += 1
     return this._record('attempt_submitted', {
@@ -117,7 +121,7 @@ export class LearningSession {
     })
   }
 
-  finishTask({ outcome = 'unknown', studentConfirmed = true, conceptIds = [] } = {}) {
+  finishTask({ outcome, studentConfirmed = true, conceptIds = [] } = {}) {
     if (!this.task || this.state === OFF || this.state === ENDED) return null
     const task = this.task
     this.task = null

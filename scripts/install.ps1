@@ -1,11 +1,11 @@
 # The `plip` command on Windows, for people who'd rather not touch a terminal twice:
-#   irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/ritvikrustagi/plip-oss/main/scripts/install.ps1 | iex
 #
 # There is no signed Windows installer yet (see docs/WINDOWS.md); this is the supported way in.
 # It installs uv, pins Python 3.12, and puts `plip` on PATH as a tool.
 $ErrorActionPreference = 'Stop'
 
-$repo   = if ($env:PLIP_REPO)   { $env:PLIP_REPO }   else { 'https://github.com/hussainn7/plip-oss.git' }
+$repo   = if ($env:PLIP_REPO)   { $env:PLIP_REPO }   else { 'https://github.com/ritvikrustagi/plip-oss.git' }   # the Windows port lives on this fork
 $python = if ($env:PLIP_PYTHON) { $env:PLIP_PYTHON } else { '3.12' }
 $local  = Join-Path $env:USERPROFILE '.local\bin'
 $env:PATH = "$local;$env:LOCALAPPDATA\Programs\uv;$env:PATH"
