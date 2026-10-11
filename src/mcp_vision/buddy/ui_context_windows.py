@@ -38,7 +38,7 @@ ES_PASSWORD = 0x0020
 GWL_STYLE = -16
 WS_VISIBLE = 0x10000000
 
-# Child window classes whose caption is a label Plip may read, and the role to call it.
+# Child window classes whose caption is a label Jade may read, and the role to call it.
 CLASS_ROLES = {
     "button": "button",
     "static": "text",
@@ -51,7 +51,7 @@ CLASS_ROLES = {
     "scrollbar": "scroll bar",
     "toolbarwindow32": "toolbar",
 }
-# Classes that are boxes you type in: Plip keeps the box (so it can click it) and never its text.
+# Classes that are boxes you type in: Jade keeps the box (so it can click it) and never its text.
 TYPED_CLASSES = {"edit", "richedit", "richedit20w", "richedit50w", "richedit20a"}
 # Front ends whose real content lives in a web view: the map is blind, and says so.
 BLIND_PROCESSES = {"chrome.exe", "msedge.exe", "firefox.exe", "brave.exe", "opera.exe", "vivaldi.exe",

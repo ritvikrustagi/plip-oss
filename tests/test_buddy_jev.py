@@ -309,7 +309,7 @@ def test_a_walkthrough_always_looks_and_rules_think_harder_about_it_too():
     # without a key, rules pick the deeper think too
     deep = ["walk me through turning on two factor in github", "how do i export this as a pdf",
             "help me set up a pivot table", "why isn't this code compiling", "explain how black holes form"]
-    quick = ["where's the save button", "what's the capital of france", "thanks plip", "how many ounces in a cup",
+    quick = ["where's the save button", "what's the capital of france", "thanks jade", "how many ounces in a cup",
              "summarize this page", "set a 10 minute timer"]
     assert [rule_route(said).detailed for said in deep] == [True] * len(deep)
     assert [rule_route(said).detailed for said in quick] == [False] * len(quick)

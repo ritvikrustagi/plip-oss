@@ -86,7 +86,7 @@ class Connector:
             self._cancelled.discard(engine_id)
             self.progress[engine_id] = Progress("installing", "Getting ready…")
             worker = self._workers[engine_id] = threading.Thread(target=self._connect, args=(engine_id,),
-                                                                 daemon=True, name=f"plip-connect-{engine_id}")
+                                                                 daemon=True, name=f"jade-connect-{engine_id}")
         worker.start()
         if wait:
             worker.join()
@@ -306,13 +306,13 @@ def _sha256(path: Path) -> str:
 
 
 def _fetch_json(url: str) -> Any:
-    request = urllib.request.Request(url, headers={"User-Agent": "Plip", "Accept": "application/vnd.github+json"})
+    request = urllib.request.Request(url, headers={"User-Agent": "Jade", "Accept": "application/vnd.github+json"})
     with urllib.request.urlopen(request, timeout=30) as response:
         return json.loads(response.read().decode("utf-8"))
 
 
 def _download(url: str, target: Path) -> None:
-    request = urllib.request.Request(url, headers={"User-Agent": "Plip"})
+    request = urllib.request.Request(url, headers={"User-Agent": "Jade"})
     with urllib.request.urlopen(request, timeout=120) as response, target.open("wb") as handle:
         shutil.copyfileobj(response, handle)
 

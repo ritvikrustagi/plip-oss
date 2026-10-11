@@ -1,7 +1,7 @@
 // Zip the unpacked extension into dist/, ready to drag onto chrome://extensions
 // or to hand to whoever does the signing. It does not publish anything.
 //
-//   node tools/pack.mjs           # -> dist/plip-study-buddy-<version>.zip
+//   node tools/pack.mjs           # -> dist/jade-study-buddy-<version>.zip
 //
 // Uses the system `zip`, which macOS, Linux and ChromeOS's Linux container all
 // have; there is no npm dependency anywhere in this extension.
@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const manifest = JSON.parse(readFileSync(resolve(root, 'manifest.json'), 'utf8'))
-const name = `plip-study-buddy-${manifest.version}.zip`
+const name = `jade-study-buddy-${manifest.version}.zip`
 const target = resolve(root, 'dist', name)
 
 mkdirSync(resolve(root, 'dist'), { recursive: true })

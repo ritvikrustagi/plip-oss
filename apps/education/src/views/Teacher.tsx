@@ -19,7 +19,7 @@ import { useStore } from '../store'
 import {
   Button, DemoBanner, Empty, Pill, Section, Spinner, Stat, cn, minutes, when,
 } from '../components/bits'
-import { PlipMark } from '../components/PlipMark'
+import { JadeMark } from '../components/JadeMark'
 
 const SIGNAL: Record<FollowUpItem['signal'], { label: string; tone: 'good' | 'warn' | 'plain' }> = {
   needs_support: { label: 'worth asking about', tone: 'warn' },
@@ -217,12 +217,12 @@ export function Teacher() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-3 p-3 sm:p-5">
       <header className="flex flex-wrap items-center gap-3">
-        <PlipMark className="size-8" />
+        <JadeMark className="size-8" />
         <div className="min-w-0">
           <h1 className="text-[19px] font-semibold tracking-tight text-white">{klass?.name ?? 'Teacher summaries'}</h1>
           <p className="text-[12.5px] text-white/50">
             {identity?.displayName}
-            {klass?.joinCode && <> · class code <span className="font-mono text-plip-200">{klass.joinCode}</span></>}
+            {klass?.joinCode && <> · class code <span className="font-mono text-jade-200">{klass.joinCode}</span></>}
           </p>
         </div>
         <div className="ml-auto flex flex-wrap items-center gap-2">

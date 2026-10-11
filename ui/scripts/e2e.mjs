@@ -1,4 +1,4 @@
-// Click through Plip's UI in a real browser and check the commands it sends the app.
+// Click through Jade's UI in a real browser and check the commands it sends the app.
 // Usage: npm run build && npm run e2e
 import assert from 'node:assert/strict'
 import { dirname, resolve } from 'node:path'
@@ -17,7 +17,7 @@ async function open(hash, viewport = { width: 1000, height: 700 }) {
   page.on('pageerror', (error) => errors.push(`${hash}: ${error.message}`))
   page.on('console', async (message) => {
     if (message.type() === 'error') errors.push(`${hash}: ${message.text()}`)
-    if (!message.text().startsWith('[plip] command')) return
+    if (!message.text().startsWith('[jade] command')) return
     try {
       sent.push(await message.args()[1].jsonValue())
     } catch {
@@ -54,7 +54,7 @@ async function test(name, fn) {
 }
 
 const NOTCH = { width: 196, height: 34, hasNotch: true }
-const setIsland = (page, state) => page.evaluate((state) => window.__plip({ type: 'island', state }), { notch: NOTCH, ...state })
+const setIsland = (page, state) => page.evaluate((state) => window.__jade({ type: 'island', state }), { notch: NOTCH, ...state })
 
 await test('island: confirm card sends yes and no', async () => {
   const { page, take, sent } = await open('island', { width: 760, height: 420 })
@@ -70,7 +70,7 @@ await test('island: confirm card sends yes and no', async () => {
   await page.close()
 })
 
-await test('island: stays open while Plip is still talking, opens on hover only after a beat', async () => {
+await test('island: stays open while Jade is still talking, opens on hover only after a beat', async () => {
   const { page, last, take } = await open('island', { width: 760, height: 420 })
   await page.mouse.move(5, 400)
   await setIsland(page, { phase: 'thinking', transcript: 'what is this' })
@@ -132,7 +132,7 @@ await test('settings: one click connects a brain (no Terminal, nothing to copy)'
   await page.getByRole('button', { name: 'Cancel' }).click()
   assert.deepEqual(await take('engine-connect-cancel'), { cmd: 'engine-connect-cancel', id: 'cursor' })
   // a sign-in that didn't finish keeps its link: open it, or copy it into any browser
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { engines: [
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { engines: [
     { id: 'claude-code', label: 'Claude', via: 'Claude Pro / Max via Claude Code', kind: 'subscription', status: 'logged-out',
       connect: { state: 'failed', message: "Signing in to Claude didn't finish. Click Connect to try again.", url: 'https://claude.com/cai/oauth/authorize?x=9', needsCode: false } },
   ] } }))
@@ -146,7 +146,7 @@ await test('settings: one click connects a brain (no Terminal, nothing to copy)'
 
 await test('settings: no AI plan? a free Google key in three steps, checked before it counts', async () => {
   const { page, take } = await open('settings?tab=brain')
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { engines: [
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { engines: [
     { id: 'claude-code', label: 'Claude', via: 'Claude Pro / Max via Claude Code', kind: 'subscription', status: 'not-installed' },
     { id: 'codex', label: 'ChatGPT', via: 'ChatGPT Plus / Pro via Codex CLI', kind: 'subscription', status: 'not-installed' },
     { id: 'anthropic', label: 'Claude API', via: 'Anthropic API key', kind: 'api', status: 'missing-key', keyName: 'ANTHROPIC_API_KEY' },
@@ -159,11 +159,11 @@ await test('settings: no AI plan? a free Google key in three steps, checked befo
   await page.getByRole('button', { name: 'Paste key' }).click()
   assert.deepEqual(await take('paste-key'), { cmd: 'paste-key' })
   await page.getByText('Checking the key with Google').first().waitFor()
-  await page.getByText('Plip thinks with Gemini').waitFor({ timeout: 4000 })        // checked, saved, in use
+  await page.getByText('Jade thinks with Gemini').waitFor({ timeout: 4000 })        // checked, saved, in use
   await page.close()
 })
 
-await test('island: hovering the notch plips open and tucks back, once per hover, never for a question', async () => {
+await test('island: hovering the notch pops open and tucks back, once per hover, never for a question', async () => {
   const { page, sent } = await open('island', { width: 760, height: 420 })
   const sounds = () => sent.filter((item) => item.cmd === 'sound').map((item) => item.name)
   await page.mouse.move(5, 400)
@@ -208,7 +208,7 @@ await test('island: every open and close has its sound; a done task says Done an
   await page.waitForTimeout(3800)                                   // 3.5 s, not 7
   assert.notEqual(last('island-rect').mode, 'answering')
   assert.deepEqual(sounds(), ['open', 'close', 'open', 'close'])
-  await page.evaluate(() => window.__plip({ type: 'reset' }))
+  await page.evaluate(() => window.__jade({ type: 'reset' }))
   await setIsland(page, { phase: 'listening' })                    // "bye" said with ⌃⌥: no open, the mic's on
   await page.waitForTimeout(400)
   await setIsland(page, { phase: 'answering', answer: 'See you.', done: true, speaking: false, finished: 'bye' })
@@ -222,7 +222,7 @@ await test('island (as in the app): a stale pointer hover never keeps it open; a
   const page = await browser.newPage({ viewport: { width: 760, height: 420 } })
   const sent = []
   await page.exposeFunction('__sent', (body) => sent.push(JSON.parse(body)))
-  await page.addInitScript(() => { window.webkit = { messageHandlers: { plip: { postMessage: (body) => window.__sent(body) } } } })
+  await page.addInitScript(() => { window.webkit = { messageHandlers: { jade: { postMessage: (body) => window.__sent(body) } } } })
   await page.goto(`${bundle}#island`)
   await page.waitForTimeout(300)
   const mode = () => [...sent].reverse().find((item) => item.cmd === 'island-rect')?.mode
@@ -321,13 +321,13 @@ await test('settings: general (companion style, walkthroughs, tour)', async () =
   assert.deepEqual((await take('set-sounds')), { cmd: 'set-sounds', enabled: false })
   await page.getByRole('button', { name: /Replay the welcome tour/ }).click()
   assert.ok(await take('tour-start'))
-  await page.getByText('Hi, I’m Plip').waitFor()
+  await page.getByText('Hi, I’m Jade').waitFor()
   await page.close()
 })
 
 await test('onboarding: plain steps, a brain without a terminal, practice, then done; no sign-in step', async () => {
   const { page, take } = await open('settings?tab=home')
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { onboarded: false, tour: { step: 'welcome' },
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { onboarded: false, tour: { step: 'welcome' },
     account: { available: true, identified: false, anonymous: false, prompt: false, status: '', user: null },
     permissions: { screen: true, accessibility: null, microphone: true, speech: null }, voice: { tts: 'say', stt: 'apple', elevenlabs: false, assemblyai: false },
     engines: [
@@ -335,31 +335,31 @@ await test('onboarding: plain steps, a brain without a terminal, practice, then 
       { id: 'codex', label: 'ChatGPT', via: 'ChatGPT Plus / Pro via Codex CLI', kind: 'subscription', status: 'logged-out' },
       { id: 'gemini-api', label: 'Gemini', via: 'Free key from Google AI Studio', kind: 'api', status: 'missing-key', keyName: 'GEMINI_API_KEY' },
     ] } }))
-  await page.getByText('Hi, I’m Plip').waitFor()
+  await page.getByText('Hi, I’m Jade').waitFor()
   await page.getByText('no sign-in needed').waitFor()
   await page.getByRole('button', { name: 'Set me up' }).click()
   assert.deepEqual(await take('tour-go'), { cmd: 'tour-go', step: 'permissions' })    // saved for restarts
-  await page.getByText('Let Plip see and hear you').waitFor()
+  await page.getByText('Let Jade see and hear you').waitFor()
   await page.getByText('Step 1 of 3').waitFor()                                     // permissions, brain, try
   await page.getByText('Microphone and Speech Recognition').waitFor()               // Apple's listening needs both
   await page.getByRole('button', { name: 'Allow', exact: true }).first().click()
   assert.deepEqual(await take('grant'), { cmd: 'grant', permission: 'accessibility' })
   await page.getByRole('button', { name: 'Skip for now' }).click()
-  await page.getByText('Give Plip a brain').waitFor()
+  await page.getByText('Give Jade a brain').waitFor()
   assert.equal(await page.getByText(/terminal|npm i/i).count(), 0)                   // no commands to run, anywhere
   await page.getByRole('button', { name: 'Connect', exact: true }).first().click()
   assert.deepEqual(await take('engine-connect'), { cmd: 'engine-connect', id: 'claude-code' })
   await page.getByText('No AI plan? Use Google’s for free').waitFor()
   await page.getByRole('button', { name: 'Paste key' }).click()
   await page.getByText('Hold Control + Option and ask').waitFor({ timeout: 8000 })   // a working brain moves it on
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { live: { phase: 'done', transcript: 'what can you do',
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { live: { phase: 'done', transcript: 'what can you do',
     answer: 'I can see your screen and point at things.', error: '', at: Date.now() / 1000 + 5 } } }))
   await page.getByText('That’s all there is to it').waitFor()
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.getByText('You’re all set').waitFor()                                  // straight to done: no sign-in step
   assert.equal(await page.getByText('Continue with Google').count(), 0)
   await page.getByText(/guest name/).waitFor()                                      // and it says the guest account is coming
-  await page.getByRole('button', { name: 'Start using Plip' }).click()
+  await page.getByRole('button', { name: 'Start using Jade' }).click()
   assert.deepEqual(await take('finish-onboarding'), { cmd: 'finish-onboarding' })
   await page.locator('nav').getByRole('button', { name: /Account$/ }).click()
   await page.getByText('Quiet Nomad').first().waitFor()                             // a guest, named
@@ -369,15 +369,15 @@ await test('onboarding: plain steps, a brain without a terminal, practice, then 
 
 await test('onboarding: skip setup finishes it as a guest, and a build without accounts says nothing about one', async () => {
   const { page, take } = await open('settings?tab=home')
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { onboarded: false, tour: { step: 'welcome' },
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { onboarded: false, tour: { step: 'welcome' },
     account: { available: true, identified: false, anonymous: false, prompt: false, status: '', user: null } } }))
-  await page.getByText('Hi, I’m Plip').waitFor()
+  await page.getByText('Hi, I’m Jade').waitFor()
   await page.getByRole('button', { name: 'Skip setup' }).click()
   assert.deepEqual(await take('finish-onboarding'), { cmd: 'finish-onboarding', skipped: true })
-  assert.equal(await page.getByText('Hi, I’m Plip').count(), 0)
+  assert.equal(await page.getByText('Hi, I’m Jade').count(), 0)
   await page.locator('nav').getByRole('button', { name: /Account$/ }).click()
   await page.getByText('Quiet Nomad').first().waitFor()
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { onboarded: false, tour: { step: 'try' }, account: { available: false, identified: false, anonymous: false, prompt: false } } }))
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { onboarded: false, tour: { step: 'try' }, account: { available: false, identified: false, anonymous: false, prompt: false } } }))
   await page.getByRole('button', { name: 'Try it later' }).click()
   assert.deepEqual(await take('tour-go'), { cmd: 'tour-go', step: 'done' })
   await page.getByText('You’re all set').waitFor()
@@ -392,7 +392,7 @@ await test('general: the talk shortcut is picked here, and every "hold" hint fol
   await page.getByRole('button', { name: 'Option + Command' }).click()
   assert.deepEqual(await take('set-hotkey'), { cmd: 'set-hotkey', id: 'option+command' })
   // Python's reply: new shortcut, host terminal can't see keys
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { hotkey: {
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { hotkey: {
     id: 'option+command', keys: ['⌥', '⌘'], label: 'Option + Command', works: false, owner: 'Terminal',
     choices: [{ id: 'control+option', keys: ['⌃', '⌥'], label: 'Control + Option' }, { id: 'option+command', keys: ['⌥', '⌘'], label: 'Option + Command' }] } } }))
   await page.getByText('Hold Option + Command, talk, then let go.').waitFor()
@@ -403,11 +403,11 @@ await test('general: the talk shortcut is picked here, and every "hold" hint fol
   assert.deepEqual(await page.locator('aside kbd').allInnerTexts(), ['⌥', '⌘'])        // the sidebar's hint
   await page.close()
   const island = await open('island', { width: 760, height: 420 })
-  await island.page.evaluate(() => window.__plip({ type: 'shortcut', state: { id: 'control+shift', keys: ['⌃', '⇧'], label: 'Control + Shift' } }))
+  await island.page.evaluate(() => window.__jade({ type: 'shortcut', state: { id: 'control+shift', keys: ['⌃', '⇧'], label: 'Control + Shift' } }))
   await setIsland(island.page, { phase: 'idle', hovered: true })
   await island.page.getByText('and ask, or tell me to do something').waitFor()
   assert.deepEqual(await island.page.locator('kbd').allInnerTexts(), ['⌃', '⇧'])
-  await island.page.evaluate(() => window.__plip({ type: 'shortcut', state: { id: 'control+shift', keys: ['⌃', '⇧'], label: 'Control + Shift', works: false } }))
+  await island.page.evaluate(() => window.__jade({ type: 'shortcut', state: { id: 'control+shift', keys: ['⌃', '⇧'], label: 'Control + Shift', works: false } }))
   await island.page.getByText('Your shortcut is off until you allow Accessibility').waitFor()   // not "hold ⌃⇧" for nothing
   await island.page.getByRole('button', { name: 'Allow' }).click()
   await island.page.close()
@@ -422,7 +422,7 @@ await test('general: report a bug and request a feature, one open at a time', as
   await page.getByRole('button', { name: /Request a feature/ }).click()
   assert.ok(await take('report-reset'))
   await page.getByRole('button', { name: 'Report another' }).waitFor({ state: 'detached' })   // one open at a time
-  await page.getByLabel('What should Plip do').fill('Read my calendar out loud every morning')
+  await page.getByLabel('What should Jade do').fill('Read my calendar out loud every morning')
   await page.getByRole('button', { name: 'Send', exact: true }).click()
   assert.deepEqual(await take('request-feature'), { cmd: 'request-feature', message: 'Read my calendar out loud every morning' })
   await page.getByText('Sent. Thank you').waitFor()
@@ -430,7 +430,7 @@ await test('general: report a bug and request a feature, one open at a time', as
 })
 
 await test('settings: old links land on the new tabs', async () => {
-  for (const [tab, heading] of [['about', 'How Plip behaves on your Mac'], ['skills', 'How Plip behaves on your Mac'],
+  for (const [tab, heading] of [['about', 'How Jade behaves on your Mac'], ['skills', 'How Jade behaves on your Mac'],
     ['usage', 'What you asked, and what it took'], ['history', 'What you asked, and what it took']]) {
     const { page } = await open(`settings?tab=${tab}`)
     assert.equal(await page.locator('h1').first().textContent(), heading, tab)
@@ -477,11 +477,11 @@ await test('settings: voice picks parakeet, downloads with progress, cancels, re
 
 await test('guide: the permission card says what to drag, closes, and shows the check', async () => {
   const { page, take } = await open('guide', { width: 560, height: 150 })
-  await page.getByText('Drag Plip into the list above').waitFor()
+  await page.getByText('Drag Jade into the list above').waitFor()
   assert.ok(await page.getByText('drag me up').isVisible())
   await page.getByRole('button', { name: 'Close' }).click()
   assert.ok(await take('guide-close'))
-  await page.evaluate(() => window.__plip({ type: 'guide', state: { granted: true } }))
+  await page.evaluate(() => window.__jade({ type: 'guide', state: { granted: true } }))
   await page.getByText('Accessibility is on').waitFor()
   await page.close()
 })
@@ -489,13 +489,13 @@ await test('guide: the permission card says what to drag, closes, and shows the 
 await test('sign in: never a wall; after the first task home asks once, later hides it, google links the account', async () => {
   const { page, take } = await open('settings?signin')
   await page.locator('nav').waitFor()                                      // settings are all there, no sign-in screen
-  await page.getByText('Make this Plip yours').waitFor()                   // the card, as after the first task
+  await page.getByText('Make this Jade yours').waitFor()                   // the card, as after the first task
   await page.getByText('Quiet Nomad').first().waitFor()
   await page.getByRole('button', { name: 'Later' }).click()
   assert.ok(await take('account-later'))
-  assert.equal(await page.getByText('Make this Plip yours').count(), 0)
+  assert.equal(await page.getByText('Make this Jade yours').count(), 0)
   await page.locator('nav').getByRole('button', { name: /Account$/ }).click()
-  await page.getByText('Your Plip, so far').waitFor()
+  await page.getByText('Your Jade, so far').waitFor()
   await page.getByText('Guest', { exact: true }).waitFor()
   await page.getByRole('button', { name: 'Continue with Google' }).click()
   assert.deepEqual(await take('account-sign-in'), { cmd: 'account-sign-in', provider: 'google' })
@@ -509,7 +509,7 @@ await test('sign in: never a wall; after the first task home asks once, later hi
   await page.getByText('Signed in').waitFor()
   assert.equal(await page.locator('img').count(), 0)                      // no picture: their initial
   const picture = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
-  await page.evaluate((src) => window.__plip({ type: 'settings', state: { account: { available: true, identified: true, anonymous: false, prompt: false, status: '',
+  await page.evaluate((src) => window.__jade({ type: 'settings', state: { account: { available: true, identified: true, anonymous: false, prompt: false, status: '',
     user: { name: 'Hussain Syed', email: 'hussain@plip.dev', provider: 'google', since: 1789862400, picture: src } } } }), picture)
   await page.locator('nav img').waitFor()                                   // their Google picture, sidebar and card
   assert.equal(await page.locator('main img').getAttribute('src'), picture)
@@ -521,23 +521,23 @@ await test('sign in: never a wall; after the first task home asks once, later hi
 
 await test('sign in: a failed sign-in says why, and a build without accounts has no account tab', async () => {
   const { page } = await open('settings?signin')
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { account: { available: true, identified: false, anonymous: true, prompt: true, status: 'failed', error: 'You said no', user: { name: 'Quiet Nomad', email: '', provider: 'anonymous', since: null } } } }))
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { account: { available: true, identified: false, anonymous: true, prompt: true, status: 'failed', error: 'You said no', user: { name: 'Quiet Nomad', email: '', provider: 'anonymous', since: null } } } }))
   await page.getByRole('alert').getByText('You said no').waitFor()
   await page.getByRole('button', { name: 'Try again with Google' }).waitFor()
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { account: { available: false, identified: false, anonymous: false, prompt: false } } }))
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { account: { available: false, identified: false, anonymous: false, prompt: false } } }))
   await page.locator('nav').waitFor()
   assert.equal(await page.locator('nav').getByRole('button', { name: /Account$/ }).count(), 0)
-  assert.equal(await page.getByText('Make this Plip yours').count(), 0)
+  assert.equal(await page.getByText('Make this Jade yours').count(), 0)
   await page.close()
 })
 
-await test('update: a newer plip shows on home and general, download and the switch send their commands', async () => {
+await test('update: a newer jade shows on home and general, download and the switch send their commands', async () => {
   const { page, take } = await open('settings?tab=home')
   assert.equal(await page.getByText(/is out$/).count(), 0)                // nothing new: no banner
-  await page.evaluate(() => window.__plip({ type: 'settings', state: { update: { enabled: true, current: '0.8.0',
-    available: { version: '0.9.0', url: 'https://github.com/ritvikrustagi/plip-oss/releases/download/v0.9.0/Plip-0.9.0.dmg',
+  await page.evaluate(() => window.__jade({ type: 'settings', state: { update: { enabled: true, current: '0.8.0',
+    available: { version: '0.9.0', url: 'https://github.com/ritvikrustagi/plip-oss/releases/download/v0.9.0/Jade-0.9.0.dmg',
       page: 'https://github.com/ritvikrustagi/plip-oss/releases/tag/v0.9.0' } } } }))
-  await page.getByText('Plip 0.9.0 is out').waitFor()
+  await page.getByText('Jade 0.9.0 is out').waitFor()
   await page.getByRole('button', { name: 'Download', exact: true }).click()
   assert.ok(await take('update-download'))
   await page.getByRole('button', { name: 'What’s new' }).click()

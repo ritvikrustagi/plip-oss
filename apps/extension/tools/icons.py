@@ -1,7 +1,7 @@
-"""Build the extension's icons from the project's own Plip mark.
+"""Build the extension's icons from the project's own Jade mark.
 
 Pure standard library (zlib + struct), so there is nothing to install and the
-icons are reproducible from assets/plip-icon-256.png, which keeps the
+icons are reproducible from assets/jade-icon-256.png, which keeps the
 extension on the same mark as the Mac app.
 
     python3 apps/extension/tools/icons.py
@@ -13,7 +13,7 @@ import sys
 import zlib
 from pathlib import Path
 
-SOURCE = Path("assets/plip-icon-256.png")
+SOURCE = Path("assets/jade-icon-256.png")
 OUT = Path("apps/extension/icons")
 SIZES = (16, 32, 48, 128)
 

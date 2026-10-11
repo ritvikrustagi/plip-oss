@@ -43,22 +43,22 @@ function KnowledgePanel({ state }: { state: SettingsState }) {
 
   if (!name && !rows.length)
     return (
-      <Empty title="Plip doesn’t know you yet" text={state.memory?.sync?.enabled
+      <Empty title="Jade doesn’t know you yet" text={state.memory?.sync?.enabled
         ? 'Add a preference or import facts below to personalize answers across your devices.'
-        : 'Import from your Mac below. It takes a few seconds, stays on this Mac, and lets Plip fill forms and personalize answers.'} />
+        : 'Import from your Mac below. It takes a few seconds, stays on this Mac, and lets Jade fill forms and personalize answers.'} />
     )
 
   return (
     <Card className="overflow-hidden p-0">
       <div className="relative flex items-center gap-4 px-5 pb-4 pt-5">
-        <div className="pointer-events-none absolute -right-16 -top-24 size-56 rounded-full bg-plip-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute -right-16 -top-24 size-56 rounded-full bg-jade-400/15 blur-3xl" />
         <span className="brand-gradient grid size-14 place-items-center rounded-2xl text-[20px] font-bold text-slate-950 shadow-[0_10px_30px_-10px_rgba(95,142,244,0.8)]">
           {initials(name || '?')}
         </span>
         <div className="min-w-0">
           <div className="truncate text-[19px] font-semibold tracking-[-0.02em]">{name || 'You'}</div>
           <div className="truncate text-[12.5px] text-white/50">
-            {[profile.title, profile.company].filter(Boolean).join(' at ') || 'Add your role to help Plip'}
+            {[profile.title, profile.company].filter(Boolean).join(' at ') || 'Add your role to help Jade'}
             {location && <span className="text-white/30"> · {location}</span>}
           </div>
         </div>
@@ -113,7 +113,7 @@ function AiMemory({ state }: { state: SettingsState }) {
     <Card className="overflow-hidden">
       <div className="pointer-events-none absolute -left-16 -bottom-24 size-56 rounded-full bg-sky-glow/10 blur-3xl" />
       <div className="mb-3 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-[13.5px] font-semibold"><Sparkles className="size-4 text-plip-300" /> Bring your AI memory</div>
+        <div className="flex items-center gap-2 text-[13.5px] font-semibold"><Sparkles className="size-4 text-jade-300" /> Bring your AI memory</div>
         <Segmented value={source} options={AI.map((item) => ({ value: item.id, label: item.name }))} onChange={setSource} />
       </div>
       <ol className="mb-3 space-y-2 text-[12.5px] text-white/55">
@@ -135,7 +135,7 @@ function AiMemory({ state }: { state: SettingsState }) {
         </li>
         <li className="flex items-center gap-2.5">
           <span className="grid size-5 place-items-center rounded-full bg-white/[0.08] text-[10.5px] font-bold text-white/70">2</span>
-          Paste its answer here. Plip sorts it into your profile and notes.
+          Paste its answer here. Jade sorts it into your profile and notes.
         </li>
       </ol>
       <textarea
@@ -215,7 +215,7 @@ export function MemoryTab({ state }: { state: SettingsState }) {
   const facts = state.memory?.facts ?? []
   if (state.memory?.sync?.enabled && !state.memory.sync.available) {
     return <div>
-      <Header eyebrow="Memory" title="What Plip knows about you" />
+      <Header eyebrow="Memory" title="What Jade knows about you" />
       <Empty title="Sign in to save memory" text="Account memory keeps your saved facts separate from other accounts. Finish setup or sign in before adding or importing facts." />
       <Button onClick={() => send('account-sign-in')}>Sign in with Google</Button>
     </div>
@@ -224,7 +224,7 @@ export function MemoryTab({ state }: { state: SettingsState }) {
     <div>
       <Header
         eyebrow="Memory"
-        title="What Plip knows about you"
+        title="What Jade knows about you"
         subtitle={state.memory?.sync?.enabled
           ? 'Saved facts sync with your account and personalize answers across devices. Detected sensitive facts stay on this device and out of model prompts.'
           : 'Used to fill forms, message the right people, and answer like someone who knows you. Stored only on this Mac. Passport and card numbers stay private and are never sent to the model.'}
@@ -241,7 +241,7 @@ export function MemoryTab({ state }: { state: SettingsState }) {
       <Section title="From other AI assistants">
         <AiMemory state={state} />
       </Section>
-      <Section title={`Everything Plip knows (${facts.length})`}>
+      <Section title={`Everything Jade knows (${facts.length})`}>
         <Card className="divide-y divide-white/[0.05] p-0">
           <AnimatePresence initial={false}>
             {facts.map((fact) => <FactRow key={fact.id} fact={fact} />)}

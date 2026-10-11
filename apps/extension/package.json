@@ -1,5 +1,5 @@
 {
-  "name": "plip-study-buddy-extension",
+  "name": "jade-study-buddy-extension",
   "private": true,
   "version": "0.1.0",
   "description": "Chrome MV3 side-panel study buddy. No dependencies, no build step.",

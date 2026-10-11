@@ -78,7 +78,7 @@ def doings(text: str) -> set[str]:
 
 @dataclass
 class Consent:
-    """A yes to Plip's own question: skips the next matching card once (never money, a firm card or a "but")."""
+    """A yes to Jade's own question: skips the next matching card once (never money, a firm card or a "but")."""
 
     doings: set[str]
     about: set[str] = field(default_factory=set)    # what the question was about
@@ -93,7 +93,7 @@ class Consent:
             return None                                # money always gets its card
         if _HOLD_RE.search(YES_RE.sub("", text, count=1)):
             return None
-        found = doings(asked)                          # what Plip asked, not what they added
+        found = doings(asked)                          # what Jade asked, not what they added
         if not found:
             return None
         question = re.findall(r"[^.!?]*\?", asked)
@@ -138,7 +138,7 @@ _PRIVATE_ARGS = {"text", "body", "fields", "fact", "value", "key", "query", "tit
 
 
 class ActionLog:
-    """Append-only JSON lines of what Plip did (no message bodies)."""
+    """Append-only JSON lines of what Jade did (no message bodies)."""
 
     def __init__(self, path: Path | None = None):
         from mcp_vision.paths import state_dir
@@ -313,7 +313,7 @@ def _friendly(exc: Exception) -> str:
         return str(exc)
     text = str(exc).lower()
     if "not authorized" in text or "not allowed" in text or "-1743" in text or "assistive" in text:
-        return "macOS blocked that. Allow Plip under Privacy & Security, then ask again."
+        return "macOS blocked that. Allow Jade under Privacy & Security, then ask again."
     if "can't get" in text or "doesn't understand" in text:
         return "That app didn't understand me."
     return "Something went wrong doing that."

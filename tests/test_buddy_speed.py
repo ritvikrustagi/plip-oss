@@ -1,4 +1,4 @@
-"""Speed: after an action, Plip looks again as soon as the screen settles, not after a fixed wait."""
+"""Speed: after an action, Jade looks again as soon as the screen settles, not after a fixed wait."""
 from __future__ import annotations
 
 import asyncio
@@ -21,27 +21,27 @@ class Loading:
         return ScreenContext(app="Safari", controls=[Control(f"result {step}", "AXLink", 100, 40 * step)])
 
 
-def plip(context, **kw):
+def jade(context, **kw):
     return Companion(brain=ScriptedBrain(), capturer=Capturer(), context=context, settle_interval=0.01, **kw)
 
 
 def test_it_looks_as_soon_as_the_screen_map_stops_changing():
     page = Loading(changes=4)
     started = time.perf_counter()
-    assert asyncio.run(plip(page)._settle(5.0)) == page.snapshot().signature()
+    assert asyncio.run(jade(page)._settle(5.0)) == page.snapshot().signature()
     assert time.perf_counter() - started < 1.0 and page.reads == 7        # 4 changes, 2 quiet reads (+1 here)
 
 
 def test_a_screen_that_keeps_changing_waits_out_the_limit():
     page = Loading(changes=10_000)
     started = time.perf_counter()
-    assert asyncio.run(plip(page)._settle(0.3)) is not None             # what it ended on, never settled
+    assert asyncio.run(jade(page)._settle(0.3)) is not None             # what it ended on, never settled
     assert 0.3 <= time.perf_counter() - started < 1.0
 
 
 def test_without_a_screen_map_it_only_waits_a_moment():
     started = time.perf_counter()
-    assert asyncio.run(plip(None)._settle(0.2)) is None
+    assert asyncio.run(jade(None)._settle(0.2)) is None
     assert time.perf_counter() - started < 0.5
 
 
@@ -129,7 +129,7 @@ def test_the_screen_map_is_read_at_key_release_too():
             return ScreenContext(app="Safari", controls=[Control("Buy", "AXButton", 10, 10)])
 
     brain = ScriptedBrain("It's top left.")
-    companion = plip(Page())
+    companion = jade(Page())
     companion.brain = brain
     released = time.perf_counter()
     companion.prefetch()                                   # key release

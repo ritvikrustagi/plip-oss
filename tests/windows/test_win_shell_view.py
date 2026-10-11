@@ -179,7 +179,7 @@ def test_a_capability_the_machine_lacks_beats_the_session_switch():
     # On macOS the session can allow screenshots; where the OS can't, the OS wins.
     shell = view(capabilities=capabilities("linux"), consent=SessionConsent().start(screen_context=True))
     row = next(item for item in shell.controls() if item["id"] == "map")
-    assert not row["enabled"] and "plip ask --image" in row["reason"]
+    assert not row["enabled"] and "jade ask --image" in row["reason"]
 
 
 def test_with_no_tables_nothing_is_claimed_disabled():
@@ -200,7 +200,7 @@ def test_lines_cover_a_whole_turn():
     text = "\n".join(shell.lines())
     assert "hold Ctrl + Alt to talk" in text
     assert "you: how do I add a table" in text
-    assert "plip: Insert, then Table." in text
+    assert "jade: Insert, then Table." in text
     assert "✓ Looked at 1 screen" in text
 
 

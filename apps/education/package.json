@@ -1,9 +1,9 @@
 {
-  "name": "plip-education",
+  "name": "jade-education",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Chromebook-friendly Plip study companion (student PWA) and teacher summary dashboard. Local synthetic demo mode only.",
+  "description": "Chromebook-friendly Jade study companion (student PWA) and teacher summary dashboard. Local synthetic demo mode only.",
   "license": "MIT",
   "scripts": {
     "dev": "node scripts/dev.mjs",

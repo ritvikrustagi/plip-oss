@@ -1,4 +1,4 @@
-"""`plip`: run Plip, or ask it one question headlessly."""
+"""`jade`: run Jade, or ask it one question headlessly."""
 from __future__ import annotations
 
 import asyncio
@@ -12,25 +12,25 @@ import click
 @click.group(invoke_without_command=True)
 @click.pass_context
 def buddy(ctx: click.Context) -> None:
-    """Plip, your AI buddy in the notch: hold Control+Option, talk, and it points at things."""
+    """Jade, your AI buddy in the notch: hold Control+Option, talk, and it points at things."""
     if ctx.invoked_subcommand is None:
         ctx.invoke(run)
 
 
 @buddy.command()
 def run() -> None:
-    """Start Plip: the notch island on macOS, the top-of-screen strip on Windows."""
+    """Start Jade: the notch island on macOS, the top-of-screen strip on Windows."""
     from mcp_vision.buddy.factory import SetupError
     from mcp_vision.platforms import MACOS, WINDOWS, current_platform
 
     platform = current_platform()
     if platform not in {MACOS, WINDOWS}:
-        raise click.ClickException("Plip's desktop shell needs macOS or Windows. "
-                                   "Try: plip ask --image shot.png \"...\"")
+        raise click.ClickException("Jade's desktop shell needs macOS or Windows. "
+                                   "Try: jade ask --image shot.png \"...\"")
     from mcp_vision.analytics import ping
 
     # Only the app pings: it runs for hours, so the request always finishes. A quick command
-    # (`plip memory show`) could exit mid-request, and Python can crash tearing that thread down.
+    # (`jade memory show`) could exit mid-request, and Python can crash tearing that thread down.
     ping("app")
     try:
         if platform == WINDOWS:
@@ -64,14 +64,14 @@ def windows(headless: bool, once: bool, probe: bool) -> None:
 @click.option("--probe/--no-probe", default=True, help="Ask this machine, not just the OS name.")
 @click.option("--json", "as_json", is_flag=True, help="Print the table as JSON.")
 def capabilities(probe: bool, as_json: bool) -> None:
-    """What Plip can and can't do on this machine, and what it uses instead."""
+    """What Jade can and can't do on this machine, and what it uses instead."""
     from mcp_vision.platforms import capabilities as table
 
     caps = table(probe=probe)
     if as_json:
         click.echo(json.dumps({"platform": caps.platform, "capabilities": caps.as_rows()}, indent=2))
         return
-    click.echo(f"Plip on {caps.platform}:")
+    click.echo(f"Jade on {caps.platform}:")
     for group, rows in caps.groups():
         click.echo(f"\n  {group}")
         for row in rows:
@@ -91,7 +91,7 @@ def capabilities(probe: bool, as_json: bool) -> None:
 @click.option("--json", "as_json", is_flag=True, help="Print the full turn result as JSON.")
 @click.option("--engine", default=None, help="Brain to use: claude-code, codex, cursor, gemini, or anthropic.")
 def ask(question: str, images: tuple[str, ...], speak: bool, as_json: bool, engine: str | None) -> None:
-    """Ask one question about the screen and print what Plip says and points at."""
+    """Ask one question about the screen and print what Jade says and points at."""
     from mcp_vision.buddy.capture import ScreenCapturer
     from mcp_vision.buddy.factory import SetupError, make_companion
     from mcp_vision.buddy.settings import load_settings
@@ -180,7 +180,7 @@ def _finish(loop, companion, code: int = 0) -> None:
 
 @buddy.group()
 def memory() -> None:
-    """See or import what Plip knows about you."""
+    """See or import what Jade knows about you."""
 
 
 def _sync_memory(store) -> None:
@@ -225,10 +225,10 @@ def memory_sync(import_local: bool) -> None:
 
 @memory.command("show")
 def memory_show() -> None:
-    """Print the knowledge panel Plip uses."""
+    """Print the knowledge panel Jade uses."""
     store = _memory_store()
     if not store.facts:
-        click.echo("Plip doesn't know anything about you yet. Try: plip memory import contacts")
+        click.echo("Jade doesn't know anything about you yet. Try: jade memory import contacts")
         return
     for card in store.panel()["facts"]:
         click.echo(f"  {card['label']:<18} {card['value']}   ({', '.join(card['sources'])})")
@@ -283,8 +283,8 @@ def learn() -> None:
 @click.option("--by", type=click.Choice(["student", "teacher", "guardian", "demo"]), default="student",
               help="Who is giving consent for this session.")
 @click.option("--class", "class_id", default="", help="Class code, if a teacher summary is wanted.")
-@click.option("--screenshots/--no-screenshots", default=False, help="Let Plip capture pixels this session.")
-@click.option("--map/--no-map", "screen_map", default=False, help="Let Plip read the window map this session.")
+@click.option("--screenshots/--no-screenshots", default=False, help="Let Jade capture pixels this session.")
+@click.option("--map/--no-map", "screen_map", default=False, help="Let Jade read the window map this session.")
 @click.option("--share/--no-share", default=False, help="Mark this session's events shareable with a teacher.")
 def learn_start(by: str, class_id: str, screenshots: bool, screen_map: bool, share: bool) -> None:
     """Start a session. Everything optional is off unless you ask for it."""
@@ -417,7 +417,7 @@ def learn_demo(seed: int) -> None:
 
     count = seed_log(LearningLog(), seed=seed)
     click.echo(f"Wrote {count} synthetic event(s) for class {CLASS_ID} (all invented).")
-    click.echo(f"Try: plip learn summary --class {CLASS_ID} --authorized-for {CLASS_ID}")
+    click.echo(f"Try: jade learn summary --class {CLASS_ID} --authorized-for {CLASS_ID}")
 
 
 @learn.command("contract")
@@ -477,7 +477,7 @@ def setup(env_path: str | None) -> None:
         click.echo("Nothing saved.")
         return
     write_env(target, values)
-    click.echo(f"Saved {', '.join(values)}. Next: plip doctor, then plip")
+    click.echo(f"Saved {', '.join(values)}. Next: jade doctor, then jade")
 
 
 @buddy.command()
@@ -507,7 +507,7 @@ def doctor(ping: bool) -> None:
         # Only the brain you picked can fail; the others are just options.
         picked = status.spec.id == getattr(settings, "engine", "")
         good = True if status.status == "ready" else False if picked and status.status != "unknown" else None
-        chosen = " <- Plip thinks with this" if active is not None and status.spec.id == active.spec.id else ""
+        chosen = " <- Jade thinks with this" if active is not None and status.spec.id == active.spec.id else ""
         line(good, f"brain {status.spec.id}", f"{status.status}: {status.detail or status.spec.via}{chosen}")
     if active is None:
         line(False, "brain", "nothing ready: sign in to Claude Code / Codex / Cursor / Gemini, or add an API key")
@@ -552,7 +552,7 @@ def doctor(ping: bool) -> None:
         from mcp_vision.learning import SessionConsent
 
         line(None, "learning session", SessionConsent.load().summary())
-        click.echo("  (`plip capabilities` lists everything, with what Plip uses instead)")
+        click.echo("  (`jade capabilities` lists everything, with what Jade uses instead)")
     else:
-        line(None, "desktop shell", "macOS and Windows only; `plip ask --image` works everywhere")
+        line(None, "desktop shell", "macOS and Windows only; `jade ask --image` works everywhere")
     sys.exit(0 if ok else 1)

@@ -125,7 +125,7 @@ def test_other_platforms_fall_back_to_headless():
     caps = capabilities("linux")
     assert caps.supports("learning_events") and caps.supports("chat")
     assert not caps.supports("click")
-    assert "plip ask --image" in caps.why_not("click")
+    assert "jade ask --image" in caps.why_not("click")
 
 
 def test_as_rows_is_json_safe():

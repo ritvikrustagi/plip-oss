@@ -337,7 +337,7 @@ export function createApp(options) {
       // Never hand an internal message to the browser in production: a stack
       // trace from a database is an invitation.
       const message = error instanceof Error ? error.message : String(error)
-      if (!demoMode) console.error('[plip] unhandled request error:', message)
+      if (!demoMode) console.error('[jade] unhandled request error:', message)
       return send(response, 500, {
         demoMode,
         error: demoMode ? message : 'Something went wrong on the server.',

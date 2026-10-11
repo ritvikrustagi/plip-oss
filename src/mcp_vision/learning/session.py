@@ -11,11 +11,11 @@ rules live in one place:
   useless to anyone who doesn't also hold the machine.
 
 Hooking it to the assistant: ``task_started`` when a task begins,
-``hint_requested`` each time Plip is asked for help on it,
+``hint_requested`` each time Jade is asked for help on it,
 ``attempt_submitted`` when the student says they tried, ``task_completed``
 with the outcome. Only ``attempt_submitted`` and ``task_completed`` carry an
 outcome, and ``studentConfirmed`` records whether the student said so
-themselves or Plip inferred it - the summary keeps those apart.
+themselves or Jade inferred it - the summary keeps those apart.
 """
 from __future__ import annotations
 

@@ -115,7 +115,7 @@ if (isMain) {
   try {
     const config = load()
     const { store, port } = await startProductionServer({ config })
-    console.log(`plip for school listening on ${config.host}:${port}`)
+    console.log(`jade for school listening on ${config.host}:${port}`)
     console.log(`  ${describe(config)}`)
     const stats = store.stats()
     console.log(`  roster: ${stats.classes} classes, ${stats.enrolments} enrolments, ${stats.users} people `
@@ -134,7 +134,7 @@ if (isMain) {
       })
   } catch (error) {
     if (error instanceof ConfigError) {
-      console.error(`\nplip cannot start:\n  ${error.message}\n`)
+      console.error(`\njade cannot start:\n  ${error.message}\n`)
       process.exit(1)
     }
     throw error

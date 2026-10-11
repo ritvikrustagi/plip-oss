@@ -12,8 +12,8 @@ export interface MascotProps {
   glow?: boolean
 }
 
-const BODY: Record<'plip' | 'error', [string, string, string]> = {
-  plip: ['#a9c9fb', '#4f7ff0', '#2c58e6'],
+const BODY: Record<'jade' | 'error', [string, string, string]> = {
+  jade: ['#a9c9fb', '#4f7ff0', '#2c58e6'],
   error: ['#fecdd3', '#fb7185', '#be123c'],
 }
 
@@ -23,7 +23,7 @@ const FACE = 'M25.9 50.6 C23.5 46 22.5 40 24 33 C25.5 25 27.5 18 31.5 14.5 C36 1
 const EYE = { x: 43.3, y: 25.4 }
 
 /**
- * Plip, as on the app icon. It leans toward what it's pointing at, squashes
+ * Jade, as on the app icon. It leans toward what it's pointing at, squashes
  * while it talks, and its one eye follows `look`. All vector, so it reads at
  * 18 px in the notch and 160 px on the welcome screen.
  */
@@ -31,7 +31,7 @@ export function Mascot({ mood = 'idle', level = 0, look = { x: 0, y: 0 }, lean =
   const id = useId().replace(/:/g, '')
   const reduce = useReducedMotion()
   const open = Math.max(0, Math.min(1, level))
-  const [light, mid, deep] = BODY[mood === 'error' ? 'error' : 'plip']
+  const [light, mid, deep] = BODY[mood === 'error' ? 'error' : 'jade']
   const pointing = mood === 'pointing'
   // The hood's tip is "up", i.e. -90°.
   const magnitude = Math.hypot(look.x, look.y)
@@ -52,7 +52,7 @@ export function Mascot({ mood = 'idle', level = 0, look = { x: 0, y: 0 }, lean =
         className={reduce || pointing ? '' : 'animate-float'}
         style={{ overflow: 'visible', filter: glow ? `drop-shadow(0 ${size * 0.05}px ${size * 0.14}px rgba(79,127,240,0.5))` : undefined }}
         role="img"
-        aria-label={`Plip is ${mood}`}
+        aria-label={`Jade is ${mood}`}
       >
         <defs>
           <linearGradient id={`${id}-body`} x1="0.7" y1="0" x2="0.2" y2="1">

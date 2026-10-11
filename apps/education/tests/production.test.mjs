@@ -28,7 +28,7 @@ let scratch
 let idp
 
 before(async () => {
-  scratch = mkdtempSync(join(tmpdir(), 'plip-prod-'))
+  scratch = mkdtempSync(join(tmpdir(), 'jade-prod-'))
   writeFileSync(join(scratch, 'catalogue.json'), JSON.stringify({
     concepts: [{ conceptId: 'fractions.add-unlike', label: 'Adding fractions' }],
     tasks: [{ taskId: 'frac-add-1', title: 'One third plus one quarter', conceptIds: ['fractions.add-unlike'],
@@ -45,12 +45,12 @@ after(() => {
 /** @param {Partial<Record<string, string>>} [overrides] @returns {Record<string, string | undefined>} */
 const env = (overrides = {}) => ({
   PLIP_MODE: 'production',
-  PLIP_PUBLIC_ORIGIN: 'https://plip.school.example',
+  PLIP_PUBLIC_ORIGIN: 'https://jade.school.example',
   PLIP_SESSION_SECRET: SECRET,
   PLIP_DATABASE: join(scratch, `db-${Math.random().toString(36).slice(2)}.sqlite`),
   PLIP_CATALOGUE: join(scratch, 'catalogue.json'),
   PLIP_OIDC_ISSUER: idp.origin,
-  PLIP_OIDC_CLIENT_ID: 'plip-school',
+  PLIP_OIDC_CLIENT_ID: 'jade-school',
   PLIP_OIDC_CLIENT_SECRET: 'a-client-secret',
   PLIP_OIDC_ALLOWED_DOMAINS: 'school.example',
   ...overrides,
@@ -76,7 +76,7 @@ test('production refuses to start without the things that protect real data', ()
   }
   refuses({ PLIP_SESSION_SECRET: undefined }, /PLIP_SESSION_SECRET is required/)
   refuses({ PLIP_SESSION_SECRET: 'too short' }, /at least 32 characters/)
-  refuses({ PLIP_PUBLIC_ORIGIN: 'http://plip.school.example' }, /must be https/)
+  refuses({ PLIP_PUBLIC_ORIGIN: 'http://jade.school.example' }, /must be https/)
   refuses({ PLIP_PUBLIC_ORIGIN: 'not-a-url' }, /must be a full URL/)
   refuses({ PLIP_DATABASE: undefined }, /PLIP_DATABASE is required/)
   refuses({ PLIP_DATABASE: ':memory:' }, /loses every student/)
@@ -94,7 +94,7 @@ test('a full production config is accepted, and the startup line prints no secre
   assert.equal(config.trustProxy, true)
   const line = summarise(config)
   assert.match(line, /mode=production/)
-  assert.match(line, /plip\.school\.example/)
+  assert.match(line, /jade\.school\.example/)
   assert.equal(line.includes(SECRET), false, 'the session secret must never reach a log')
   assert.equal(line.includes('a-client-secret'), false, 'the client secret must never reach a log')
 })
@@ -692,8 +692,8 @@ test('the sign-in callback cannot be turned into an open redirect', async () => 
   ]
   for (const next of escapes) {
     const landing = safeRedirect(next)
-    const resolved = new URL(landing, 'https://plip.school.example')
-    assert.equal(resolved.origin, 'https://plip.school.example', `${JSON.stringify(next)} escaped to ${resolved.href}`)
+    const resolved = new URL(landing, 'https://jade.school.example')
+    assert.equal(resolved.origin, 'https://jade.school.example', `${JSON.stringify(next)} escaped to ${resolved.href}`)
   }
   // A genuine in-app path still survives intact.
   assert.equal(safeRedirect('/student?tab=tasks#top'), '/student?tab=tasks#top')

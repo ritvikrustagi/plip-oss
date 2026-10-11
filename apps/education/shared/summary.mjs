@@ -308,7 +308,7 @@ export function buildStudentSummary(eligible, context) {
           : context.privateCount > 0
             ? `You kept ${context.privateCount} event${context.privateCount === 1 ? '' : 's'} in this class private. This line is on your own copy only - your teacher is not told that they exist.`
             : 'You kept nothing in this class private.',
-        'Work done outside a shared Plip session leaves no event at all and is invisible here.',
+        'Work done outside a shared Jade session leaves no event at all and is invisible here.',
       ],
     },
     inferred: {

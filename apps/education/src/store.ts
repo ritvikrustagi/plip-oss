@@ -1,5 +1,5 @@
 /**
- * The same tiny external store Plip's macOS UI uses (ui/src/bridge.ts): a value,
+ * The same tiny external store Jade's macOS UI uses (ui/src/bridge.ts): a value,
  * a set of listeners, and useSyncExternalStore. No state library, so the whole
  * app is one `npm install` on a school network.
  */

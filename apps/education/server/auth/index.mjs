@@ -33,7 +33,7 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
  */
 export function safeRedirect(next) {
   if (!next) return '/'
-  const sentinel = 'https://plip.invalid'
+  const sentinel = 'https://jade.invalid'
   let url
   try {
     url = new URL(next, sentinel)

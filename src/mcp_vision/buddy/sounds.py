@@ -1,8 +1,8 @@
-"""Plip's few UI sounds (made by ``ui/scripts/sounds.mjs``): the notch popping open on hover and
+"""Jade's few UI sounds (made by ``ui/scripts/sounds.mjs``): the notch popping open on hover and
 tucking back, a question tossed to the brain when you let go of ⌃⌥, and a task really finished.
 
 They play as macOS UI sounds (AudioServices), like Finder's own: at the alert volume, through the
-sound-effects output, and silent when "Play user interface sound effects" is off. Plip's own toggle
+sound-effects output, and silent when "Play user interface sound effects" is off. Jade's own toggle
 (Settings → General → Sounds) turns them off too.
 """
 from __future__ import annotations

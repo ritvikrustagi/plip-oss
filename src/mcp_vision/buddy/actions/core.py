@@ -712,7 +712,7 @@ def set_timer(ctx: ActionContext, args: dict) -> ActionResult:
     name = f"{label} timer" if label else "timer"
 
     def ring() -> None:
-        ctx.host.notify("Plip", f"Your {name} is done.")
+        ctx.host.notify("Jade", f"Your {name} is done.")
         ctx.announce(f"Your {name} is done.")
     ctx.schedule(minutes * 60, ring)
     shown = f"{minutes:g} min" if minutes >= 1 else f"{round(minutes * 60)} sec"

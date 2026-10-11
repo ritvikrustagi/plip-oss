@@ -3,8 +3,8 @@
 Nothing in the learning layer runs on a default. A session has to be started
 by hand, and three switches inside it are off until someone turns them on:
 
-* ``screen_context`` - may Plip read the window map for grounding
-* ``screenshots``    - may Plip capture pixels at all
+* ``screen_context`` - may Jade read the window map for grounding
+* ``screenshots``    - may Jade capture pixels at all
 * ``share_with_teacher`` - may events be marked eligible for a summary
 
 ``paused`` stops all three at once without ending the session, which is what
@@ -152,10 +152,10 @@ class SessionConsent:
     def as_rows(self) -> list[dict]:
         """What the shell renders as switches, each with its own explanation."""
         return [
-            {"id": "screen_context", "label": "Let Plip read the window map",
+            {"id": "screen_context", "label": "Let Jade read the window map",
              "on": self.screen_context, "available": self.active,
              "detail": "Button and field names from the window in front. Never what you type."},
-            {"id": "screenshots", "label": "Let Plip take screenshots",
+            {"id": "screenshots", "label": "Let Jade take screenshots",
              "on": self.screenshots, "available": self.active,
              "detail": "Only while this session runs, only to answer you. Nothing is uploaded or kept."},
             {"id": "share_with_teacher", "label": "Share progress with my teacher",

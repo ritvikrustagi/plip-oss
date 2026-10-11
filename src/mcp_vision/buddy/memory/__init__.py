@@ -1,10 +1,10 @@
-"""What Plip knows about you, kept on your Mac.
+"""What Jade knows about you, kept on your Mac.
 
 Facts come from your own data (Contacts card, browser autofill, Mail
 accounts, the memory you paste from ChatGPT or Claude) and from
-things you tell Plip to remember. Each fact keeps its source. Sensitive ones
+things you tell Jade to remember. Each fact keeps its source. Sensitive ones
 (passport, card numbers, SSN) are stored but never sent to the model, only
-what kind they are; Plip asks before using them.
+what kind they are; Jade asks before using them.
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from pathlib import Path
 
 from mcp_vision.buddy.store import config_dir
 
-# Keys Plip understands, in the order they appear on the knowledge panel.
+# Keys Jade understands, in the order they appear on the knowledge panel.
 KEYS = {
     "name.full": "Name", "name.first": "First name", "name.last": "Last name", "email": "Email",
     "phone": "Phone", "address.street": "Street", "address.city": "City", "address.state": "State",
@@ -29,7 +29,7 @@ KEYS = {
 MULTI = {"email", "phone", "note", "website"}
 SOURCE_RANK = {"you": 0, "contacts": 1, "autofill": 2, "mail": 3, "imessage": 4, "chatgpt": 5, "claude": 5,
                "gemini": 5, "ai": 5}
-SOURCE_LABELS = {"you": "You told Plip", "contacts": "Contacts", "autofill": "Browser autofill", "mail": "Mail",
+SOURCE_LABELS = {"you": "You told Jade", "contacts": "Contacts", "autofill": "Browser autofill", "mail": "Mail",
                  "imessage": "iMessage", "chatgpt": "ChatGPT", "claude": "Claude", "gemini": "Gemini",
                  "ai": "AI memory"}
 SENSITIVE_RE = re.compile(r"passport|social security|\bssn\b|card number|credit card|debit card|\bcvv\b|\bcvc\b|"
@@ -143,7 +143,7 @@ class Memory:
         tmp.write_text(json.dumps(self._data(), indent=1))
         from mcp_vision.paths import make_private
 
-        make_private(tmp)         # what Plip knows about you is this user's alone
+        make_private(tmp)         # what Jade knows about you is this user's alone
         tmp.replace(self.path)
 
     # -- editing ------------------------------------------------------------------------------

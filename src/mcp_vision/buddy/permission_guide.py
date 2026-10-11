@@ -1,13 +1,13 @@
 """Getting a macOS permission switched on without hunting through System Settings.
 
 The pattern from Codex's computer use: "Allow" opens the exact Privacy & Security
-page, and a small Plip card docks to the bottom of the System Settings window. It
-has an arrow, "Drag Plip into the list above", and Plip's own icon to drag there:
+page, and a small Jade card docks to the bottom of the System Settings window. It
+has an arrow, "Drag Jade into the list above", and Jade's own icon to drag there:
 macOS adds an app that's dropped into the list already switched on, so there's no
-system alert to click through. If Plip is already listed, the card says to flip its
+system alert to click through. If Jade is already listed, the card says to flip its
 switch. The card follows the window, steps aside when System Settings isn't in
 front, and checks the permission twice a second: once it's on, the card says so,
-closes, and Plip comes back to the front.
+closes, and Jade comes back to the front.
 
 This module is the platform-neutral part (which page, where the card sits, what it
 does next), so it's tested anywhere; ``guide_macos.py`` draws the card.

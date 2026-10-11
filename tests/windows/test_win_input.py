@@ -1,7 +1,7 @@
 """The Win32 input path, checked without Windows.
 
 ``SendInput`` structures are plain ctypes, so they can be built and inspected
-on a Mac. These tests assert the bytes Plip would hand to user32: the right
+on a Mac. These tests assert the bytes Jade would hand to user32: the right
 virtual-key codes, the right flags, down/up pairing, and Command translated
 to Control. What they cannot do is prove Windows accepts them; see
 docs/WINDOWS.md.
@@ -135,7 +135,7 @@ def test_unknown_button_falls_back_to_left():
 
 
 def test_scrolling_down_is_a_negative_wheel_delta():
-    # Plip's convention is "positive dy = scroll down"; Windows' wheel is the other way round.
+    # Jade's convention is "positive dy = scroll down"; Windows' wheel is the other way round.
     event = wheel_inputs(dy=3)[0]
     assert event.mi.dwFlags == MOUSEEVENTF_WHEEL
     assert event.mi.mouseData == (-3 * WHEEL_DELTA) & 0xFFFFFFFF

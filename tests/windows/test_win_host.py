@@ -77,7 +77,7 @@ def test_powershell_failure_surfaces_its_message(monkeypatch):
 
 def test_a_toast_that_fails_never_breaks_an_action(monkeypatch):
     monkeypatch.setattr(subprocess, "run", lambda *args, **options: (_ for _ in ()).throw(OSError("no toast")))
-    host(powershell="pwsh.exe").notify("Plip", "done")      # must not raise
+    host(powershell="pwsh.exe").notify("Jade", "done")      # must not raise
 
 
 def test_toast_text_travels_in_the_environment_not_the_script(monkeypatch):
@@ -88,7 +88,7 @@ def test_toast_text_travels_in_the_environment_not_the_script(monkeypatch):
         return subprocess.CompletedProcess(argv, 0, "", "")
 
     monkeypatch.setattr(subprocess, "run", fake_run)
-    host(powershell="pwsh.exe").notify("Plip", 'she said "); Remove-Item C:\\ #')
+    host(powershell="pwsh.exe").notify("Jade", 'she said "); Remove-Item C:\\ #')
     assert "Remove-Item" not in " ".join(seen["argv"]), "nothing from the text may reach the command line"
     assert "Remove-Item" in seen["env"]["PLIP_TOAST_BODY"]
 
@@ -218,7 +218,7 @@ def test_refused_keystrokes_are_reported():
         probe.type_text("x")
 
 
-# -- the grounding Plip does not have -------------------------------------------
+# -- the grounding Jade does not have -------------------------------------------
 def test_accessibility_only_answers_are_dont_know_not_lies():
     probe = host()
     assert probe.focused_role() is None

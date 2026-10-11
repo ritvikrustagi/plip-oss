@@ -147,7 +147,7 @@ class SapiVoice:
     def play(self, prepared: str, stop: threading.Event) -> None:
         if not prepared or not self.powershell or stop.is_set():
             return
-        # System.Speech rates run -10..10; map Plip's words-per-minute onto that.
+        # System.Speech rates run -10..10; map Jade's words-per-minute onto that.
         rate = max(-10, min(10, round((self.rate - 200) / 20)))
         env = {**os.environ, "PLIP_SAY_TEXT": prepared, "PLIP_SAY_RATE": str(rate)}
         self.runner([self.powershell, "-NoProfile", "-NonInteractive", "-Command", self.SCRIPT], stop, env=env)

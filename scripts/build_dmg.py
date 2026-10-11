@@ -1,9 +1,9 @@
-"""Build a Plip.app anyone can run, and the DMG to share it.
+"""Build a Jade.app anyone can run, and the DMG to share it.
 
-Self-contained: Python, Plip and every dependency live inside the bundle, so it runs
+Self-contained: Python, Jade and every dependency live inside the bundle, so it runs
 on any Apple-silicon Mac with nothing installed. It writes only to ``dist/``.
 
-    .venv/bin/python scripts/build_dmg.py         # dist/Plip.app + dist/Plip-<version>.dmg, signed ad hoc
+    .venv/bin/python scripts/build_dmg.py         # dist/Jade.app + dist/Jade-<version>.dmg, signed ad hoc
 
 A release Apple trusts (opens with no "can't check this app" warning):
 
@@ -34,7 +34,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from mcp_vision.identity import BUNDLE_ID  # noqa: E402  macOS permissions belong to this ID
 
-ICON = ROOT / "assets" / "plip-icon.png"
+ICON = ROOT / "assets" / "jade-icon.png"
 BACKGROUND = ROOT / "assets" / "brand" / "dmg"
 PY = "python3.12"
 ENTITLEMENTS = {
@@ -43,7 +43,7 @@ ENTITLEMENTS = {
     "com.apple.security.device.audio-input": True,
     "com.apple.security.automation.apple-events": True,
 }
-# What Plip never loads: tests, Tk, pip.
+# What Jade never loads: tests, Tk, pip.
 PRUNE = [f"lib/{PY}/test", f"lib/{PY}/idlelib", f"lib/{PY}/tkinter", f"lib/{PY}/turtledemo", f"lib/{PY}/ensurepip",
          f"lib/{PY}/site-packages/pip", f"lib/{PY}/site-packages/PyObjCTest", "include", "share", "lib/pkgconfig"]
 PRUNE_GLOBS = ["lib/libtcl*", "lib/libtk*", "lib/tcl*", "lib/tk*", "lib/itcl*", "lib/thread*",
@@ -55,7 +55,7 @@ LAUNCHER = r'''#import <AppKit/AppKit.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-// Plip.app/Contents/MacOS/Plip: run the bundled Python in this process, so macOS sees one
+// Jade.app/Contents/MacOS/Jade: run the bundled Python in this process, so macOS sees one
 // app (one icon, one set of permissions) and everything is found inside the bundle.
 int main(int argc, char **argv) {
     @autoreleasepool {
@@ -73,8 +73,8 @@ int main(int argc, char **argv) {
         int (*pythonMain)(int, char **) = handle ? dlsym(handle, "Py_BytesMain") : NULL;
         if (!pythonMain) {
             NSAlert *alert = [NSAlert new];
-            alert.messageText = @"Plip is incomplete";
-            alert.informativeText = @"Its Python runtime is missing. Download Plip again and drag it into Applications.";
+            alert.messageText = @"Jade is incomplete";
+            alert.informativeText = @"Its Python runtime is missing. Download Jade again and drag it into Applications.";
             [alert runModal];
             return 1;
         }
@@ -101,14 +101,14 @@ def version() -> str:
 
 def info_plist(app_version: str) -> dict:
     return {
-        "CFBundleIdentifier": BUNDLE_ID, "CFBundleName": "Plip", "CFBundleDisplayName": "Plip",
-        "CFBundleExecutable": "Plip", "CFBundleIconFile": "Plip.icns", "CFBundlePackageType": "APPL",
+        "CFBundleIdentifier": BUNDLE_ID, "CFBundleName": "Jade", "CFBundleDisplayName": "Jade",
+        "CFBundleExecutable": "Jade", "CFBundleIconFile": "Jade.icns", "CFBundlePackageType": "APPL",
         "CFBundleShortVersionString": app_version, "CFBundleVersion": app_version,
         "LSMinimumSystemVersion": "13.0", "LSUIElement": True, "NSHighResolutionCapable": True,
         "LSApplicationCategoryType": "public.app-category.productivity", "LSArchitecturePriority": ["arm64"],
-        "NSAppleEventsUsageDescription": "Plip asks apps like Finder, Reminders and Notes to do things when you ask it to.",
-        "NSMicrophoneUsageDescription": "Plip listens only while you hold its talk shortcut (Control+Option unless you picked another).",
-        "NSSpeechRecognitionUsageDescription": "Plip turns what you say into the question you ask it.",
+        "NSAppleEventsUsageDescription": "Jade asks apps like Finder, Reminders and Notes to do things when you ask it to.",
+        "NSMicrophoneUsageDescription": "Jade listens only while you hold its talk shortcut (Control+Option unless you picked another).",
+        "NSSpeechRecognitionUsageDescription": "Jade turns what you say into the question you ask it.",
     }
 
 
@@ -173,7 +173,7 @@ def make_icns(png: Path, target: Path) -> None:
 
 
 def release_env(supabase_url: str = "", supabase_key: str = "") -> str:
-    """``Contents/Resources/plip.env``: the sign-in project, so a shared DMG asks people to sign in. Supabase
+    """``Contents/Resources/jade.env``: the sign-in project, so a shared DMG asks people to sign in. Supabase
     anon/publishable keys are public by design (row-level security); they still stay out of git."""
     if not (supabase_url and supabase_key):
         return ""
@@ -181,7 +181,7 @@ def release_env(supabase_url: str = "", supabase_key: str = "") -> str:
 
 
 def configured_sign_in() -> tuple[str, str]:
-    """The sign-in project to bake in: what Plip itself reads (environment, then the .env files)."""
+    """The sign-in project to bake in: what Jade itself reads (environment, then the .env files)."""
     try:
         from mcp_vision.buddy.settings import load_settings
     except ImportError:              # uv run --no-project (the release workflow): no pydantic, secrets come as env vars
@@ -206,7 +206,7 @@ def sign_in_problem(url: str, key: str) -> str:
 
 
 def build_app(dist: Path, sign: str = "-", env: str = "") -> Path:
-    app = dist / "Plip.app"
+    app = dist / "Jade.app"
     shutil.rmtree(app, ignore_errors=True)
     macos, resources = app / "Contents" / "MacOS", app / "Contents" / "Resources"
     macos.mkdir(parents=True)
@@ -218,7 +218,7 @@ def build_app(dist: Path, sign: str = "-", env: str = "") -> Path:
     (home / "lib" / PY / "EXTERNALLY-MANAGED").unlink(missing_ok=True)
     python = home / "bin" / PY
 
-    print("2/5 plip and its dependencies")
+    print("2/5 jade and its dependencies")
     # The versions in uv.lock, so every build of a commit ships the same packages; --locked stops on a stale lock.
     locked = dist / "requirements.lock.txt"
     run("uv", "export", "--project", ROOT, "--locked", "--no-emit-project", "--no-hashes", "--quiet",
@@ -242,13 +242,13 @@ def build_app(dist: Path, sign: str = "-", env: str = "") -> Path:
         env={**os.environ, "PYTHONHOME": str(home), "PYTHONNOUSERSITE": "1"}, stdout=subprocess.DEVNULL)
 
     print("3/5 icon, Info.plist, launcher")
-    make_icns(ICON, resources / "Plip.icns")
+    make_icns(ICON, resources / "Jade.icns")
     (app / "Contents" / "Info.plist").write_bytes(plistlib.dumps(info_plist(version())))
     if env:
-        (resources / "plip.env").write_text(env)
-    source = dist / "PlipLauncher.m"
+        (resources / "jade.env").write_text(env)
+    source = dist / "JadeLauncher.m"
     source.write_text(LAUNCHER.replace("PYVERSION", PY))
-    run("clang", "-O2", "-fobjc-arc", "-arch", "arm64", "-mmacosx-version-min=13.0", source, "-o", macos / "Plip",
+    run("clang", "-O2", "-fobjc-arc", "-arch", "arm64", "-mmacosx-version-min=13.0", source, "-o", macos / "Jade",
         "-framework", "AppKit")
     source.unlink()
 
@@ -274,7 +274,7 @@ def build_app(dist: Path, sign: str = "-", env: str = "") -> Path:
 
 
 def dmg_settings(app: Path, icns: Path, background: Path) -> str:
-    """dmgbuild settings: a 660x440 icon view, no toolbar or sidebar, Plip on the left, Applications on the right."""
+    """dmgbuild settings: a 660x440 icon view, no toolbar or sidebar, Jade on the left, Applications on the right."""
     return f'''
 files = [{str(app)!r}]
 symlinks = {{"Applications": "/Applications"}}
@@ -289,11 +289,11 @@ show_pathbar = False
 show_sidebar = False
 icon_size = 112
 text_size = 13
-icon_locations = {{"Plip.app": (180, 232), "Applications": (480, 232),
+icon_locations = {{"Jade.app": (180, 232), "Applications": (480, 232),
                   # out of sight even for people who show hidden files
                   ".background.tiff": (180, 900), ".VolumeIcon.icns": (480, 900), ".DS_Store": (330, 900),
                   ".fseventsd": (330, 1000), ".Trashes": (480, 1000)}}
-hide_extension = ["Plip.app"]
+hide_extension = ["Jade.app"]
 format = "ULMO"
 filesystem = "APFS"
 '''
@@ -304,12 +304,12 @@ def build_dmg(app: Path, dist: Path) -> Path:
     background = dist / "dmg-background.tiff"
     run("tiffutil", "-cathidpicheck", BACKGROUND / "background.png", BACKGROUND / "background@2x.png",
         "-out", background, stderr=subprocess.DEVNULL)
-    icns = app / "Contents" / "Resources" / "Plip.icns"
+    icns = app / "Contents" / "Resources" / "Jade.icns"
     settings = dist / "dmg_settings.py"
     settings.write_text(dmg_settings(app, icns, background))
-    target = dist / f"Plip-{version()}.dmg"
+    target = dist / f"Jade-{version()}.dmg"
     target.unlink(missing_ok=True)
-    run("uv", "tool", "run", "--from", "dmgbuild", "dmgbuild", "-s", settings, "Plip", target)
+    run("uv", "tool", "run", "--from", "dmgbuild", "dmgbuild", "-s", settings, "Jade", target)
     settings.unlink()
     background.unlink()
     return target
@@ -370,9 +370,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--sign", default="-", help='codesign identity (default: ad hoc). "Developer ID Application: …"')
     parser.add_argument("--notarize", default="", help="notarytool keychain profile; needs a Developer ID --sign")
-    parser.add_argument("--app-only", action="store_true", help="build dist/Plip.app, skip the DMG")
+    parser.add_argument("--app-only", action="store_true", help="build dist/Jade.app, skip the DMG")
     parser.add_argument("--supabase-url", default="", help="sign-in project URL (default: PLIP_SUPABASE_URL); "
-                        "without it and --supabase-key, Plip doesn't ask anyone to sign in")
+                        "without it and --supabase-key, Jade doesn't ask anyone to sign in")
     parser.add_argument("--supabase-key", default="", help="the project's anon or publishable key (default: "
                         "PLIP_SUPABASE_KEY)")
     args = parser.parse_args()

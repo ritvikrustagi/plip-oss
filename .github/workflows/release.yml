@@ -1,6 +1,6 @@
 name: release dmg
 
-# Push a tag like v0.9.0: this builds Plip-<version>.dmg with scripts/build_dmg.py and attaches it to a
+# Push a tag like v0.9.0: this builds Jade-<version>.dmg with scripts/build_dmg.py and attaches it to a
 # GitHub release, signed + notarized with the Apple secrets (docs/RELEASING.md) so it opens with no warning.
 # A tag stops without them, or when it isn't pyproject's version. Run it by hand for an ad hoc test build:
 # the DMG is kept on the run's page. With the Supabase secrets set it asks people to sign in.
@@ -63,7 +63,7 @@ jobs:
           xcrun notarytool store-credentials plip --apple-id "$APPLE_ID" --team-id "$APPLE_TEAM_ID" \
             --password "$APPLE_APP_PASSWORD"
           echo "SIGN_ID=$APPLE_SIGN_ID" >> "$GITHUB_ENV"
-      - name: Build Plip.app + the dmg
+      - name: Build Jade.app + the dmg
         env:
           PLIP_SUPABASE_URL: ${{ secrets.PLIP_SUPABASE_URL }}
           PLIP_SUPABASE_KEY: ${{ secrets.PLIP_SUPABASE_KEY }}
@@ -76,13 +76,13 @@ jobs:
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: dist/Plip-*.dmg
+          files: dist/Jade-*.dmg
           fail_on_unmatched_files: true
       - uses: actions/upload-artifact@v7
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         with:
-          name: plip-dmg
-          path: dist/Plip-*.dmg
+          name: jade-dmg
+          path: dist/Jade-*.dmg
           if-no-files-found: error
 
   # Windows has no signed installer yet (docs/WINDOWS.md), so a release carries a zip:
@@ -106,9 +106,9 @@ jobs:
           python -m venv "$env:RUNNER_TEMP/check"
           $venv = "$env:RUNNER_TEMP/check/Scripts"
           & "$venv/pip" install (Get-ChildItem dist/*.whl).FullName
-          & "$venv/plip" --help
-          & "$venv/plip" capabilities
-          & "$venv/plip" windows --once --no-probe
+          & "$venv/jade" --help
+          & "$venv/jade" capabilities
+          & "$venv/jade" windows --once --no-probe
       - name: Zip it up
         shell: pwsh
         run: |
@@ -116,13 +116,13 @@ jobs:
           # which a YAML block scalar can't give it.
           $version = (Select-String -Path pyproject.toml -Pattern '^version = "(.*)"' |
                       Select-Object -First 1).Matches[0].Groups[1].Value
-          $stage = Join-Path $env:RUNNER_TEMP "Plip-$version-windows"
+          $stage = Join-Path $env:RUNNER_TEMP "Jade-$version-windows"
           New-Item -ItemType Directory -Path $stage -Force | Out-Null
           Copy-Item dist/*.whl $stage
           Copy-Item scripts/install.ps1 $stage
           Copy-Item docs/WINDOWS.md $stage
           $readme = @(
-            "Plip for Windows $version - an early build. Not signed, no installer yet.",
+            "Jade for Windows $version - an early build. Not signed, no installer yet.",
             "",
             "1. Install Python 3.12 from python.org.",
             "   Keep the tcl/tk option ticked: the window needs it.",
@@ -130,9 +130,9 @@ jobs:
             "       py -3.12 -m venv .venv",
             "       .venv\Scripts\activate",
             "       pip install .\mcp_vision_runtime-$version-py3-none-any.whl",
-            "3. plip capabilities    what this machine can and cannot do, and why",
-            "   plip doctor          checks the brain, the voice and the window",
-            "   plip                 the strip appears at the top of your screen",
+            "3. jade capabilities    what this machine can and cannot do, and why",
+            "   jade doctor          checks the brain, the voice and the window",
+            "   jade                 the strip appears at the top of your screen",
             "",
             "Hold Ctrl+Alt and talk, or type in the box. Speech recognition needs an",
             "AssemblyAI key on Windows; typing works with no setup at all.",
@@ -143,15 +143,15 @@ jobs:
             "WINDOWS.md lists what is and isn't ported, and what still needs testing."
           )
           Set-Content -Path (Join-Path $stage "README.txt") -Value $readme -Encoding utf8
-          Compress-Archive -Path "$stage/*" -DestinationPath "dist/Plip-$version-windows.zip"
+          Compress-Archive -Path "$stage/*" -DestinationPath "dist/Jade-$version-windows.zip"
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: dist/Plip-*-windows.zip
+          files: dist/Jade-*-windows.zip
           fail_on_unmatched_files: true
       - uses: actions/upload-artifact@v7
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         with:
-          name: plip-windows
-          path: dist/Plip-*-windows.zip
+          name: jade-windows
+          path: dist/Jade-*-windows.zip
           if-no-files-found: error

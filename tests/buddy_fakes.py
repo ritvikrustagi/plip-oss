@@ -1,4 +1,4 @@
-"""Shared fakes for Plip's companion-level tests."""
+"""Shared fakes for Jade's companion-level tests."""
 from __future__ import annotations
 
 from mcp_vision.buddy.geometry import Rect, ScreenInfo, Screenshot
@@ -153,7 +153,7 @@ class FakeHost:
     mouse = None                      # user's pointer, global points
     focused_area = None               # Rect of the focused scroll area
     focus_role = None                 # e.g. "AXWebArea"; None: unknown
-    has_bar = False                   # has a scroll bar Plip can move
+    has_bar = False                   # has a scroll bar Jade can move
     revealed = None                   # scroll_to_visible's Reveal
     revealed_now = None               # its answer with ask=False (default: same)
 

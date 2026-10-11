@@ -70,13 +70,13 @@ export const ACTIONS = {
 
 /** Named so the prompt (and the docs) can say plainly what is missing. */
 export const REFUSED_ACTIONS = {
-  type_text: 'Plip never types into a page, so it can never write a student’s answer for them.',
-  fill_form: 'Plip never fills a form.',
-  submit: 'Plip never submits or hands in anything.',
-  press: 'Plip does not send keystrokes to a page.',
-  screenshot: 'Plip does not capture the screen.',
-  download: 'Plip does not download files.',
-  eval: 'Plip does not run code in a page.',
+  type_text: 'Jade never types into a page, so it can never write a student’s answer for them.',
+  fill_form: 'Jade never fills a form.',
+  submit: 'Jade never submits or hands in anything.',
+  press: 'Jade does not send keystrokes to a page.',
+  screenshot: 'Jade does not capture the screen.',
+  download: 'Jade does not download files.',
+  eval: 'Jade does not run code in a page.',
 }
 
 export class ActionRefused extends Error {}
@@ -100,7 +100,7 @@ export function planAction(name, args = {}, context = {}) {
     if (!pageGranted) {
       return {
         outcome: 'refused', name, args, label,
-        reason: 'Plip has no access to this page yet. The student grants it from the panel.',
+        reason: 'Jade has no access to this page yet. The student grants it from the panel.',
       }
     }
     const blocked = blockedReason(pageUrl)
@@ -128,7 +128,7 @@ export function planAction(name, args = {}, context = {}) {
     if (risky) {
       return {
         outcome: 'refused', name, args, label,
-        reason: `Plip will not click “${String(risky).slice(0, 40)}”. Anything that sends, pays, `
+        reason: `Jade will not click “${String(risky).slice(0, 40)}”. Anything that sends, pays, `
           + 'posts or hands work in is yours to click.',
       }
     }
@@ -136,7 +136,7 @@ export function planAction(name, args = {}, context = {}) {
       outcome: 'confirm', name, args, label,
       preview: {
         title: `Click “${(target || 'that').slice(0, 40)}”`,
-        lines: ['Plip clicks only what you confirm.'],
+        lines: ['Jade clicks only what you confirm.'],
         confirm: 'Click it',
       },
     }

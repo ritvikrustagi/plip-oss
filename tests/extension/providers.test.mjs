@@ -113,13 +113,13 @@ test('the panel sends messages and a bearer token, never a key', async () => {
   const out = []
   for await (const delta of provider.stream({
     turns: [{ role: 'user', text: 'hello' }],
-    system: 'you are plip',
+    system: 'you are jade',
   })) out.push(delta)
   assert.deepEqual(out, ['Right.'])
   assert.equal(seen.options.headers.authorization, 'Bearer class-token')
   const body = JSON.parse(seen.options.body)
   assert.deepEqual(body.messages, [{ role: 'user', content: 'hello' }])
-  assert.equal(body.system, 'you are plip')
+  assert.equal(body.system, 'you are jade')
   assert.equal(JSON.stringify(body).includes('sk-ant'), false)
 })
 

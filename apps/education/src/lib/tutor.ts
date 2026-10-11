@@ -14,7 +14,7 @@
  */
 import type { Task } from './api'
 
-export type Speaker = 'plip' | 'student'
+export type Speaker = 'jade' | 'student'
 
 export interface Message {
   id: string

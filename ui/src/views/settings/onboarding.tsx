@@ -12,12 +12,12 @@ export const PRIVACY_URL = 'https://plip.dev/privacy'
 
 const ALL: TourStep[] = ['welcome', 'permissions', 'brain', 'try', 'done']
 
-/** No sign-in step: Plip asks for Google after the first task, from Home. */
+/** No sign-in step: Jade asks for Google after the first task, from Home. */
 function stepsFor(_state: SettingsState): TourStep[] {
   return ALL
 }
 
-/** Move the walkthrough; Plip saves it for restarts. */
+/** Move the walkthrough; Jade saves it for restarts. */
 function tour(step: TourStep) {
   settings.set((current) => ({ tour: { ...current.tour, step } }))
   send('tour-go', { step })
@@ -56,7 +56,7 @@ export function Onboarding({ state }: { state: SettingsState }) {
       <header className="relative z-10 flex items-center justify-between px-8 pt-6">
         <div className="flex w-40 items-center gap-2">
           <Mascot size={26} mood="happy" glow={false} />
-          <span className="text-[14px] font-semibold tracking-tight">Plip</span>
+          <span className="text-[14px] font-semibold tracking-tight">Jade</span>
         </div>
         {step !== 'welcome' && (
           <div className="flex items-center gap-1.5" aria-label={`Step ${Math.max(counted.indexOf(step), 0) + 1} of ${counted.length}`}>
@@ -111,7 +111,7 @@ function Frame({ step, steps, title, subtitle, children, footer }: {
 }) {
   return (
     <div>
-      <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-plip-300">Step {steps.indexOf(step) + 1} of {steps.length}</div>
+      <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-jade-300">Step {steps.indexOf(step) + 1} of {steps.length}</div>
       <h1 className="text-gradient text-[30px] font-semibold leading-[1.1] tracking-[-0.035em]">{title}</h1>
       <p className="mt-2 max-w-[560px] text-[14px] leading-relaxed text-white/55">{subtitle}</p>
       <div className="mt-6">{children}</div>
@@ -158,7 +158,7 @@ function Welcome({ next }: { next: () => void }) {
   return (
     <div className="mx-auto max-w-[520px] text-center">
       <div className="flex justify-center"><Mascot size={72} mood="happy" /></div>
-      <h1 className="text-gradient mt-5 text-[38px] font-semibold leading-none tracking-[-0.045em]">Hi, I’m Plip</h1>
+      <h1 className="text-gradient mt-5 text-[38px] font-semibold leading-none tracking-[-0.045em]">Hi, I’m Jade</h1>
       <p className="mt-3.5 text-[15px] leading-relaxed text-white/60">
         I’m a helper that lives at the top of your screen. Hold two keys, ask me something out loud, and I’ll answer, show you
         where to click, or do it for you. No typing, no chat window.
@@ -166,7 +166,7 @@ function Welcome({ next }: { next: () => void }) {
       <ul className="mx-auto mt-7 max-w-[440px] space-y-3 text-left">
         {PROMISES.map(({ icon: Icon, title, text }, position) => (
           <motion.li key={title} initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 + position * 0.08 }} className="flex items-start gap-3">
-            <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-plip-400/15 text-plip-200"><Icon className="size-3.5" /></span>
+            <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-jade-400/15 text-jade-200"><Icon className="size-3.5" /></span>
             <span>
               <span className="block text-[13.5px] font-semibold tracking-tight">{title}</span>
               <span className="block text-[12.5px] text-white/45">{text}</span>
@@ -195,13 +195,13 @@ function SeeAndHear({ state, steps, next, back }: StepProps) {
   const perms = state.permissions
   const talk = useShortcutLabel()
   const rows = [
-    { id: 'accessibility', icon: Hand, title: 'Accessibility', why: `So ${talk} works, and Plip can click and type for you.`, on: ready.hands, value: perms.accessibility },
-    { id: 'screen', icon: MonitorUp, title: 'Screen Recording', why: 'So Plip can see what you’re asking about. Only while you ask.', on: ready.sees, value: perms.screen },
+    { id: 'accessibility', icon: Hand, title: 'Accessibility', why: `So ${talk} works, and Jade can click and type for you.`, on: ready.hands, value: perms.accessibility },
+    { id: 'screen', icon: MonitorUp, title: 'Screen Recording', why: 'So Jade can see what you’re asking about. Only while you ask.', on: ready.sees, value: perms.screen },
     {
       id: perms.microphone === true ? 'speech' : 'microphone',
       icon: Mic,
       title: ready.needSpeech ? 'Microphone and Speech Recognition' : 'Microphone',
-      why: 'So Plip hears you while you hold the keys. Nothing is recorded or saved.',
+      why: 'So Jade hears you while you hold the keys. Nothing is recorded or saved.',
       on: ready.hears,
       value: ready.hears ? true : perms.microphone === true ? perms.speech : perms.microphone,
     },
@@ -214,14 +214,14 @@ function SeeAndHear({ state, steps, next, back }: StepProps) {
     <Frame
       step="permissions"
       steps={steps}
-      title="Let Plip see and hear you"
-      subtitle="For your safety, macOS makes you switch these on yourself. Click Allow: Plip opens the right page in System Settings and shows you exactly which switch to flip."
+      title="Let Jade see and hear you"
+      subtitle="For your safety, macOS makes you switch these on yourself. Click Allow: Jade opens the right page in System Settings and shows you exactly which switch to flip."
       footer={<><Back onClick={back} />{done ? <Forward onClick={next} glow /> : <Later onClick={next} />}</>}
     >
       <RestartBanner state={state} />
       <Card className="divide-y divide-white/[0.05] p-0">
         {rows.map(({ id, icon: Icon, title, why, on, value }) => (
-          <div key={title} className={cn('relative flex items-center gap-4 px-5 py-4 transition', id === current && 'bg-plip-400/[0.05]')}>
+          <div key={title} className={cn('relative flex items-center gap-4 px-5 py-4 transition', id === current && 'bg-jade-400/[0.05]')}>
             {id === current && <span className="absolute inset-y-3 left-0 w-[3px] rounded-full brand-gradient" />}
             <span className={cn('grid size-10 shrink-0 place-items-center rounded-xl hairline', on ? 'bg-mint/10 text-emerald-300' : 'bg-white/[0.06] text-white/75')}>
               {on ? <Check className="size-4" strokeWidth={3} /> : <Icon className="size-4" />}
@@ -236,12 +236,12 @@ function SeeAndHear({ state, steps, next, back }: StepProps) {
       </Card>
       <div className="mt-3 text-[12px] text-white/35">
         Switched one on and it still says Allow?
-        <button className="ml-1 text-plip-300 hover:underline" onClick={() => send('refresh')}>Check again</button>
+        <button className="ml-1 text-jade-300 hover:underline" onClick={() => send('refresh')}>Check again</button>
       </div>
       <AnimatePresence>
         {done && (
           <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-4 flex items-center gap-2 text-[13px] font-medium text-emerald-300">
-            <Check className="size-4" strokeWidth={3} /> Plip can see and hear you now.
+            <Check className="size-4" strokeWidth={3} /> Jade can see and hear you now.
           </motion.div>
         )}
       </AnimatePresence>
@@ -258,8 +258,8 @@ function PickBrain({ state, steps, next, back }: StepProps) {
     <Frame
       step="brain"
       steps={steps}
-      title="Give Plip a brain"
-      subtitle="Plip is the helper; an AI does the thinking. Plip can use an AI you already pay for, like ChatGPT or Claude, at no extra cost. Don’t have one? Google’s is free. Either way it’s a few clicks, nothing to type."
+      title="Give Jade a brain"
+      subtitle="Jade is the helper; an AI does the thinking. Jade can use an AI you already pay for, like ChatGPT or Claude, at no extra cost. Don’t have one? Google’s is free. Either way it’s a few clicks, nothing to type."
       footer={<><Back onClick={back} />{ready.brain ? <Forward onClick={next} glow /> : <Later onClick={next} />}</>}
     >
       <ConnectAI state={state} compact />
@@ -286,13 +286,13 @@ function TryIt({ state, steps, next, back }: StepProps) {
       step="try"
       steps={steps}
       title={<>Hold <span className="text-white">{talk}</span> and ask</>}
-      subtitle="Hold both keys down, say what you want, then let go. Plip answers up at the top of your screen."
+      subtitle="Hold both keys down, say what you want, then let go. Jade answers up at the top of your screen."
       footer={<><Back onClick={back} />{phase === 'done' ? <Forward onClick={next} glow /> : <Later onClick={next} label="Try it later" />}</>}
     >
       {blocker && (
         <Card className="mb-4 flex items-center gap-3 border-sun/20 bg-sun/[0.06] py-3">
           <span className="flex-1 text-[12.5px] text-amber-100/80">
-            {blocker === 'hands' ? 'The keys need Accessibility switched on first.' : blocker === 'brain' ? 'Plip needs a brain to answer.' : 'Plip needs the microphone to hear you.'}
+            {blocker === 'hands' ? 'The keys need Accessibility switched on first.' : blocker === 'brain' ? 'Jade needs a brain to answer.' : 'Jade needs the microphone to hear you.'}
           </span>
           {blocker === 'brain'
             ? <Button size="sm" variant="ghost" onClick={() => tour('brain')}>Give it a brain</Button>
@@ -333,7 +333,7 @@ function LiveLine({ live }: { live: LiveState | null }) {
         )}
         {phase === 'listening' && (
           <>
-            <div className="text-[17px] font-semibold tracking-tight text-plip-200">Listening… let go when you’re done</div>
+            <div className="text-[17px] font-semibold tracking-tight text-jade-200">Listening… let go when you’re done</div>
             <div className="mt-1 truncate text-[13px]">{said ?? <span className="text-white/35">Say anything</span>}</div>
           </>
         )}
@@ -345,14 +345,14 @@ function LiveLine({ live }: { live: LiveState | null }) {
         )}
         {phase === 'answering' && (
           <>
-            <div className="flex items-center gap-1.5 text-[17px] font-semibold tracking-tight">Look up at the top of your screen <ArrowUp className="size-4 text-plip-300" /></div>
+            <div className="flex items-center gap-1.5 text-[17px] font-semibold tracking-tight">Look up at the top of your screen <ArrowUp className="size-4 text-jade-300" /></div>
             <div className="mt-1 line-clamp-2 text-[13px] text-white/50">{live?.answer}</div>
           </>
         )}
         {phase === 'done' && (
           <>
             <div className="flex items-center gap-2 text-[17px] font-semibold tracking-tight text-emerald-300"><Check className="size-4" strokeWidth={3} /> That’s all there is to it</div>
-            <div className="mt-1 line-clamp-2 text-[13px] text-white/50">{live?.answer || 'Plip’s answer is up at the top of your screen.'}</div>
+            <div className="mt-1 line-clamp-2 text-[13px] text-white/50">{live?.answer || 'Jade’s answer is up at the top of your screen.'}</div>
           </>
         )}
         {phase === 'error' && (
@@ -380,13 +380,13 @@ function AllSet({ state }: { state: SettingsState }) {
     <div>
       <div className="flex items-center gap-5">
         <div className="relative shrink-0">
-          <div className="absolute inset-0 -z-10 scale-[1.7] rounded-full bg-plip-400/25 blur-3xl" />
+          <div className="absolute inset-0 -z-10 scale-[1.7] rounded-full bg-jade-400/25 blur-3xl" />
           <Mascot size={84} mood="happy" />
         </div>
         <div>
           <h1 className="text-gradient text-[32px] font-semibold leading-[1.05] tracking-[-0.04em]">You’re all set</h1>
           <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[14px] text-white/55">
-            <ArrowUp className="size-4 text-plip-300" /> I’m up at the top of your screen. Hold <Chord className="h-6 min-w-6 text-[12px]" /> whenever you need a hand.
+            <ArrowUp className="size-4 text-jade-300" /> I’m up at the top of your screen. Hold <Chord className="h-6 min-w-6 text-[12px]" /> whenever you need a hand.
           </p>
         </div>
       </div>
@@ -395,7 +395,7 @@ function AllSet({ state }: { state: SettingsState }) {
         {EXAMPLES.map(({ icon: Icon, text, hint }, position) => (
           <motion.div key={text} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 + position * 0.05 }}>
             <Card className="flex items-center gap-3 p-3">
-              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-plip-400/15 text-plip-200"><Icon className="size-4" /></span>
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-jade-400/15 text-jade-200"><Icon className="size-4" /></span>
               <div className="min-w-0">
                 <div className="truncate text-[13px] font-medium text-white/90">“{text}”</div>
                 <div className="truncate text-[11.5px] text-white/35">{hint}</div>
@@ -404,14 +404,14 @@ function AllSet({ state }: { state: SettingsState }) {
           </motion.div>
         ))}
       </div>
-      <div className="mt-4 text-[12px] text-white/35">You can change anything later in Settings, from the Plip icon in your menu bar.</div>
+      <div className="mt-4 text-[12px] text-white/35">You can change anything later in Settings, from the Jade icon in your menu bar.</div>
       {state.account.available && (
         <div className="mt-2 text-[12px] text-white/35">
-          Plip gives you a guest name now (something like Quiet Nomad, no email) so one more person using it gets counted. Nothing you ask is ever tied to it. Sign in with Google later if you want to.
+          Jade gives you a guest name now (something like Quiet Nomad, no email) so one more person using it gets counted. Nothing you ask is ever tied to it. Sign in with Google later if you want to.
         </div>
       )}
       <div className="mt-7 flex items-center">
-        <Forward onClick={() => send('finish-onboarding')} glow>Start using Plip</Forward>
+        <Forward onClick={() => send('finish-onboarding')} glow>Start using Jade</Forward>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-"""Sign in with Google (through Supabase, PKCE, a one-shot page on 127.0.0.1) before Plip works."""
+"""Sign in with Google (through Supabase, PKCE, a one-shot page on 127.0.0.1) before Jade works."""
 from __future__ import annotations
 
 import base64
@@ -143,7 +143,7 @@ def test_google_sign_in_with_pkce_keeps_the_session_private(tmp_path):
     assert (method, url) == ("POST", f"{URL}/auth/v1/token?grant_type=pkce")
     assert headers == {"apikey": KEY} and body["auth_code"] == "the-code"
     challenge = base64.urlsafe_b64encode(hashlib.sha256(body["code_verifier"].encode()).digest()).rstrip(b"=")
-    assert challenge.decode() == query["code_challenge"]                   # only Plip had the verifier
+    assert challenge.decode() == query["code_challenge"]                   # only Jade had the verifier
     assert acct.identified and not acct.anonymous and acct.status == "" and events[-1] == "in"
     assert acct.distinct_id == "u1"
     assert acct.snapshot()["user"] == {"name": "Ada Lovelace", "email": "ada@example.com", "provider": "google",
@@ -178,7 +178,7 @@ def test_the_landing_page_runs_only_itself_and_keeps_the_code_out_of_sight(tmp_p
     assert "history.replaceState" in page and "http" not in module.STYLE + module.SCRIPT      # nothing remote
     mascot = (Path(__file__).resolve().parents[1] / "ui" / "src" / "components" / "Mascot.tsx").read_text()
     shapes = re.findall(r"const (?:HOOD|FACE) = '([^']+)'", mascot)
-    assert len(shapes) == 2 and all(f'd="{shape}"' in module.MARK for shape in shapes)   # Plip as in the app
+    assert len(shapes) == 2 and all(f'd="{shape}"' in module.MARK for shape in shapes)   # Jade as in the app
     assert module.MARK in page
 
 
@@ -292,7 +292,7 @@ def test_sign_out_forgets_here_tells_supabase_and_becomes_a_guest(tmp_path):
     assert wait_for(lambda: len(supabase.calls) == 2 and acct.anonymous)
     assert supabase.calls[0][:3] == ("POST", f"{URL}/auth/v1/logout?scope=local", {"apikey": KEY,
                                                                                   "Authorization": "Bearer at1"})
-    assert supabase.calls[1][:2] == ("POST", f"{URL}/auth/v1/signup")          # Plip keeps working, as somebody new
+    assert supabase.calls[1][:2] == ("POST", f"{URL}/auth/v1/signup")          # Jade keeps working, as somebody new
     assert acct.user["name"] == "Swift Scout" and acct.distinct_id == "u2"
 
 
@@ -379,7 +379,7 @@ def test_skipping_the_walkthrough_still_makes_a_guest_account_named_like_quiet_n
     assert saved["access_token"] == "an1" and saved["user"]["id"] == "u1" and acct.distinct_id == "u1"
     assert not (tmp_path / "account.json.tmp").exists()                     # written whole, then moved in place
     assert tracked[0] == ("onboarding_step", {"step": "skipped", "account": ""})   # before the account existed
-    svc.handle({"cmd": "finish-onboarding"})                                # again (Start using Plip): no second account
+    svc.handle({"cmd": "finish-onboarding"})                                # again (Start using Jade): no second account
     assert len(supabase.calls) == 1
 
 
@@ -480,7 +480,7 @@ def test_a_google_that_already_has_an_account_signs_in_to_it(tmp_path):
     first = acct.link
     page = browser(first, error="server_error", error_code="identity_already_exists",
                    error_description="Identity+is+already+linked+to+another+user")
-    assert "already have a Plip account" in page
+    assert "already have a Jade account" in page
     assert wait_for(lambda: len(opened) == 2) and acct.status == "waiting"       # straight into a plain sign-in
     assert "identities" not in opened[1] and opened[1] != first and acct.user is None
     browser(acct.link, code="c")
@@ -502,8 +502,8 @@ def test_a_cancelled_link_never_opens_the_browser_or_complains(tmp_path):
     assert opened == [] and acct.status == ""
 
 
-# -- the moments Plip asks: after the 1st and 3rd task, once for an update; three Laters and it stops -------
-def test_plip_asks_for_google_after_the_first_and_third_task_then_an_update_then_stops(tmp_path, monkeypatch):
+# -- the moments Jade asks: after the 1st and 3rd task, once for an update; three Laters and it stops -------
+def test_jade_asks_for_google_after_the_first_and_third_task_then_an_update_then_stops(tmp_path, monkeypatch):
     path = tmp_path / "prefs.json"
     Prefs().save(path)
     tracked = tracker(monkeypatch)
@@ -544,7 +544,7 @@ def test_plip_asks_for_google_after_the_first_and_third_task_then_an_update_then
     prefs.save(path)
     svc.update_found()
     svc.task_done()
-    assert not acct.prompt and len(asks) == 4                                # three Laters: Plip stops asking
+    assert not acct.prompt and len(asks) == 4                                # three Laters: Jade stops asking
     assert Prefs.load(path).asked_on_update is False                         # and an unused moment isn't spent
 
 

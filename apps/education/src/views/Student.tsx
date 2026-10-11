@@ -17,7 +17,7 @@ import { listenOnce, speak, stopSpeaking, voiceSupport, type Listener } from '..
 import {
   Button, ConfirmCard, DemoBanner, Empty, EvidenceBadge, Pill, Section, Spinner, cn, minutes, type Confirm,
 } from '../components/bits'
-import { PlipMark } from '../components/PlipMark'
+import { JadeMark } from '../components/JadeMark'
 import { TeacherPreview } from './TeacherPreview'
 
 const blank: TaskProgress = { hintsUsed: 0, attempts: 0, incorrect: 0, steps: {}, startedAt: null, completedAt: null }
@@ -39,11 +39,11 @@ export function Student() {
     feed.current?.scrollTo({ top: feed.current.scrollHeight, behavior: 'smooth' })
   }, [state.messages.length])
 
-  // Read-aloud follows the newest thing Plip said, and only while it is on.
+  // Read-aloud follows the newest thing Jade said, and only while it is on.
   const lastSpoken = useRef<string | null>(null)
   useEffect(() => {
     if (!readAloud) return
-    const latest = [...state.messages].reverse().find((message) => message.from === 'plip')
+    const latest = [...state.messages].reverse().find((message) => message.from === 'jade')
     if (latest && latest.id !== lastSpoken.current) {
       lastSpoken.current = latest.id
       speak(latest.text)
@@ -80,7 +80,7 @@ export function Student() {
 
       {/* -- session controls, always visible ---------------------------------- */}
       <header className="glass sticky top-0 z-30 flex flex-wrap items-center gap-2 rounded-2xl p-3">
-        <PlipMark className="size-7 shrink-0" />
+        <JadeMark className="size-7 shrink-0" />
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span
@@ -186,7 +186,7 @@ export function Student() {
                     disabled={ended}
                     onClick={() => actions.pickTask(item.taskId)}
                     className={cn('rounded-xl px-3 py-2 text-left text-[13px] transition disabled:opacity-40',
-                      item.taskId === state.taskId ? 'bg-plip-500/20 text-white' : 'bg-white/[0.04] text-white/70 hover:bg-white/[0.08]')}
+                      item.taskId === state.taskId ? 'bg-jade-500/20 text-white' : 'bg-white/[0.04] text-white/70 hover:bg-white/[0.08]')}
                   >
                     <span className="block font-medium leading-snug">{item.title}</span>
                     <span className="mt-0.5 flex items-center gap-1.5 text-[11px] text-white/40">
@@ -208,7 +208,7 @@ export function Student() {
                       data-testid={`step-${step.id}`}
                       checked={Boolean(progress.steps[step.id])}
                       onChange={() => actions.toggleStep(step.id)}
-                      className="mt-0.5 size-3.5 shrink-0 accent-plip-500"
+                      className="mt-0.5 size-3.5 shrink-0 accent-jade-500"
                     />
                     {step.label}
                   </label>
@@ -228,7 +228,7 @@ export function Student() {
               onClick={() => setConfirm({
                 title: `Mark “${task.title}” as finished?`,
                 lines: [
-                  'This is recorded as you saying you finished it — not as Plip deciding you did.',
+                  'This is recorded as you saying you finished it — not as Jade deciding you did.',
                   `It goes down with ${progress.attempts} answer${progress.attempts === 1 ? '' : 's'} tried and ${progress.hintsUsed} hint${progress.hintsUsed === 1 ? '' : 's'} asked for.`,
                   state.sharing ? 'Your teacher can see those counts.' : 'Nothing is shared with a teacher.',
                 ],
@@ -260,7 +260,7 @@ export function Student() {
               <div
                 key={message.id}
                 className={cn('max-w-[85%] rounded-2xl px-3 py-2 text-[13px] leading-relaxed',
-                  message.from === 'student' ? 'self-end bg-plip-500/25 text-white' : 'self-start bg-white/[0.06] text-white/85',
+                  message.from === 'student' ? 'self-end bg-jade-500/25 text-white' : 'self-start bg-white/[0.06] text-white/85',
                   message.kind === 'hint' && 'bg-sun/10 text-sun',
                   message.kind === 'check' && 'bg-dew/10 text-dew')}
               >
@@ -305,7 +305,7 @@ export function Student() {
                   data-testid="read-aloud"
                   disabled={!voice.speaking}
                   onClick={() => { setReadAloud((on) => { if (on) stopSpeaking(); return !on }) }}
-                  title={voice.speaking ? 'Read Plip’s replies out loud' : voice.why}
+                  title={voice.speaking ? 'Read Jade’s replies out loud' : voice.why}
                   aria-label="Read replies aloud"
                 >
                   {readAloud ? <Volume2 className="size-3.5 text-dew" /> : <VolumeX className="size-3.5" />}

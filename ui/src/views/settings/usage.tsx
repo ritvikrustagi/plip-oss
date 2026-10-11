@@ -40,7 +40,7 @@ function hourLabel(hour: number): string {
   return hour === 0 ? '12am' : hour < 12 ? `${hour}am` : hour === 12 ? '12pm' : `${hour - 12}pm`
 }
 
-/** Activity → Usage: what Plip sent to your brain, and what it would cost at API prices. */
+/** Activity → Usage: what Jade sent to your brain, and what it would cost at API prices. */
 export function UsagePanel({ state }: { state: SettingsState }) {
   const [period, setPeriod] = useState<Period>('30')
   const usage = state.usage
@@ -49,7 +49,7 @@ export function UsagePanel({ state }: { state: SettingsState }) {
   return (
     <div>
       <div className="mb-5 flex items-center justify-between gap-6">
-        <p className="text-[12.5px] leading-relaxed text-white/45">Everything Plip sent to your brain from this Mac, and what it would cost at pay-per-use API prices. It stays on this Mac.</p>
+        <p className="text-[12.5px] leading-relaxed text-white/45">Everything Jade sent to your brain from this Mac, and what it would cost at pay-per-use API prices. It stays on this Mac.</p>
         <Segmented value={period} onChange={setPeriod}
           options={[{ value: '7', label: '7 days' }, { value: '30', label: '30 days' }, { value: 'all', label: 'All time' }]} />
       </div>
@@ -64,7 +64,7 @@ function Empty() {
     <Card className="py-10 text-center">
       <div className="text-[14px] font-semibold text-white/80">Nothing yet</div>
       <p className="mx-auto mt-1.5 max-w-[380px] text-[12.5px] leading-relaxed text-white/45">
-        Hold {talk} and ask Plip something. Every request shows up here with the tokens it used and what that would cost.
+        Hold {talk} and ask Jade something. Every request shows up here with the tokens it used and what that would cost.
       </p>
     </Card>
   )

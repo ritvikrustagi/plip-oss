@@ -152,19 +152,19 @@ export const DEMO_SETTINGS: Partial<SettingsState> = {
   stats: { actionsWeek: 47, answers: 128, minutesSaved: 226 },
   memory: {
     profile: {
-      'name.full': 'Hussain Syed', 'name.first': 'Hussain', 'name.last': 'Syed', email: 'hussain@plip.app', phone: '+1 555 010 2000',
-      'address.street': '1 Main St', 'address.city': 'Brooklyn', 'address.state': 'NY', 'address.postal': '11201', company: 'Plip Labs',
+      'name.full': 'Hussain Syed', 'name.first': 'Hussain', 'name.last': 'Syed', email: 'hussain@jade.app', phone: '+1 555 010 2000',
+      'address.street': '1 Main St', 'address.city': 'Brooklyn', 'address.state': 'NY', 'address.postal': '11201', company: 'Jade Labs',
       title: 'Founder', github: 'ritvikrustagi', birthday: '1999-03-07',
     },
     facts: [
       { id: 'f1', key: 'name.full', label: 'Name', value: 'Hussain Syed', sensitive: false, sources: ['Contacts', 'ChatGPT'] },
-      { id: 'f2', key: 'email', label: 'Email', value: 'hussain@plip.app', sensitive: false, sources: ['Contacts', 'Browser autofill'] },
+      { id: 'f2', key: 'email', label: 'Email', value: 'hussain@jade.app', sensitive: false, sources: ['Contacts', 'Browser autofill'] },
       { id: 'f3', key: 'phone', label: 'Phone', value: '+1 555 010 2000', sensitive: false, sources: ['Contacts'] },
       { id: 'f4', key: 'address.street', label: 'Street', value: '1 Main St', sensitive: false, sources: ['Browser autofill'] },
-      { id: 'f5', key: 'company', label: 'Company', value: 'Plip Labs', sensitive: false, sources: ['Contacts'] },
-      { id: 'f6', key: 'note', label: 'Note', value: 'Prefers aisle seats on flights', sensitive: false, sources: ['You told Plip'] },
+      { id: 'f5', key: 'company', label: 'Company', value: 'Jade Labs', sensitive: false, sources: ['Contacts'] },
+      { id: 'f6', key: 'note', label: 'Note', value: 'Prefers aisle seats on flights', sensitive: false, sources: ['You told Jade'] },
       { id: 'f7', key: 'note', label: 'Note', value: 'Diet: vegetarian', sensitive: false, sources: ['ChatGPT'] },
-      { id: 'f8', key: 'note', label: 'Note', value: '•••• 4567', sensitive: true, sources: ['You told Plip'] },
+      { id: 'f8', key: 'note', label: 'Note', value: '•••• 4567', sensitive: true, sources: ['You told Jade'] },
     ],
     imports: {
       contacts: { count: 12, at: Date.now() / 1000 - 86400 },

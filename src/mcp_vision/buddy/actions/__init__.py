@@ -1,4 +1,4 @@
-"""Things Plip can do on the Mac, requested by the model with ``[DO:name {json}]`` tags."""
+"""Things Jade can do on the Mac, requested by the model with ``[DO:name {json}]`` tags."""
 from __future__ import annotations
 
 from mcp_vision.buddy.actions.base import ActionContext, ActionError, ActionResult, ActionSpec, Preview

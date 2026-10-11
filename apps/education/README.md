@@ -1,4 +1,4 @@
-# Plip for school — student PWA + teacher summaries
+# Jade for school — student PWA + teacher summaries
 
 A Chromebook-friendly study companion for students, and a summary for their
 teacher of what they actually did. Browser only: no macOS APIs, no native
@@ -81,14 +81,14 @@ counts, labelled as such, each carrying the `basis` it came from. The test suite
 fails the build if the words attention, mastery, proficiency, engagement or
 grade ever reach a teacher-facing string.
 
-## Reused from Plip
+## Reused from Jade
 
 This app is a separate bundle from [`ui/`](../../ui) (which builds a single HTML
 file for the macOS host and is not touched here), but it is the same product:
 
 - the tiny `Store` + `useSyncExternalStore` pattern from `ui/src/bridge.ts`;
-- the ink/plip/dew/sun palette, glass and card surfaces from `ui/src/styles.css`;
-- Plip's **ask before you act** rule — `Preview` in
+- the ink/jade/dew/sun palette, glass and card surfaces from `ui/src/styles.css`;
+- Jade's **ask before you act** rule — `Preview` in
   [`src/mcp_vision/buddy/actions/base.py`](../../src/mcp_vision/buddy/actions/base.py)
   and the island's confirm card — reused as `ConfirmCard`, for sharing, ending a
   session, marking a task finished and deleting everything;

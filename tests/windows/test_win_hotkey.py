@@ -122,7 +122,7 @@ def test_with_user32_it_polls():
 
 
 def test_windows_needs_no_permission_prompt():
-    assert keyboard_owner() == "Plip", "unlike macOS, nothing has to be granted first"
+    assert keyboard_owner() == "Jade", "unlike macOS, nothing has to be granted first"
     assert can_listen(FakeUser32()) is True
     assert can_listen() is ON_WINDOWS, "this machine's answer, not a guess"
 
