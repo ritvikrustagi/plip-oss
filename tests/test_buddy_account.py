@@ -9,6 +9,7 @@ import socket
 import threading
 import time
 import urllib.request
+from contextlib import contextmanager
 from urllib.parse import parse_qs, urlparse
 
 from mcp_vision import analytics
@@ -73,6 +74,25 @@ def wait_for(check, tries=200):
             return True
         time.sleep(0.01)
     return False
+
+
+@contextmanager
+def hold_sign_out_reply(acct):
+    """Keep the immediate sign-out state observable before guest creation runs."""
+    release = threading.Event()
+    transport = acct.transport
+
+    def held(method, url, headers, body):
+        if '/auth/v1/logout' in url:
+            assert release.wait(10), 'the test never released the sign-out reply'
+        return transport(method, url, headers, body)
+
+    acct.transport = held
+    try:
+        yield release
+    finally:
+        release.set()
+        assert wait_for(lambda: acct.anonymous), 'replacement guest was not created'
 
 
 def service_for(acct, path, perms=None):
@@ -247,8 +267,9 @@ def test_the_google_picture_is_fetched_once_and_kept_here(tmp_path):
     moved = {**SESSION, "user": {**USER, "user_metadata": {"avatar_url": "https://lh3.example/b=s96-c"}}}
     acct._keep(moved)                                                               # a new one replaces it
     assert picture(acct) and fetched[-1] == "https://lh3.example/b=s192-c"
-    acct.sign_out()
-    assert not (tmp_path / "account.json").exists()
+    with hold_sign_out_reply(acct):
+        acct.sign_out()
+        assert not (tmp_path / "account.json").exists()
 
 
 def test_no_picture_or_a_bad_one_keeps_the_initial(tmp_path):
@@ -265,8 +286,9 @@ def test_sign_out_forgets_here_tells_supabase_and_becomes_a_guest(tmp_path):
     acct, supabase, _opened, _events = account(tmp_path, (200, {}), (200, {**ANON_SESSION, "user": {
         **ANON_USER, "id": "u2", "user_metadata": {"name": "Swift Scout"}}}))
     acct._keep(SESSION)
-    acct.sign_out()
-    assert not acct.identified and not (tmp_path / "account.json").exists()
+    with hold_sign_out_reply(acct):
+        acct.sign_out()
+        assert not acct.identified and not (tmp_path / "account.json").exists()
     assert wait_for(lambda: len(supabase.calls) == 2 and acct.anonymous)
     assert supabase.calls[0][:3] == ("POST", f"{URL}/auth/v1/logout?scope=local", {"apikey": KEY,
                                                                                   "Authorization": "Bearer at1"})
@@ -290,8 +312,9 @@ def test_settings_show_the_account_and_send_its_commands(tmp_path):
     svc.handle({"cmd": "account-cancel"})
     assert posted[-1]["state"]["account"]["status"] == ""
     acct._keep(SESSION)
-    svc.handle({"cmd": "account-sign-out"})
-    assert posted[-1]["state"]["account"] == {**posted[-1]["state"]["account"], "identified": False, "user": None}
+    with hold_sign_out_reply(acct):
+        svc.handle({"cmd": "account-sign-out"})
+        assert posted[-1]["state"]["account"] == {**posted[-1]["state"]["account"], "identified": False, "user": None}
     assert reloads == []                                                   # the app follows on_change instead
     plain = SettingsService(engines=lambda: [], settings=Settings, reload=lambda: None, post=lambda _m: None,
                             prefs_path=path)
