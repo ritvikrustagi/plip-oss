@@ -166,7 +166,9 @@ export function AccountTab({ state }: { state: SettingsState }) {
             <Row title="Google" detail={`You sign in to Plip with your Google account${since ? `. Member since ${since}` : ''}.`} action={<GoogleMark />} />
             <Row
               title="Sign out"
-              detail="Plip keeps working on this Mac as a guest. Your memory, history and settings stay."
+              detail={state.memory?.sync?.enabled
+                ? 'Plip keeps working as a guest. Your synced memory stays with this account and returns when you sign back in.'
+                : 'Plip keeps working on this Mac as a guest. Your memory, history and settings stay.'}
               action={<Button variant="ghost" onClick={() => send('account-sign-out')}>Sign out</Button>}
             />
           </Rows>
@@ -179,8 +181,10 @@ export function AccountTab({ state }: { state: SettingsState }) {
             detail={signedIn ? 'From Google, so we know who uses Plip. No contacts, nothing else.'
               : 'Picked at random here, so you count as one person using Plip. Google adds your real name, email and picture when you sign in.'} />
           <Row
-            title="Not what you do with Plip"
-            detail="What you ask, your screen, memory and history stay on this Mac and are never tied to your account. Only which setup steps you reached are counted."
+            title={state.memory?.sync?.enabled ? 'Saved memory' : 'Not what you do with Plip'}
+            detail={state.memory?.sync?.enabled
+              ? 'Saved facts sync with your account. Detected sensitive facts, conversation history and learning-event logs stay on this device. Setup steps are counted separately.'
+              : 'What you ask, your screen, memory and history stay on this Mac and are never tied to your account. Only which setup steps you reached are counted.'}
           />
         </Rows>
       </Section>

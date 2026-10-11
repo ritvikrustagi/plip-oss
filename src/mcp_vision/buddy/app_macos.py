@@ -331,9 +331,7 @@ def run_buddy_app() -> None:
     threading.Thread(target=loop.run_forever, daemon=True, name="plip-loop").start()
     history = History()
     registry = EngineRegistry(lambda: state["settings"])
-    from mcp_vision.buddy.memory import Memory
-
-    memory = Memory()
+    from mcp_vision.buddy.memory.postgres import make_memory
     usage_log = UsageLog()                # the Usage tab: one row per request
     from mcp_vision.buddy.account import Account
 
@@ -342,6 +340,8 @@ def run_buddy_app() -> None:
     account = Account(state["settings"].supabase_url, state["settings"].supabase_key, open_url=_open_url,
                       on_change=lambda: AppHelper.callAfter(account_changed),
                       on_signed_in=lambda: AppHelper.callAfter(signed_in))
+    memory = make_memory(state["settings"], account=account)
+    state["memory_owner"] = account.distinct_id
 
     def main(fn):
         return lambda *args: AppHelper.callAfter(fn, *args)
@@ -460,6 +460,13 @@ def run_buddy_app() -> None:
 
     # -- the account: Settings follows it; the hotkey never waits for it -----------------------------
     def account_changed() -> None:
+        owner = account.distinct_id
+        if state["settings"].memory_sync and state["memory_owner"] != owner:
+            state["memory_owner"] = owner
+            controller.stop()
+            if controller.companion is not None:
+                controller.companion.conversation.clear()
+            rebuild(probe=False)
         service.push()
 
     def signed_in() -> None:
@@ -633,6 +640,7 @@ def run_buddy_app() -> None:
         """Worker thread: read one source, merge it, refresh Settings."""
         from mcp_vision.buddy.actions.host import default_host
         from mcp_vision.buddy.memory import importers
+        destination = memory.for_account() if hasattr(memory, "for_account") else memory
 
         def work():
             host, home = default_host(), os.path.expanduser("~")
@@ -644,8 +652,11 @@ def run_buddy_app() -> None:
                 facts, error = importers.import_autofill(home)
             else:
                 return
-            memory.merge(source, facts, error)
-            memory.save()
+            try:
+                destination.merge(source, facts, error)
+                destination.save()
+            except RuntimeError:
+                return                         # the account changed during the import
             AppHelper.callAfter(service.push)
         threading.Thread(target=work, daemon=True, name=f"plip-import-{source}").start()
 
@@ -707,6 +718,8 @@ def run_buddy_app() -> None:
         hotkey_works=lambda: hotkey_mode() != "none",
         apply_hotkey=lambda name: apply_hotkey(name),
     )
+    if hasattr(memory, "on_change"):
+        memory.on_change = lambda: AppHelper.callAfter(service.push)
 
     def handle_command(command: dict[str, Any]) -> None:
         name = command.get("cmd")
@@ -803,6 +816,9 @@ def run_buddy_app() -> None:
     else:
         print(f"Plip is in your menu bar and notch. Hold {controller.shortcut} and ask.", flush=True)
     import atexit
+
+    if hasattr(memory, "close"):
+        atexit.register(memory.close)
 
     # Quitting: drop the warm brain process so nothing is left waiting for a question.
     atexit.register(lambda: getattr(getattr(controller.companion, "brain", None), "close", lambda: None)())

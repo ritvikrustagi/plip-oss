@@ -17,7 +17,8 @@ removed in Supabase signs out here.
 What leaves the Mac: the sign-in itself (Google tells Supabase your name, email and picture), that one
 renewal per launch, fetching the picture from Google when it's new, and the setup funnel in
 ``mcp_vision.analytics`` (which step of setup was reached, never what you asked) with the account id along.
-Nothing about what you ask Plip.
+Nothing about what you ask Plip. Optional memory sync (buddy.memory.postgres) separately sends
+saved non-sensitive facts using this account's JWT when PLIP_MEMORY_SYNC is enabled.
 
 No config (``PLIP_SUPABASE_URL`` + ``PLIP_SUPABASE_KEY``: the environment, ``~/.config/mcp-vision/.env``,
 or baked into a release build) means no account at all, and Plip works the same (running from source).
@@ -167,7 +168,7 @@ class Account:
         self._server: HTTPServer | None = None
         self._verifier = ""
         self._lock = threading.Lock()
-        self._writing = threading.Lock()           # account.json: sign-in, the picture, sign-out
+        self._writing = threading.RLock()          # account.json: sign-in, the picture, sign-out
 
     # -- state -----------------------------------------------------------------------------------
     @property
@@ -205,6 +206,11 @@ class Account:
         """The account id, for the funnel events ("" without an account on the server)."""
         user = self.user
         return str(user.get("id") or "") if user else ""
+
+    def memory_credentials(self) -> tuple[str, str]:
+        """Read identity and bearer token together; never expose them through the UI snapshot."""
+        session = self._session()
+        return str((session.get("user") or {}).get("id") or ""), str(session.get("access_token") or "")
 
     def snapshot(self) -> dict[str, Any]:
         user = self.user
@@ -485,18 +491,22 @@ class Account:
         except Exception as exc:
             log.info("account: couldn't renew the session (%s), staying signed in", type(exc).__name__)
             return
-        if 200 <= status < 300 and self._keep(body):
-            self.on_change()
-        elif status in GONE:
-            if self.anonymous:                     # purged on the server: keep the name here, no new row
-                log.info("account: the guest session is over (%s), keeping the name locally", status)
-                user = self._session().get("user") or {}
-                with self._writing:
+        with self._writing:
+            # A refresh may overlap sign-out/sign-in (including a memory sync's 401).
+            # Never revive or overwrite the session that replaced the one we sent.
+            if self._session().get("refresh_token") != session["refresh_token"]:
+                return
+            if 200 <= status < 300 and self._keep(body):
+                self.on_change()
+            elif status in GONE:
+                if self.anonymous:                 # purged on the server: keep the name locally
+                    log.info("account: the guest session is over (%s), keeping the name locally", status)
+                    user = self._session().get("user") or {}
                     self._save({"user": {**user, "id": "", "stale": True}})
-            else:
-                log.info("account: Supabase ended the session (%s), signing out", status)
-                self._forget()
-            self.on_change()
+                else:
+                    log.info("account: Supabase ended the session (%s), signing out", status)
+                    self._forget()
+                self.on_change()
 
     def sign_out(self) -> None:
         """Forget the account here right away, then tell Supabase (best effort, in the background).
