@@ -154,7 +154,7 @@ export const DEMO_SETTINGS: Partial<SettingsState> = {
     profile: {
       'name.full': 'Hussain Syed', 'name.first': 'Hussain', 'name.last': 'Syed', email: 'hussain@plip.app', phone: '+1 555 010 2000',
       'address.street': '1 Main St', 'address.city': 'Brooklyn', 'address.state': 'NY', 'address.postal': '11201', company: 'Plip Labs',
-      title: 'Founder', github: 'hussainn7', birthday: '1999-03-07',
+      title: 'Founder', github: 'ritvikrustagi', birthday: '1999-03-07',
     },
     facts: [
       { id: 'f1', key: 'name.full', label: 'Name', value: 'Hussain Syed', sensitive: false, sources: ['Contacts', 'ChatGPT'] },

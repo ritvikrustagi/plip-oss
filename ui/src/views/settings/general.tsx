@@ -5,7 +5,7 @@ import { send, settings, type SettingsState } from '../../bridge'
 import { cn } from '../../components/bits'
 import { Button, Header, Row, Rows, Section, Segmented, Toggle } from './ui'
 
-export const REPO_URL = 'https://github.com/hussainn7/plip-oss'
+export const REPO_URL = 'https://github.com/ritvikrustagi/plip-oss'
 
 export type Composer = 'bug' | 'feature' | null
 

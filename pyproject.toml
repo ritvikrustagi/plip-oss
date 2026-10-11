@@ -36,9 +36,9 @@ dev = ["pytest>=8.0.0", "ruff>=0.14,<1"]
 plip = "mcp_vision.buddy.cli:buddy"
 
 [project.urls]
-Homepage = "https://github.com/hussainn7/plip-oss"
-Repository = "https://github.com/hussainn7/plip-oss"
-Issues = "https://github.com/hussainn7/plip-oss/issues"
+Homepage = "https://github.com/ritvikrustagi/plip-oss"
+Repository = "https://github.com/ritvikrustagi/plip-oss"
+Issues = "https://github.com/ritvikrustagi/plip-oss/issues"
 
 [build-system]
 requires = ["hatchling"]
