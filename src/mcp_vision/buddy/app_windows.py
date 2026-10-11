@@ -195,6 +195,12 @@ class StripWindow:
                            ("Stop", lambda: (self.shell.stop_session(), refresh()))):
             self._button(label, job, parent=actions)
 
+        tutor = tk.BooleanVar(value=self.shell.prefs.tutor)
+        tk.Checkbutton(panel, text="Tutor mode: one hint at a time, never the answer", variable=tutor,
+                       command=lambda: (self.shell.set_tutor(tutor.get()), self.schedule_redraw()), bg=BG, fg=FG,
+                       selectcolor="#1d212a", activebackground=BG, activeforeground=FG, anchor="w",
+                       font=("Segoe UI", 10)).pack(fill="x", padx=14, pady=(10, 0))
+
         rows: dict[str, dict] = {}
         for row in self.shell.consent.as_rows():
             holder = tk.Frame(panel, bg=BG)

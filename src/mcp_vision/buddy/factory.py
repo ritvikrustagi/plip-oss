@@ -11,6 +11,10 @@ from mcp_vision.buddy.settings import BuddySettings
 from mcp_vision.buddy.store import Prefs
 
 DEPTH_EFFORT = {"fast": "low", "balanced": "medium", "deep": "high"}
+# Tutor mode looks and reads but never does the work: everything else is refused with this sentence.
+TUTOR_ACTIONS = frozenset({"look", "read_page", "scroll", "scroll_to", "wait", "remember", "forget", "set_timer"})
+TUTOR_REFUSAL = ("Plip is in tutor mode, so it teaches you how instead of doing it for you. "
+                 "Switch tutor mode off in Plip's settings to have Plip do things.")
 _DEFAULT = object()      # "not given", so an explicit ``context=None`` can mean "no screen map"
 
 
@@ -92,7 +96,7 @@ def make_context(settings: BuddySettings):
 
 
 def make_actions(settings: BuddySettings, prefs: Prefs | None = None, *, memory=None,
-                 host=None, source: str = "voice"):
+                 host=None, source: str = "voice", tutor: bool = False):
     from mcp_vision.buddy.actions import ActionContext, ActionEngine, ActionLog
     from mcp_vision.buddy.actions.host import default_host
     from mcp_vision.paths import state_dir
@@ -101,8 +105,12 @@ def make_actions(settings: BuddySettings, prefs: Prefs | None = None, *, memory=
     ctx = ActionContext(host=host or default_host(), memory=memory)
     # On Windows the AppleScript-only actions are refused by name, with the reason, and are
     # left out of the catalogue the model sees. On macOS the guard is a no-op.
+    guard = action_guard()
+    if tutor:
+        platform_guard = guard
+        guard = lambda name: platform_guard(name) or ("" if name in TUTOR_ACTIONS else TUTOR_REFUSAL)  # noqa: E731
     return ActionEngine(ctx, log=ActionLog(), undo_path=state_dir() / "undo.json", source=source,
-                        unsupported=action_guard())
+                        unsupported=guard)
 
 
 def make_speaker(settings: BuddySettings) -> Speaker | None:
@@ -121,6 +129,7 @@ def make_companion(settings: BuddySettings, *, pointer: Pointer | None = None,
                    notes=None, memory=None, usage=None, usage_kind: str = "voice",
                    context=_DEFAULT) -> Companion:
     settings = apply_prefs(settings, prefs)
+    tutor = prefs.tutor if prefs is not None else False
     if memory is not None and hasattr(memory, "for_account"):
         memory = memory.for_account()
     jev = make_jev(settings)
@@ -142,10 +151,11 @@ def make_companion(settings: BuddySettings, *, pointer: Pointer | None = None,
         observer=observer,
         watcher=watcher,
         walkthroughs=prefs.walkthroughs if prefs is not None else True,
-        actions=actions if actions is not None else make_actions(settings, prefs, memory=memory),
+        actions=actions if actions is not None else make_actions(settings, prefs, memory=memory, tutor=tutor),
         notes=notes if notes is not None else make_notes(memory),
         usage=usage,
         usage_kind=usage_kind,
+        tutor=tutor,
     )
 
 

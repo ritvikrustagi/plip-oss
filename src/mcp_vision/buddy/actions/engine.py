@@ -218,7 +218,7 @@ class ActionEngine:
             return Outcome("disabled", spec, args, message=f"My {spec.skill} skill is switched off in settings.")
         reason = self.unsupported(name)
         if reason:
-            return Outcome("disabled", spec, args, message=reason, hint=f"{name} does not exist on this platform")
+            return Outcome("disabled", spec, args, message=reason, hint=f"{name} is switched off here; don't retry it")
         if spec.preview is not None:
             try:
                 preview = await asyncio.wait_for(asyncio.to_thread(_call_sync, spec.preview, self.ctx, args),

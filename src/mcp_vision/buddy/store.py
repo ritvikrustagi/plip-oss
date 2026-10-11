@@ -29,6 +29,7 @@ class Prefs:
     engine: str = ""                 # engine id; "" = best available
     depth: str = "balanced"          # fast | balanced | deep
     walkthroughs: bool = True
+    tutor: bool = True               # teach with step-by-step hints instead of doing it for them
     sounds: bool = True              # notch UI sounds (buddy/sounds.py)
     buddy: bool = True               # show Plip by the cursor while idle
     companion: str = "notch"         # notch: Plip lives in the notch and drips out to point | cursor | hidden

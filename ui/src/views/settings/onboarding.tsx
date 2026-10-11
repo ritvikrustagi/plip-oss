@@ -270,7 +270,7 @@ function PickBrain({ state, steps, next, back }: StepProps) {
 
 // -- 3. try it -----------------------------------------------------------------------------------
 
-const SAY = ['What can you do?', 'Where’s the Wi‑Fi menu?', 'Open Notes']
+const SAY = ['What can you do?', 'Where’s the Wi‑Fi menu?', 'Help me with this problem']
 
 function TryIt({ state, steps, next, back }: StepProps) {
   const ready = readiness(state)
