@@ -33,13 +33,14 @@ happens until you say yes.
 
 ## Download
 
-Free and open source, on both platforms. Everything is on the
-**[Releases page](https://github.com/hussainn7/plip-oss/releases/latest)**.
+Free and open source, on both platforms. The signed Mac build comes from
+**[Plip's releases](https://github.com/hussainn7/plip-oss/releases/latest)**; the Windows build comes from
+**[this fork's releases](https://github.com/ritvikrustagi/plip-oss/releases/latest)**, where the Windows port lives.
 
 | | |
 |---|---|
 | **[⬇ Plip for Mac (.dmg)](https://github.com/hussainn7/plip-oss/releases/latest)** | macOS 13+, Apple Silicon. Signed and notarised. Lives in the notch. |
-| **[⬇ Plip for Windows (.zip)](https://github.com/hussainn7/plip-oss/releases/latest)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
+| **[⬇ Plip for Windows (.zip)](https://github.com/ritvikrustagi/plip-oss/releases/latest)** | Windows 10/11. **Early build — unsigned, no installer yet.** A strip at the top of your screen. |
 
 ### Mac
 
@@ -56,13 +57,13 @@ Free and open source, on both platforms. Everything is on the
 
 The Windows port is new and **has not been run on a real Windows machine yet** — it was built and
 tested on a Mac against the Win32 API. Expect rough edges and please
-[report them](https://github.com/hussainn7/plip-oss/issues). [docs/WINDOWS.md](docs/WINDOWS.md)
+[report them](https://github.com/ritvikrustagi/plip-oss/issues). [docs/WINDOWS.md](docs/WINDOWS.md)
 says exactly what works, what doesn't, and why.
 
 One line in PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/ritvikrustagi/plip-oss/main/scripts/install.ps1 | iex
 ```
 
 Or from the zip: install **Python 3.12** from [python.org](https://www.python.org/downloads/) — keep the
@@ -97,7 +98,7 @@ plip                 # Plip moves into your notch; the dashboard opens on first 
 
 ```powershell
 # Windows
-irm https://raw.githubusercontent.com/hussainn7/plip-oss/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/ritvikrustagi/plip-oss/main/scripts/install.ps1 | iex
 plip                 # the strip appears at the top of your screen
 ```
 

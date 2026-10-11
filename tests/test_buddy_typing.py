@@ -140,11 +140,32 @@ def test_retyping_what_a_field_already_reads_leaves_it_alone_and_a_doubled_one_g
     assert out.status == "done" and host.value == "active" and "paste" not in kinds(host)
 
 
+def virtual_clock(monkeypatch, start=1_000.0):
+    """A clock that only moves when the code under test sleeps.
+
+    The fields above stamp "Accessibility will show this at T+lag" against
+    time.monotonic(), and core._settled races that against a deadline it sets a
+    moment later. On a real clock the whole margin is however long the gap
+    between those two lines happens to be, which a loaded CI runner loses: the
+    text appears inside the verify window, the paste never fires, and the test
+    fails for a reason that has nothing to do with the code it is testing.
+
+    Here time passes only inside time.sleep(), so the order of events is exactly
+    the one the test is describing. Both this module and core read the clock
+    through the stdlib, so patching it there is enough for both.
+    """
+    now = [start]
+    monkeypatch.setattr(time, "monotonic", lambda: now[0])
+    monkeypatch.setattr(time, "sleep", lambda seconds: now.__setitem__(0, now[0] + seconds))
+    return now
+
+
 def test_keys_that_land_after_the_wait_get_replaced_by_the_paste_not_doubled(monkeypatch):
     from mcp_vision.buddy.actions import core
 
+    virtual_clock(monkeypatch)
     monkeypatch.setattr(core, "VERIFY", 0.1)
-    host = Fields("", lag=0.15)
+    host = Fields("", lag=0.15)                  # shows up after the wait is over, so nothing to verify
     e, _ = hands(host=host)
     out = run(e.handle("type_text", {"text": "active", "id": 2}))
     assert out.status == "done" and host.value == "active"
