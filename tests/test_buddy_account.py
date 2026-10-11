@@ -177,8 +177,8 @@ def test_the_landing_page_runs_only_itself_and_keeps_the_code_out_of_sight(tmp_p
         assert f"{directive} 'sha256-{digest}'" in csp
     assert "history.replaceState" in page and "http" not in module.STYLE + module.SCRIPT      # nothing remote
     mascot = (Path(__file__).resolve().parents[1] / "ui" / "src" / "components" / "Mascot.tsx").read_text()
-    shapes = re.findall(r"const (?:HOOD|FACE) = '([^']+)'", mascot)
-    assert len(shapes) == 2 and all(f'd="{shape}"' in module.MARK for shape in shapes)   # Jade as in the app
+    shapes = re.findall(r"const BODY_PATH = '([^']+)'", mascot)
+    assert len(shapes) == 1 and all(f'd="{shape}"' in module.MARK for shape in shapes)   # Jade as in the app
     assert module.MARK in page
 
 

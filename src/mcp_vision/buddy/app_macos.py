@@ -53,31 +53,56 @@ def _menu_target_class():
 
 
 def _jade_icon():
-    """Menu bar glyph: the app icon's hood silhouette with its pill eye cut out (template image)."""
+    """Menu bar glyph: the app icon's round body with its pill eye cut out, under its cap (template image)."""
     import AppKit
 
     size = 18.0
     image = AppKit.NSImage.alloc().initWithSize_(AppKit.NSMakeSize(size, size))
     image.lockFocus()
-    # Same curves as the UI mascot (64-unit box, y down), scaled into 18 pt with y flipped.
+    # Same shapes as the UI mascot (64-unit box, y down), scaled into 18 pt with y flipped.
     scale = size / 64.0
+    clear, over = AppKit.NSCompositingOperationClear, AppKit.NSCompositingOperationSourceOver
+    context = AppKit.NSGraphicsContext.currentContext()
 
     def point(x, y):
         return AppKit.NSMakePoint(x * scale, size - y * scale)
 
-    hood = AppKit.NSBezierPath.bezierPath()
-    hood.moveToPoint_(point(15, 60))
-    for c1, c2, end in (((9, 57), (8, 52), (8.2, 46)), ((8.5, 30), (22, 4), (37, 4.1)),
-                        ((42, 4), (45.5, 6.5), (47.3, 9.4)), ((51, 14), (54.5, 21), (55.5, 27.1)),
-                        ((56.5, 34), (52, 40), (45.9, 43.5)), ((40, 47), (31, 48.5), (25.9, 50.6)),
-                        ((22, 53), (19, 61), (15, 60))):
-        hood.curveToPoint_controlPoint1_controlPoint2_(point(*end), point(*c1), point(*c2))
-    hood.closePath()
+    body = AppKit.NSBezierPath.bezierPath()
+    body.moveToPoint_(point(31, 14))
+    for c1, c2, end in (((45, 14), (54, 25), (54, 39)), ((54, 52), (44, 61), (31, 61)),
+                        ((18, 61), (9, 52), (9, 39)), ((9, 25), (17, 14), (31, 14))):
+        body.curveToPoint_controlPoint1_controlPoint2_(point(*end), point(*c1), point(*c2))
+    body.closePath()
     AppKit.NSColor.blackColor().setFill()
-    hood.fill()
-    AppKit.NSGraphicsContext.currentContext().setCompositingOperation_(AppKit.NSCompositingOperationClear)
-    eye = AppKit.NSMakeRect(40.0 * scale, size - 31.5 * scale, 6.6 * scale, 12.0 * scale)
-    AppKit.NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius_(eye, 3.3 * scale, 3.3 * scale).fill()
+    body.fill()
+    context.setCompositingOperation_(clear)
+    eye = AppKit.NSMakeRect(38.8 * scale, size - 41.6 * scale, 5.0 * scale, 8.6 * scale)
+    AppKit.NSBezierPath.bezierPathWithRoundedRect_xRadius_yRadius_(eye, 2.5 * scale, 2.5 * scale).fill()
+
+    # The cap's board, tilted like the icon's (-8° in y-down is +8° here), with a clear rim so it
+    # reads apart from the head it sits on.
+    tilt = AppKit.NSAffineTransform.transform()
+    pivot = point(34, 14)
+    tilt.translateXBy_yBy_(pivot.x, pivot.y)
+    tilt.rotateByDegrees_(8)
+    tilt.translateXBy_yBy_(-pivot.x, -pivot.y)
+    board = AppKit.NSBezierPath.bezierPath()
+    board.moveToPoint_(point(34, 3))
+    for x, y in ((55, 11), (34, 19), (13, 11)):
+        board.lineToPoint_(point(x, y))
+    board.closePath()
+    board.transformUsingAffineTransform_(tilt)
+    board.setLineWidth_(3.0 * scale)
+    AppKit.NSColor.blackColor().setStroke()
+    board.stroke()
+    context.setCompositingOperation_(over)
+    board.fill()
+    tassel = AppKit.NSBezierPath.bezierPath()
+    tassel.moveToPoint_(point(50, 13.4))
+    tassel.lineToPoint_(point(50, 24))
+    tassel.transformUsingAffineTransform_(tilt)
+    tassel.setLineWidth_(2.4 * scale)
+    tassel.stroke()
     image.unlockFocus()
     image.setTemplate_(True)
     return image
