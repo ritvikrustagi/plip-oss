@@ -10,6 +10,8 @@ import time
 from collections.abc import Callable
 from typing import Any
 
+from mcp_vision.buddy.prompt import HINT_RUNGS
+
 Message = dict[str, Any]
 
 
@@ -175,6 +177,13 @@ class Presenter:
         detail = "paused" if data.get("paused") else f"step {data['step']}" if data.get("step") else ""
         self.goal = {"id": "goal", "label": f"Goal: {text}", "status": status, **({"detail": detail} if detail else {})}
         self.post_island([{"type": "step", "step": dict(self.goal)}])
+
+    def _on_hint(self, data: dict[str, Any]) -> None:
+        """Tutor mode: which rung of the hint ladder this answer is on (rung 0 is a question, no chip)."""
+        level = int(data.get("level") or 0)
+        if 0 < level < len(HINT_RUNGS):
+            self.post_island([{"type": "step", "step": {"id": "hint", "label": f"Hint {level} of {len(HINT_RUNGS) - 1}",
+                                                        "status": "skipped", "detail": HINT_RUNGS[level]}}])  # ponytail: "skipped" draws a plain dot, shown while answering
 
     def _on_finished(self, data: dict[str, Any]) -> None:
         # once per request, after the voice; plain answers stay quiet

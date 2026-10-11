@@ -71,6 +71,8 @@ def jade(tmp_path):
     fake.chmod(0o755)
     log = tmp_path / "claude-calls.jsonl"
     log.touch()
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "prefs.json").write_text('{"tutor": false}')     # these drive the assistant's actions
     screenshot = tmp_path / "screen.png"
     from PIL import Image
     Image.new("RGB", (1440, 900), "#1d1d22").save(screenshot)

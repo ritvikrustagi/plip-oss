@@ -78,6 +78,7 @@ if (!isNative()) {
     if (command.cmd === 'account-sign-out') account({ status: '', identified: false, anonymous: true, prompt: false, user: DEMO_GUEST })
     if (command.cmd === 'set-depth') settings.set({ depth: command.depth as 'fast' | 'balanced' | 'deep' })
     if (command.cmd === 'set-walkthroughs') settings.set({ walkthroughs: Boolean(command.enabled) })
+    if (command.cmd === 'set-tutor') settings.set({ tutor: Boolean(command.enabled) })
     if (command.cmd === 'set-voice') {
       settings.set((current) => ({ voice: { ...current.voice, ...(command.tts ? { tts: command.tts } : {}), ...(command.stt ? { stt: command.stt } : {}) } as typeof current.voice }))
     }

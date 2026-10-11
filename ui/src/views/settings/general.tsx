@@ -40,6 +40,11 @@ export function GeneralTab({ state, composer: initial = null }: { state: Setting
               onChange={(style) => send('set-companion', { style })} />}
           />
           <Row
+            title="Tutor mode"
+            detail="Jade teaches instead of doing it for you: one hint at a time, never the answer. Off, Jade does things on your Mac."
+            action={<Toggle label="Tutor mode" checked={state.tutor} onChange={(enabled) => send('set-tutor', { enabled })} />}
+          />
+          <Row
             title="Guided walkthroughs"
             detail="A checklist in the notch. Jade waits for you and re-checks each step."
             action={<Toggle label="Guided walkthroughs" checked={state.walkthroughs} onChange={(enabled) => send('set-walkthroughs', { enabled })} />}

@@ -11,7 +11,11 @@ waits for the screen to change after each step, looks again, and continues
 until ``[DONE]``, a timeout, or the user presses the shortcut.
 
 ``observer(kind, data)`` receives UI events: phase, step, engine, answer,
-point, walkthrough, done, error.
+point, walkthrough, hint, done, error.
+
+In tutor mode (``tutor=True``) Jade teaches instead of doing: replies tag their
+rung on the hint ladder (``[HINT:n]``) and every turn tells the model the
+highest rung it may use next, one above the last.
 """
 from __future__ import annotations
 
@@ -29,10 +33,11 @@ from typing import Any, Protocol
 from mcp_vision.buddy.conversation import Conversation, Turn
 from mcp_vision.buddy.geometry import Rect, ScreenInfo, Screenshot
 from mcp_vision.buddy.pointing import (
-    ActionTag, DoneTag, GoalTag, PlanTag, PointTag, ReplyStream, SpeechChunk, StepsTag,
+    ActionTag, DoneTag, GoalTag, HintTag, PlanTag, PointTag, ReplyStream, SpeechChunk, StepsTag,
 )
 from mcp_vision.buddy.prompt import (
-    ACTION_FOLLOWUP, AGENT_FOLLOWUP, LOOK_FOLLOWUP, SYSTEM_PROMPT, guide_followup, system_prompt, user_turn_text,
+    ACTION_FOLLOWUP, AGENT_FOLLOWUP, LOOK_FOLLOWUP, SYSTEM_PROMPT, guide_followup, hint_cap, system_prompt,
+    tutor_note, user_turn_text,
 )
 from mcp_vision.buddy.screen_context import ScreenContext
 from mcp_vision.buddy.usage import Request, Usage, estimate, image_tokens, text_tokens
@@ -214,7 +219,7 @@ class Companion:
                  actions: Any = None, notes: Callable[[], str] | None = None, max_followups: int = 3,
                  max_agent_steps: int = 15, step_effort: str | None = "low",
                  capture_timeout: float = 6.0, usage: Any = None, usage_kind: str = "voice",
-                 settle_interval: float = 0.15):
+                 settle_interval: float = 0.15, tutor: bool = False):
         self.brain = brain
         self.capturer = capturer
         self.speaker = speaker or _NullSpeaker()
@@ -251,6 +256,8 @@ class Companion:
         self._consent = None                          # this request's yes: the step it names won't ask
         self._authored = False                        # Jade typed something they haven't seen yet
         self.settle_interval = settle_interval
+        self.tutor = tutor                            # teach with hints instead of doing (see prompt.TUTOR_PROMPT)
+        self._hint: int | None = None                 # last hint rung given on the current problem
         self.usage = usage                      # buddy.usage.UsageLog, or None to keep no record
         self.usage_kind = usage_kind
         self._meter: _Meter | None = None
@@ -267,7 +274,7 @@ class Companion:
     @property
     def system_prompt(self) -> str:
         """Instructions + user notes (notes rarely change, so they ride in the cached prompt)."""
-        base = self._system_prompt or system_prompt(vision=self.vision)
+        base = self._system_prompt or system_prompt(vision=self.vision, tutor=self.tutor)
         known = ""
         if self.notes is not None:
             try:
@@ -955,10 +962,12 @@ class Companion:
                     self.actions.ctx.state.pop("scrolled", None)
                     self.actions.ctx.state.pop("stale_map", None)
             history = self.conversation.history()
+            if not history:
+                self._hint = None                          # a fresh conversation is a fresh problem
             images, skipped = self._images_for(shots, context, guide=guide, lean=lean)
             extra, self._extra_note = self._extra_note, ""
             notes = self._notes() + self._circling(context, guide) + (f"\n{skipped}" if skipped else "") + \
-                (f"\n{extra}" if extra else "")
+                (f"\n{extra}" if extra else "") + (f"\n{tutor_note(self._hint)}" if self.tutor else "")
             text = user_turn_text(transcript, shots, context, vision=bool(images), notes=notes)
             system = self.system_prompt
             turn = Turn("user", text, images=tuple(images))
@@ -1120,6 +1129,9 @@ class Companion:
             self.emit("walkthrough", index=0, total=event.total, label="", waiting=False)
         elif isinstance(event, DoneTag):
             result.finished = True
+        elif isinstance(event, HintTag):
+            self._hint = min(event.level, hint_cap(self._hint))    # a reply that overreaches counts as the cap
+            self.emit("hint", level=self._hint)
         elif isinstance(event, PlanTag):
             result.plan = event.steps
             self.emit("plan", steps=list(event.steps))
@@ -1401,6 +1413,8 @@ def _history_text(reply: ReplyStream, targets: list[Target], did: list[str] | No
         text = f"[PLAN: {' | '.join(reply.plan)}] " + text
     if reply.steps:
         text = f"[STEPS:{reply.steps}] " + text
+    if reply.hint is not None:
+        text = f"[HINT:{reply.hint}] " + text
     if targets:
         where = "; ".join(f"{t.label or 'here'} on screen{t.screen}" for t in targets)
         text += f" (pointed at: {where})"

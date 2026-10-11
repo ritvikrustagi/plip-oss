@@ -12,8 +12,10 @@ screen when omitted). It can also act and plan::
     [DO:open_app {"name": "Safari"}]
     [PLAN: open settings | pick privacy | turn on two-factor]
     [GOAL: find remote backend jobs on linkedin]
+    [HINT:2]
 
 ``[GOAL:...]`` opens a multi-step task that runs until ``[DONE]``.
+``[HINT:n]`` names the rung of the tutor's hint ladder a reply is on.
 
 Action arguments are JSON and may contain brackets, so ``[DO:`` tags are
 scanned with a JSON-aware matcher. Tags never reach the speech engine. Each tag is
@@ -36,8 +38,9 @@ TAG_RE = re.compile(
     re.IGNORECASE,
 )
 _MALFORMED_TAG_RE = re.compile(r"\[\s*POINT\b[^\]]*\]", re.IGNORECASE)
-# Walkthrough control tags: "[STEPS:3]" opens a guided task, "[DONE]" ends it.
-CONTROL_RE = re.compile(r"\[\s*(?:STEPS\s*:\s*(?P<steps>\d{1,2})|(?P<done>DONE))\s*\]", re.IGNORECASE)
+# Walkthrough control tags: "[STEPS:3]" opens a guided task, "[DONE]" ends it; "[HINT:2]" is a hint rung.
+CONTROL_RE = re.compile(r"\[\s*(?:STEPS\s*:\s*(?P<steps>\d{1,2})|(?P<done>DONE)|HINT\s*:\s*(?P<hint>\d))\s*\]",
+                        re.IGNORECASE)
 _SCREEN_SUFFIX_RE = re.compile(r"^(?P<label>.*?)(?:\s*:\s*screen\s*(?P<screen>\d+))?\s*$", re.IGNORECASE | re.S)
 _SENTENCE_END_RE = re.compile(r"[.!?…]+[\"'”’)\]]*\s+")
 _MAX_TAG_LEN = 200
@@ -76,6 +79,11 @@ class DoneTag:
 
 
 @dataclass(frozen=True)
+class HintTag:
+    level: int
+
+
+@dataclass(frozen=True)
 class ActionTag:
     name: str
     args: dict = field(default_factory=dict)
@@ -91,7 +99,7 @@ class GoalTag:
     text: str
 
 
-Event = SpeechChunk | PointTag | StepsTag | DoneTag | ActionTag | PlanTag | GoalTag
+Event = SpeechChunk | PointTag | StepsTag | DoneTag | HintTag | ActionTag | PlanTag | GoalTag
 
 
 def _balanced_end(raw: str) -> int | None:
@@ -237,6 +245,7 @@ class ReplyStream:
         self.actions: list[ActionTag] = []
         self.plan: tuple[str, ...] = ()
         self.goal = ""                     # set by [GOAL: ...]
+        self.hint: int | None = None       # set by [HINT:n]
         self.leaked = False                # wrote a tool call as text: mute from here
         self._thinking = False             # in a long <thinking>: mute till it closes
 
@@ -311,11 +320,15 @@ class ReplyStream:
             control = CONTROL_RE.fullmatch(candidate)
             if control:
                 events.extend(self._release(merge=False))
-                events.append(StepsTag(int(control.group("steps"))) if control.group("steps") else DoneTag())
-                if control.group("done"):
+                if control.group("hint"):
+                    self.hint = min(4, int(control.group("hint")))
+                    events.append(HintTag(self.hint))
+                elif control.group("done"):
                     self.done = True
+                    events.append(DoneTag())
                 else:
                     self.steps = int(control.group("steps"))
+                    events.append(StepsTag(self.steps))
                 continue
             if TAG_RE.fullmatch(candidate):
                 # Sentences finished before the tag are spoken before it moves,
@@ -345,7 +358,7 @@ class ReplyStream:
                 if rest:
                     events.extend(self.feed(rest))
                 continue
-            if not re.match(r"\[\s*(?:POINT|STEPS|DONE|DO|PLAN|GOAL)\b", leftover, re.IGNORECASE):
+            if not re.match(r"\[\s*(?:POINT|STEPS|DONE|HINT|DO|PLAN|GOAL)\b", leftover, re.IGNORECASE):
                 self._text += leftover
                 break
             if re.match(r"\[\s*(?:DO|PLAN|GOAL)\b", leftover, re.IGNORECASE) and "]" in leftover:

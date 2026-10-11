@@ -268,6 +268,7 @@ export interface SettingsState {
   keys: Record<string, boolean>
   history: HistoryItem[]
   walkthroughs: boolean
+  tutor: boolean
   sounds: boolean
   memory: MemoryPanel | null
   companion: 'notch' | 'cursor' | 'hidden'
@@ -320,6 +321,7 @@ export const defaultSettings: SettingsState = {
   keys: {},
   history: [],
   walkthroughs: true,
+  tutor: true,
   sounds: true,
   memory: null,
   companion: 'notch',

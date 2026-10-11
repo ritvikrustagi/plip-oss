@@ -142,7 +142,7 @@ class WindowsShell:
         context = (GatedContext(inner_context, allowed=lambda: self.consent.allows("screen_context"))
                    if inner_context is not None else None)
         try:
-            companion = make_companion(self.settings, pointer=None, observer=self.presenter, prefs=self.prefs,
+            companion = make_companion(self.settings, pointer=None, observer=self._observe, prefs=self.prefs,
                                        engines=engines, watch=False, memory=self.memory, usage=self.usage,
                                        capturer=self.capturer, context=context)
             self.setup_error = ""
@@ -228,6 +228,13 @@ class WindowsShell:
         state = "on" if getattr(self.consent, switch) else "off"
         self.view.notice(f"{switch.replace('_', ' ')} is now {state}.")
 
+    def set_tutor(self, on: bool) -> None:
+        """Tutor mode: hints one rung at a time instead of doing it for them. Rebuilds the brain."""
+        self.prefs.tutor = bool(on)
+        self.prefs.save()
+        self.rebuild()
+        self.view.notice(f"Tutor mode is now {'on' if on else 'off'}.")
+
     def export_learning(self) -> str:
         return self.learning.export()
 
@@ -238,6 +245,10 @@ class WindowsShell:
         return gone
 
     # -- internals ------------------------------------------------------------
+    def _observe(self, kind: str, data: dict) -> None:
+        self.presenter(kind, data)
+        if kind == "hint" and data.get("level"):       # rung 0 is a question back, not a hint
+            self.learning.hint_requested()             # writes nothing unless a session is running
     def _recorded(self, transcript: str, result) -> None:
         if self.history is not None and result.state == "done" and result.spoken:
             brain = getattr(self.controller.companion, "brain", None)
